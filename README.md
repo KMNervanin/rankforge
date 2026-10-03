@@ -42,6 +42,16 @@ The gateway exercise uses `GATEWAY_PORT=45113 docker compose up -d` if its defau
 
 `npm run extension:package` creates an optional VSIX. Do not install it into all workspaces by default; the game-scoped development window is sufficient.
 
+The core runtime also has a reproducible Linux check:
+
+```sh
+docker build -f tests/linux.Dockerfile -t rankforge-linux-check .
+docker run --rm --cpus=2 --memory=2g rankforge-linux-check
+docker image rm rankforge-linux-check
+```
+
+Both arm64 and amd64 builds/tests were exercised. This container check does not launch a browser or desktop editor and does not provide a Secret Service login session.
+
 ## Principles
 
 - Technical outcomes come from actual lab checks, not a model's praise.
@@ -55,6 +65,7 @@ The gateway exercise uses `GATEWAY_PORT=45113 docker compose up -d` if its defau
 ## Project notes
 
 - [Implementation plan](docs/PLAN.md)
+- [First-run handoff](docs/HANDOFF.md)
 - [Decision log](docs/decisions-2026-10-03.md)
 - [Curriculum](docs/CURRICULUM.md)
 - [Third-party notices](THIRD_PARTY_NOTICES.md)

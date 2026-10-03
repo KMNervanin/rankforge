@@ -1,0 +1,11 @@
+.git
+node_modules
+dist
+extension/dist
+test-results
+playwright-report
+*.vsix
+**/__pycache__
+.env
+**/.env
+.rankforge
