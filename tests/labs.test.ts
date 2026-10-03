@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, rm, copyFile, readFile, writeFile, symlink } from 'node:fs/promises'
+import { mkdtemp, rm, copyFile, readFile, writeFile, symlink, mkdir } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { Labs, root } from '../server/labs.js'
@@ -59,5 +59,45 @@ test('concurrent preparation publishes one complete workspace without overwritin
     assert.equal(new Set(paths).size, 1)
     assert.ok((await readFile(path.join(paths[0]!, 'MISSION.md'), 'utf8')).includes('Acceptance contract'))
     assert.ok((await readFile(path.join(paths[0]!, 'LEARN.md'), 'utf8')).includes('Field manual'))
+  } finally { await rm(home, { recursive: true, force: true }) }
+})
+
+test('coach context includes learner-created modules but excludes hidden files, credentials, dependency trees and symlinks', async () => {
+  const home = await mkdtemp(path.join(os.tmpdir(), 'rankforge-context-'))
+  try {
+    const labs = new Labs(home)
+    const workspace = await labs.prepare('signal', 'guided')
+    await mkdir(path.join(workspace, 'helpers'))
+    await mkdir(path.join(workspace, 'node_modules'))
+    await writeFile(path.join(workspace, 'helpers', 'debug.py'), 'def inspect_request():\n    return "learner module"\n')
+    await writeFile(path.join(workspace, '.env'), 'PRIVATE_FIXTURE=not-for-the-model')
+    await writeFile(path.join(workspace, 'credentials.json'), '{"private_fixture":true}')
+    await writeFile(path.join(workspace, 'node_modules', 'vendor.js'), 'dependency tree')
+    await writeFile(path.join(home, 'outside.py'), 'outside the mission')
+    await symlink(path.join(home, 'outside.py'), path.join(workspace, 'external.py'))
+    const context = await labs.context('signal')
+    assert.match(context.files['helpers/debug.py']!.content, /learner module/)
+    assert.ok(context.files['MISSION.md'])
+    assert.ok(context.files['LEARN.md'])
+    assert.equal(context.files['.env'], undefined)
+    assert.equal(context.files['credentials.json'], undefined)
+    assert.equal(context.files['node_modules/vendor.js'], undefined)
+    assert.equal(context.files['external.py'], undefined)
+    assert.equal(context.visibility.unsavedEditorBuffers, false)
+  } finally { await rm(home, { recursive: true, force: true }) }
+})
+
+test('large saved-file context is bounded and tells the coach about omissions and truncation', async () => {
+  const home = await mkdtemp(path.join(os.tmpdir(), 'rankforge-context-limit-'))
+  try {
+    const labs = new Labs(home)
+    const workspace = await labs.prepare('signal', 'guided')
+    for (let index = 0; index < 25; index++) await writeFile(path.join(workspace, `helper-${index}.py`), '# test fixture\n'.repeat(1500))
+    const context = await labs.context('signal')
+    assert.ok(context.files['service.py'])
+    assert.ok(Object.keys(context.files).length <= context.limits.files)
+    assert.ok(Object.values(context.files).reduce((total, file) => total + file.content.length, 0) <= context.limits.totalCharacters)
+    assert.ok(Object.values(context.files).some((file) => file.truncated))
+    assert.ok(context.omittedFiles.length > 0)
   } finally { await rm(home, { recursive: true, force: true }) }
 })

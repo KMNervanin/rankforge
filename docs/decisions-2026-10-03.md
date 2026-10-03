@@ -59,3 +59,21 @@
 **Why:** Enabling CSP exposed the renderer's normal dynamic shader-sync generation. The installed package documentation and source confirm this counterintuitively named import removes the eval requirement. Fresh browser tests rendered the canvas with zero console errors.
 **Reversal:** Replace the renderer while preserving the surrounding DOM interface.
 **Location:** `src/Outpost.tsx`, `server/app.ts`.
+
+## A dedicated conversation workspace
+**Chosen:** A full-width chat view with its own history scroll, fixed composer, GFM rendering and code copying.
+**Why:** The existing conversation occupied a340px column and pushed input almost12000px down the page. Reading older messages must not jump to a new reply; history must not be silently cut.
+**Reversal:** The view is separate from persisted exchanges, grading and mission state.
+**Location:** `src/ChatPanel.tsx`, `src/Markdown.tsx`, `src/App.tsx`.
+
+## File evidence and coaching scope
+**Chosen:** Bounded snapshots of saved text files inside the owned mission, including helper modules, with saved timestamps, provenance and explicit unseen-editor/runtime state.
+**Why:** An unsaved editor buffer differed from the running saved file, but the mentor did not explain the discrepancy and pursued unsupported hypotheses. Language simplicity must not imply a lack of programming experience.
+**Reversal:** Future read-only tools can extend observation without changing existing conversations or writing learner code.
+**Location:** `server/labs.ts`, `server/app.ts`.
+
+## Sharing the project
+**Chosen:** Publish the repository at the owner's explicit request and add a Russian first-run guide alongside the English README.
+**Why:** A friend should be able to clone and try the project independently using their own account and local saves. The initial private setting above records the earlier creation decision.
+**Reversal:** Visibility can be changed later, but already-public copies cannot be recalled. Personal credentials and real conversations are not repository content.
+**Location:** repository visibility, `README.md`, `docs/START_RU.md`.

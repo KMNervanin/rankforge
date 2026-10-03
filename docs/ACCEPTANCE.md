@@ -38,3 +38,13 @@ The owner reported successful game startup, GPT connection and opening VS Code o
 ## Product boundaries
 
 Six first-chapter labs are executable; later chapters are a curriculum blueprint. Language adaptation currently changes mission briefings and tutor instructions, with varied follow-up questions. It does not claim every external reference or code comment dynamically changes level. Only written interaction is tracked. Rank is a game progression indicator, not a job grade or language certification.
+
+## Chat workspace and code-context iteration
+
+- Fresh production build,36 Node tests and5 headless Chromium scenarios passed. The additional browser controls use synthetic long histories and do not send messages to a live model.
+- The current code also built and passed all36 tests under Node24 / Python3.11 in a Linux amd64 container. This remains a core-runtime check, not a Linux desktop login/editor acceptance.
+- A120-exchange history remained complete in a viewport-bounded chat. The composer stayed visible at desktop widths, old-message reading position survived new replies and view/quest switches, and mode/drafts restored after reload.
+- GFM headings, emphasis, lists, tables, inline code and fenced code were rendered. Code copying preserved indentation and newlines using a test clipboard rather than the system clipboard. Raw HTML/script and unsafe links did not execute, and rendered images did not trigger remote requests. A very long code line scrolled within its block rather than widening the page.
+- Read-only inspection of an existing local conversation confirmed the practical layout change: page height became viewport-bounded and chat width increased from340px to1158px at1440px viewport width. Previously recorded exchange content hashes remained unchanged; no inspection message was submitted.
+- An owner-reported debug-print issue was resolved by saving the editor buffer. Coaching now receives saved-file timestamps, workspace provenance and explicit limits on editor/runtime visibility. Newly created helper modules are included; hidden files, common credential filenames, symlinks and dependency directories are excluded. File-count/size budgets and truncation are exercised by tests. This validates the supplied evidence, not a guarantee of every subsequent model diagnosis.
+- A coaching payload regression check first failed because its `question` field contained the mission debrief instead of the learner's current debugging question. Coaching now binds this field to the latest learner message; the same check passes. Debrief grading keeps its original question contract. No extra live tutor messages were generated during these checks.

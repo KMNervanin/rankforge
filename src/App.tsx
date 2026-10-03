@@ -1,22 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Exchange, MissionView, Snapshot } from '../shared/types.js'
+import type { MissionView, Snapshot } from '../shared/types.js'
 import { futureChapters } from '../shared/content.js'
 import { Outpost } from './Outpost.js'
+import { ChatPanel, type ChatPositions } from './ChatPanel.js'
 
-type Tab = 'outpost' | 'skills' | 'journal' | 'connection'
+type Tab = 'outpost' | 'chat' | 'skills' | 'journal' | 'connection'
 
 export function App() {
+  const savedChat = useRef({ open: localStorage.getItem('rankforge.chat.open') === 'true', mode: localStorage.getItem('rankforge.chat.mode'), mission: localStorage.getItem('rankforge.chat.mission') })
   const [state, setState] = useState<Snapshot | null>(null)
   const [selected, setSelected] = useState('signal')
-  const [tab, setTab] = useState<Tab>('outpost')
+  const [tab, setTab] = useState<Tab>(() => savedChat.current.open ? 'chat' : 'outpost')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [hint, setHint] = useState('')
   const [loginUrl, setLoginUrl] = useState('')
-  const [mode, setMode] = useState<'coach' | 'debrief'>('debrief')
+  const [mode, setMode] = useState<'coach' | 'debrief'>(() => savedChat.current.mode === 'coach' ? 'coach' : 'debrief')
   const [drafts, setDrafts] = useState<Record<string, string>>(() => { try { return JSON.parse(localStorage.getItem('rankforge.drafts') ?? '{}') } catch { return {} } })
   const token = useRef(''); const epoch = useRef(0); const initialized = useRef(false)
+  const chatPositions = useRef<ChatPositions>({})
   useEffect(() => { localStorage.setItem('rankforge.drafts', JSON.stringify(drafts)) }, [drafts])
+  useEffect(() => { localStorage.setItem('rankforge.chat.open', String(tab === 'chat')) }, [tab])
+  useEffect(() => { localStorage.setItem('rankforge.chat.mode', mode) }, [mode])
+  useEffect(() => { if (tab === 'chat' && initialized.current) localStorage.setItem('rankforge.chat.mission', selected) }, [selected, tab])
   useEffect(() => {
     let disposed = false
     const controller = new AbortController()
@@ -28,7 +34,14 @@ export function App() {
         const data = await response.json()
         if (!disposed && version === epoch.current) {
           token.current = data.token; setState(data.snapshot)
-          if (!initialized.current) { initialized.current = true; setSelected(data.snapshot.activeMissionId ?? 'signal') }
+          if (!initialized.current) {
+            initialized.current = true
+            const snapshot = data.snapshot as Snapshot
+            const previousMission = savedChat.current.open && snapshot.missions.find((item) => item.id === savedChat.current.mission && item.status !== 'locked')
+            const missionId = previousMission ? previousMission.id : snapshot.activeMissionId ?? 'signal'
+            setSelected(missionId)
+            if (!savedChat.current.mode) setMode(snapshot.exchanges.findLast((item) => item.missionId === missionId)?.mode ?? 'debrief')
+          }
         }
       } catch (cause) { if (!disposed) setError(cause instanceof Error ? cause.message : 'Unable to reach the local service.') }
     }
@@ -78,16 +91,18 @@ export function App() {
   const draftValue = drafts[`${selected}:${mode}`] ?? ''
   const evaluating = state?.exchanges.some((item) => item.status === 'pending' || item.status === 'processing') ?? false
   const savedPending = state?.exchanges.findLast((item) => item.status === 'paused' || item.status === 'failed')
+  const conversation = state?.exchanges.filter((item) => item.missionId === selected) ?? []
+  const conversationMessages = conversation.reduce((count, item) => count + 1 + Number(Boolean(item.reply)), 0)
 
   return <div className="app-shell">
     <aside className="sidebar">
       <a className="brand" href="#" onClick={(event) => { event.preventDefault(); setTab('outpost') }} aria-label="Rankforge outpost"><span className="brand-mark">R<span>◈</span></span><span>RANKFORGE<small>THE ASCENT BEGINS HERE</small></span></a>
       <div className="operator-card"><div className="rank-emblem">{state?.rank[0] ?? 'E'}</div><span className="eyebrow">YOUR ADVENTURER</span><strong>The Pathfinder</strong><span className="muted">{state?.rank ?? 'E · Initiate'}</span><div className="xp-line"><span>{state?.xp ?? 0} XP</span><span>{Math.max(0, 1240 - (state?.xp ?? 0))} TO CHAPTER CLEAR</span></div><div className="progress-track"><i style={{ width: `${Math.min(100, (state?.xp ?? 0) / 12.4)}%` }} /></div></div>
-      <nav aria-label="Main navigation">{([['outpost', '◇', 'The outpost'], ['skills', '⌘', 'Abilities'], ['journal', '≡', 'Field journal'], ['connection', '⏣', 'Connection']] as const).map(([id, icon, label]) => <button key={id} aria-label={label} className={tab === id ? 'nav-active' : ''} onClick={() => setTab(id)}><span aria-hidden="true">{icon}</span>{label}{id === 'outpost' && <small>{completed}/6</small>}</button>)}</nav>
+      <nav aria-label="Main navigation">{([['outpost', '◇', 'The outpost'], ['chat', '✉', 'Operator chat'], ['skills', '⌘', 'Abilities'], ['journal', '≡', 'Field journal'], ['connection', '⏣', 'Connection']] as const).map(([id, icon, label]) => <button key={id} aria-label={label} className={tab === id ? 'nav-active' : ''} onClick={() => setTab(id)}><span aria-hidden="true">{icon}</span>{label}{id === 'outpost' && <small>{completed}/6</small>}</button>)}</nav>
       <div className="sidebar-bottom"><span className="eyebrow">LANGUAGE ATTUNEMENT</span><strong>{state?.language.band ?? 'guided'} English</strong><p>The world grows with your words.</p><div className="language-dots">{[0, 1, 2].map((n) => <i key={n} className={n <= ['guided', 'connected', 'independent'].indexOf(state?.language.band ?? 'guided') ? 'lit' : ''} />)}</div><span className="micro">WRITTEN PRACTICE · {state?.language.evidenceCount ?? 0} EVIDENCE</span></div>
       <div className="local-status"><i className={state ? 'online-dot' : 'offline-dot'} /> LOCAL INSTANCE <span>v0.1</span></div>
     </aside>
-    <div className="main-shell">
+    <div className={`main-shell ${tab === 'chat' ? 'chat-active' : ''}`}>
       <header className="topbar"><div><span className="breadcrumb">EXPEDITION / CHAPTER I</span><span className="chapter-name">The silent outpost</span></div><div className="header-right"><span className="status-chip"><i className={paused ? 'amber-dot' : 'online-dot'} />{paused ? 'TRAINING PAUSED' : 'SYSTEM ONLINE'}</span><button className="avatar" onClick={() => setTab('connection')} aria-label="Account connection">K</button></div></header>
       {error && <div role="alert" className="error-banner"><span>{error}</span><button onClick={() => setError('')} aria-label="Dismiss error">×</button></div>}
       {paused && <div className="pause-banner" role="status"><span>Ⅱ</span><div><strong>The System is resting.</strong><p>{state?.connection.reason}</p><small>Your work and submitted answer are safe. No paid fallback.</small></div>{savedPending && <button className="secondary" disabled={busy || evaluating} onClick={() => void action('/api/answers/resume', { id: savedPending.id })}>Resume saved answer</button>}</div>}
@@ -110,13 +125,10 @@ export function App() {
           <details><summary>Field manual</summary><p>{mission.lesson}</p><h4>Terminal starting points</h4><pre>{mission.commands.join('\n')}</pre>{mission.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a>)}</details>
           <button className="hint-button" disabled={busy || paused || mission.status === 'locked'} onClick={async () => { const data = await action<{ hint: string }>(`/api/missions/${mission.id}/hint`); if (data) setHint(data.hint) }}>◇ Request a hint <small>{mission.hintsUsed ? `${mission.hintsUsed} used · guided practice` : 'marks this as guided practice'}</small></button>
           {hint && <div className="hint-box">{hint}</div>}
-          <div className="tutor-section"><div className="section-heading"><h3>Operator channel</h3><span>{state.connection.signedIn ? 'LINKED' : 'AWAITING LINK'}</span></div><div className="segmented"><button aria-pressed={mode === 'debrief'} onClick={() => setMode('debrief')}>Mission debrief</button><button aria-pressed={mode === 'coach'} onClick={() => setMode('coach')}>Ask for guidance</button></div><p className="channel-prompt">{mode === 'debrief' ? mission.prompt : 'Ask a question in your own words. The operator will help you find the next step.'}</p>
-            <div className="conversation">{state.exchanges.filter((item) => item.missionId === selected).map((item) => <ExchangeCard key={item.id} exchange={item} busy={busy || evaluating} onRetry={() => void action('/api/answers/resume', { id: item.id })} />)}</div>
-            <label className="sr-only" htmlFor="answer">Your answer in English</label><textarea id="answer" placeholder="Your words matter. Tell the operator what you found…" value={draftValue} onChange={(event) => draft(event.target.value)} maxLength={8000} rows={4} />
-            <div className="composer-footer"><small>Draft saved on this device</small><button className="primary small" disabled={busy || paused || evaluating || !draftValue.trim() || mission.status === 'locked'} onClick={() => void submitAnswer()}>{evaluating ? 'Receiving…' : 'Send ↗'}</button></div>
-          </div>
+          <section className="chat-preview"><span className="eyebrow">✦ YOUR OPERATOR</span><h3>A place to think out loud.</h3><p>{conversationMessages ? `${conversationMessages} messages saved with this quest. Continue in your conversation workspace.` : 'Ask for guidance or share what you learned. Your conversation has its own space.'}</p><button type="button" className="secondary" onClick={() => setTab('chat')}>Open conversation ↗</button></section>
         </aside>
       </main>}
+      {state && tab === 'chat' && mission && <ChatPanel mission={mission} missions={state.missions} exchanges={conversation} signedIn={state.connection.signedIn} busy={busy} evaluating={evaluating} paused={paused} mode={mode} draft={draftValue} positions={chatPositions} onMode={setMode} onDraft={draft} onSend={submitAnswer} onRetry={(id) => void action('/api/answers/resume', { id })} onMission={setSelected} onBack={() => setTab('outpost')} />}
       {state && tab === 'skills' && <main className="content-page"><span className="eyebrow">YOUR ABILITY NETWORK</span><h1>Earned through experience.</h1><p className="page-intro">Restoring a system is practice. Using knowledge independently, in another situation and after a delay, is stronger evidence of mastery.</p><div className="skills-grid">{state.missions.map((item) => <article className={`ability-card sector-${item.id}`} key={item.id}><span className={`ability-icon ${item.status === 'completed' ? 'earned' : ''}`}>{item.icon}</span><h2>{item.artifact}</h2><p>{item.skills.join(' · ')}</p><span className="status-chip">{item.completedAt ? item.independent ? 'UNASSISTED COMPLETION' : 'GUIDED COMPLETION' : 'NOT YET EVIDENCED'}</span><small>{item.completedAt ? `Evidence recorded ${new Date(item.completedAt).toLocaleDateString('en-GB')}` : 'Complete the related lab to acquire this artifact.'}</small></article>)}</div><section className="language-card"><span className="eyebrow">LANGUAGE ATTUNEMENT</span><h2>{state.language.band} written English</h2><p>{state.language.evidenceCount} qualifying mission/day observations across {state.language.distinctMissions} missions. Repeating the same answer today does not raise your level.</p><p>{state.language.coverage}</p><h3>Return to these patterns</h3>{state.language.due.length ? state.language.due.map((item, index) => <p key={index}>◇ {item}</p>) : <p>After a day, patterns from your completed debriefs return here for use in a new context.</p>}</section><h2>Beyond the first frontier</h2><div className="future-chapters">{futureChapters.map((chapter, index) => <article key={chapter.title}><span>0{index + 2}</span><div><h3>{chapter.title}</h3><p>{chapter.topics}</p></div><small>CURRICULUM PLANNED</small></article>)}</div></main>}
       {state && tab === 'journal' && <main className="content-page"><span className="eyebrow">EXPEDITION RECORD</span><h1>Your work leaves a trace.</h1><p className="page-intro">Evidence, setbacks and discoveries. A history you can return to.</p><div className="journal-list">{state.journal.length === 0 && <div className="empty-state"><span>≡</span><h2>The first page is yours.</h2><p>Enter a mission to begin your field journal.</p></div>}{state.journal.map((entry) => <article key={entry.id}><div className={`journal-symbol ${entry.kind}`}>{entry.kind === 'victory' ? '✧' : '◇'}</div><div><span className="eyebrow">{entry.kind} {entry.missionId && ` / ${entry.missionId}`}</span><p>{entry.text}</p><time>{new Date(entry.createdAt).toLocaleString('en-GB')}</time></div></article>)}</div></main>}
       {state && tab === 'connection' && <main className="content-page narrow"><span className="eyebrow">SYSTEM CONNECTION</span><h1>Your account. Your outpost.</h1><p className="page-intro">Use your existing ChatGPT subscription. A direct local adapter handles sign-in and token refresh; no Codex CLI or API-credit fallback is involved.</p><section className="connection-card"><div className="provider-heading"><span>◈</span><div><h2>ChatGPT subscription</h2><p>{state.connection.signedIn ? 'Account linked to this local instance.' : 'Not connected. Technical labs are available; the tutor needs a link.'}</p></div><i className={state.connection.signedIn ? 'online-dot' : 'offline-dot'} /></div><label htmlFor="model">Tutor model</label><select id="model" value={state.connection.model} disabled={busy || evaluating} onChange={(event) => void action('/api/settings/model', { model: event.target.value })}><option value="gpt-6-astra">GPT-6 Astra</option><option value="gpt-6-sol">GPT-6 Sol</option><option value="gpt-6-luna">GPT-6 Luna</option></select><small>Model availability follows your subscription. Actual tutoring quality is still being calibrated.</small><div className="button-row"><button className="primary" disabled={busy || evaluating} onClick={async () => { const result = await action<{ url: string }>('/api/auth/begin'); if (result) setLoginUrl(result.url) }}>{state.connection.signedIn ? 'Reconnect account' : 'Connect ChatGPT'}</button>{state.connection.signedIn && <button className="secondary" disabled={busy || evaluating} onClick={() => void action('/api/auth/logout')}>Disconnect</button>}</div>{loginUrl && <div className="login-link"><p>Sign-in is ready. Continue when you choose:</p><a href={loginUrl} target="_blank" rel="noreferrer">Continue with ChatGPT ↗</a><p>Return here after authorization. Credentials stay in macOS Keychain or Linux Secret Service.</p></div>}</section><section className="connection-notes"><h2>A quiet local companion</h2><p>Your progress lives on this computer, outside the source checkout. Closing the tab does not erase a mission. If the tutor runs out of subscription capacity, your answer is retained and training pauses.</p><p>The workshop opens in its own VS Code window with the Rankforge extension. Existing work windows and previous mission files stay intact. First use may ask you to trust the local workspace.</p><p>Python labs run code you wrote locally as your user. The gateway lab uses an isolated, named Compose project. Docker and a terminal remain real tools you practice with.</p></section></main>}
@@ -127,8 +139,4 @@ export function App() {
 function CheckReport({ mission }: { mission: MissionView }) {
   const result = mission.checks!
   return <section className={`check-report ${result.passed ? 'pass' : ''}`} aria-label="Lab verification"><h3>{!result.supported ? 'Check unavailable' : result.passed ? 'System restored' : 'Evidence needs attention'}</h3>{result.checks.map((item, index) => <details key={index}><summary><span>{item.passed ? '✓' : '×'}</span>{item.name}</summary><pre>{item.detail}</pre></details>)}{result.output && <pre>{result.output}</pre>}<time>{new Date(result.checkedAt).toLocaleTimeString('en-GB')}</time></section>
-}
-
-function ExchangeCard({ exchange, busy, onRetry }: { exchange: Exchange; busy: boolean; onRetry: () => void }) {
-  return <article className="exchange"><div className="learner-message"><span className="micro">YOU · {exchange.mode.toUpperCase()}</span><p>{exchange.text}</p></div>{exchange.reply && <div className="operator-message"><span className="micro">OPERATOR</span><p>{exchange.reply}</p>{exchange.grade && <><span className="grade-label">{exchange.grade.communicativeGoal.replaceAll('_', ' ')} · {exchange.grade.clarity.replaceAll('_', ' ')}</span>{exchange.grade.corrections.map((item, index) => <div className="correction" key={index}><q>{item.quote}</q><strong>→ {item.suggestion}</strong><p>{item.explanation}</p></div>)}<details><summary>Why this feedback?</summary>{exchange.grade.evidence.map((item, index) => <p key={index}><q>{item.quote}</q> — {item.observation}</p>)}</details></>}</div>}{['pending', 'processing'].includes(exchange.status) && <p className="receiving">Signal received. The operator is considering your answer…</p>}{exchange.error && <div className="saved-error"><p>{exchange.error}</p><button className="secondary small" disabled={busy} onClick={onRetry}>Retry saved answer</button></div>}</article>
 }

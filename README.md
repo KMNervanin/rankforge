@@ -2,6 +2,8 @@
 
 A personal, local-first engineering learning RPG. Build a living outpost by solving real backend, operations and data problems. Practice English through meaningful conversations, with difficulty adapted to evidence of learning.
 
+[Инструкция на русском: установка, первое задание и работа с чатом](docs/START_RU.md)
+
 The browser is the game, VS Code is the workshop, and the terminal is a real tool. Subscription access uses a direct ChatGPT OAuth adapter; no Codex CLI or paid API fallback is required.
 
 ## Development status
@@ -12,7 +14,7 @@ The first chapter has six executable labs, a colorful outpost, durable progress,
 
 Install these prerequisites on macOS or a desktop Linux system:
 
-- [Git](https://git-scm.com/downloads), authenticated with access to this private GitHub repository.
+- [Git](https://git-scm.com/downloads). The source repository is public; cloning does not require the author's account.
 - [Node.js](https://nodejs.org/en/download) 24 or newer, including npm. Node24 and25 have been exercised.
 - [Python](https://www.python.org/downloads/) 3.10 or newer, available as `python3`.
 - [Visual Studio Code](https://code.visualstudio.com/download) 1.110 or newer, with `code` on PATH.
@@ -42,7 +44,17 @@ The game opens VS Code only after you click a mission. It uses a dedicated exten
 
 In workshop workspaces, the bridge disables generative inline completions and Copilot next-edit suggestions while retaining ordinary IntelliSense for names, methods and parameters. These are workspace settings; your unrelated work projects keep their own editor settings.
 
-Connect ChatGPT from the game's **Connection** page. Credentials are stored in macOS Keychain; Linux requires a working Secret Service and `secret-tool`. No existing OpenCode or Codex credential is imported automatically. No API key is accepted. This is subscription usage with its normal limits, not a general-purpose OpenAI API account.
+Connect your own eligible ChatGPT subscription from the game's **Connection** page. Credentials are stored in macOS Keychain; Linux requires a working Secret Service and `secret-tool`. No existing OpenCode or Codex credential is imported automatically. No API key is accepted. This is subscription usage with its normal limits, not a general-purpose OpenAI API account. The technical labs can be explored without connecting a tutor; sending a tutor message requires the account. If an unauthenticated message is already pending, connect and use **Resume saved answer**.
+
+## Work through a quest
+
+1. Select a sector or use **Enter workshop**. Read `MISSION.md` and `LEARN.md` in the dedicated VS Code window.
+2. Edit the exercise files, save with Cmd+S/Ctrl+S, and run the lesson commands in the integrated terminal. The game server (`npm start`) and a lesson server (`python3 service.py`) are different processes.
+3. Use **Verify lab** to check the saved code. The initial fixtures are deliberately broken. In the HTTP lesson, verification runs its own temporary server rather than observing the terminal process you started.
+4. Open **Operator chat** from the navigation or **Open conversation** from the quest. Choose guidance or a debrief. History has its own scroll area; the composer remains visible. Markdown, lists, tables and code fences render directly, and code blocks have a copy button. Enter adds a newline; Ctrl/Cmd+Enter sends.
+5. Use **Oldest**, **Latest**, or the new-activity button to navigate a long conversation. Reading older messages does not force you to the bottom when a reply arrives. Drafts, chat mode and the selected conversation survive a page refresh.
+
+The tutor receives bounded snapshots of saved text files inside the quest workspace, including added helper modules, with filenames and saved timestamps. Hidden files, common credential filenames, dependency trees and symlinks are excluded. Unsaved editor buffers and live terminal output are not visible to the tutor. Save changes before asking about code; paste the relevant output when discussing a running process. File snapshots and pasted snippets may represent different versions.
 
 ## Update an existing installation
 
@@ -103,4 +115,4 @@ Both arm64 and amd64 builds/tests were exercised. This container check does not 
 - [Curriculum](docs/CURRICULUM.md)
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-Private personal project. No public service or shared subscription gateway is exposed.
+Public source, local execution. Each person uses their own account and saves; this repository does not expose a hosted tutor or a shared subscription gateway. Desktop macOS is the first personally exercised target; Linux core-runtime checks are described above. Native Windows desktop integration has not been validated.

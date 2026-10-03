@@ -13,6 +13,8 @@ A process can be running while its API is wrong. A client sees three things: an 
 3. Predict which line of `Handler.do_GET` creates the incorrect response.
 4. Stop the server with Ctrl+C before starting a new copy after an edit.
 
+Save `service.py` with Cmd+S (macOS) or Ctrl+S (Linux) before restarting it. VS Code can show edits that are still only in its editor buffer; Python and the operator read the saved file on disk. Restarting an unsaved file loads the old code again. A `print` inside `do_GET` runs when a GET request is handled, not when the server merely starts, and its output appears in the server's terminal.
+
 ## A little Python
 
 The method receives `self`, the handler for this request. `self.path` contains the request target, including a query string. `send_response` writes the status; `send_header` writes a header; `end_headers` finishes headers. `wfile.write` expects bytes, so text must be encoded.

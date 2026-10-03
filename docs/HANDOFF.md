@@ -2,7 +2,7 @@
 
 ## Ready to try
 
-The private repository is https://github.com/KMNervanin/rankforge and the working checkout is `~/rankforge`, branch `main`. The first chapter is a playable local application with six actual lab projects, independent technical checks, an animated outpost, persistent achievements, a field journal, free-text tutor/assessor integration and an editor bridge.
+The repository is https://github.com/KMNervanin/rankforge and the working checkout is `~/rankforge`, branch `main`. The first chapter is a playable local application with six actual lab projects, independent technical checks, an animated outpost, persistent achievements, a field journal, free-text tutor/assessor integration and an editor bridge. [Русская инструкция](START_RU.md) covers installation and ordinary use.
 
 From the checkout:
 
@@ -14,7 +14,7 @@ npm start
 
 Open `http://127.0.0.1:4173` in a desktop Chromium browser. The service starts quietly and does not open windows automatically. Build/install artifacts have been removed from the source checkout after verification, so the first two commands are intentional.
 
-For a new machine, follow [Install and run](../README.md#install-and-run), including prerequisites, cloning the private repository and enabling the `code` command. User credentials and progress are local; they are not shipped through GitHub.
+For a new machine, follow [Install and run](../README.md#install-and-run), including prerequisites, cloning the public repository and enabling the `code` command. Each person connects their own account; credentials and progress are local and are not shipped through GitHub.
 
 ## Personal use and remaining acceptance
 
@@ -28,8 +28,8 @@ On October3, the owner reported that the game started, GPT connected and VS Code
 
 ## Verified evidence
 
-- macOS:33 tests, production build,2 headless browser scenarios.
-- Linux arm64 and amd64: production build and the same33 tests under Node24 / Python3.11; amd64 used Docker Desktop emulation.
+- Latest macOS chat/context iteration:36 tests, production build,5 headless browser scenarios.
+- Initial Linux arm64 and amd64 baseline: production build and33 tests under Node24 / Python3.11; amd64 used Docker Desktop emulation. Later checks are recorded separately in ACCEPTANCE.md.
 - Actual nginx lab: broken502/missing200 → corrected200/404;5 checks, including an upstream-log proof of forwarding.
 - Quota, auth failure, truncated streams, restart, duplicate submissions/rewards and workspace races have deterministic tests.
 - Secrets scan and dependency audit found no issues at the recorded checkpoints.

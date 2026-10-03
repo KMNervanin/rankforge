@@ -29,6 +29,7 @@ test('the actual browser loop fails broken code, accepts repaired code, preserve
   await page.getByRole('button', { name: 'Verify lab', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'System restored' })).toBeVisible()
   await expect(page.locator('.xp-line')).toContainText('120 XP')
+  await page.getByRole('button', { name: 'Operator chat', exact: true }).click()
   await page.getByLabel('Your answer in English').fill('I found an incorrect HTTP status. I fixed the health contract.')
   await page.reload()
   await expect(page.getByLabel('Your answer in English')).toHaveValue('I found an incorrect HTTP status. I fixed the health contract.')

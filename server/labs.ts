@@ -1,5 +1,5 @@
-import { cp, mkdir, readFile, realpath, writeFile, lstat, mkdtemp, rename, rm } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import { cp, mkdir, readFile, realpath, writeFile, lstat, mkdtemp, rename, rm, open, opendir } from 'node:fs/promises'
+import { existsSync, constants } from 'node:fs'
 import { execFile } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -9,6 +9,16 @@ import type { CheckResult, LanguageBand } from '../shared/types.js'
 import { DomainError } from './store.js'
 
 export const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
+export type SavedCodeContext = {
+  source: 'saved-files-on-disk'
+  workspace: string
+  capturedAt: string
+  visibility: { unsavedEditorBuffers: false; runningProcessState: false; terminalOutput: false }
+  files: Record<string, { content: string; lastModifiedAt: string; truncated: boolean }>
+  omittedFiles: string[]
+  inventoryLimited: boolean
+  limits: { files: number; charactersPerFile: number; totalCharacters: number }
+}
 export async function run(file: string, args: string[], cwd: string, timeout = 45000): Promise<{ code: number; stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
     execFile(file, args, { cwd, timeout, maxBuffer: 256 * 1024, env: { PATH: process.env.PATH, HOME: cwd, TMPDIR: process.env.TMPDIR, LANG: 'en_US.UTF-8', PYTHONDONTWRITEBYTECODE: '1', DOCKER_HOST: process.env.DOCKER_HOST, DOCKER_CONTEXT: process.env.DOCKER_CONTEXT, DOCKER_CONFIG: process.env.DOCKER_CONFIG ?? path.join(process.env.HOME ?? '', '.docker') } }, (error, stdout, stderr) => {
@@ -22,14 +32,56 @@ export async function run(file: string, args: string[], cwd: string, timeout = 4
 export class Labs {
   constructor(readonly home: string) {}
   workspace(id: string) { missionById(id); return path.join(this.home, 'workspaces', id) }
-  async context(id: string): Promise<Record<string, string>> {
-    if (!existsSync(this.workspace(id))) return {}
+  async context(id: string): Promise<SavedCodeContext> {
+    const result: SavedCodeContext = { source: 'saved-files-on-disk', workspace: this.workspace(id), capturedAt: new Date().toISOString(), visibility: { unsavedEditorBuffers: false, runningProcessState: false, terminalOutput: false }, files: {}, omittedFiles: [], inventoryLimited: false, limits: { files: 20, charactersPerFile: 12000, totalCharacters: 64000 } }
+    if (!existsSync(this.workspace(id))) return result
     const workspace = await this.assertOwned(id)
     const names: Record<string, string[]> = { signal: ['service.py'], vault: ['store.py'], gateway: ['nginx.conf', 'compose.yaml'], echo: ['ingest.py'], ledger: ['transform.py'], recovery: ['recover.py'] }
-    const result: Record<string, string> = {}
-    for (const name of names[id] ?? []) {
+    const preferred = names[id] ?? []
+    const candidates = new Set(preferred)
+    const textTypes = new Set(['.py', '.sql', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs', '.sh', '.json', '.yaml', '.yml', '.conf', '.toml', '.ini', '.md', '.txt', '.csv', '.html', '.css'])
+    const excludedDirectories = new Set(['node_modules', '__pycache__', 'venv', 'env', 'dist', 'build'])
+    let visited = 0
+    async function visit(directory: string, depth: number) {
+      for await (const entry of await opendir(directory)) {
+        if (++visited > 200) { result.inventoryLimited = true; return }
+        if (entry.name.startsWith('.') || entry.isSymbolicLink()) continue
+        const file = path.join(directory, entry.name)
+        if (entry.isDirectory() && !excludedDirectories.has(entry.name)) {
+          if (depth < 3) await visit(file, depth + 1)
+          else result.inventoryLimited = true
+        }
+        if (!entry.isFile()) continue
+        const extension = path.extname(entry.name).toLowerCase()
+        if (!textTypes.has(extension) && !['Dockerfile', 'Makefile'].includes(entry.name)) continue
+        if (/^(?:auth|credentials?|secrets?|tokens?)(?:[._-]|$)/i.test(entry.name) && ['.json', '.yaml', '.yml', '.toml', '.ini', '.txt'].includes(extension)) continue
+        if (['package-lock.json', 'npm-shrinkwrap.json'].includes(entry.name)) continue
+        candidates.add(path.relative(workspace, file))
+      }
+    }
+    await visit(workspace, 0)
+    const ordered = [...candidates].sort((a, b) => {
+      const aRank = preferred.includes(a) ? preferred.indexOf(a) : 100
+      const bRank = preferred.includes(b) ? preferred.indexOf(b) : 100
+      return aRank - bRank || a.localeCompare(b)
+    })
+    let remaining = result.limits.totalCharacters
+    for (const name of ordered) {
+      if (Object.keys(result.files).length >= result.limits.files || remaining <= 0) { result.omittedFiles.push(name); continue }
       const file = path.join(workspace, name)
-      if (existsSync(file) && (await lstat(file)).isFile()) result[name] = (await readFile(file, 'utf8')).slice(0, 12000)
+      if (existsSync(file) && (await lstat(file)).isFile()) {
+        const handle = await open(file, constants.O_RDONLY | constants.O_NOFOLLOW)
+        try {
+          const metadata = await handle.stat()
+          const buffer = Buffer.alloc(Math.min(metadata.size, 48001))
+          const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0)
+          if (buffer.subarray(0, bytesRead).includes(0)) { result.omittedFiles.push(name); continue }
+          const text = buffer.subarray(0, bytesRead).toString('utf8')
+          const content = text.slice(0, Math.min(remaining, result.limits.charactersPerFile))
+          result.files[name] = { content, lastModifiedAt: metadata.mtime.toISOString(), truncated: metadata.size > bytesRead || text.length > content.length }
+          remaining -= content.length
+        } finally { await handle.close() }
+      }
     }
     return result
   }

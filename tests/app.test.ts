@@ -5,7 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { createApp } from '../server/app.js'
 import { ProviderError, type TutorProvider } from '../server/provider.js'
-import { root } from '../server/labs.js'
+import { root, type SavedCodeContext } from '../server/labs.js'
 
 class FakeProvider implements TutorProvider {
   model = 'test-only'; calls = 0; fail = false
@@ -85,4 +85,24 @@ test('dedicated editor polls only owned commands and acknowledges after reaching
   assert.equal(command.workspace, store.progress('signal').workspace)
   await app.inject({ method: 'POST', url: '/api/editor/ack', headers: { 'x-rankforge-bridge': bridgeToken }, payload: { id: command.id } })
   assert.equal(store.editorCommand(), undefined)
+})
+
+test('coaching distinguishes saved code from a pasted editor snippet and old checks from live terminal output', async (t) => {
+  const { post, provider, waitForJobs, labs } = await fixture(t)
+  await post('/api/missions/signal/start', { openEditor: false })
+  let captured: { learnerAnswer: string; question: string; studentCode: SavedCodeContext; labEvidenceContext: { isLiveTerminal: boolean } } | undefined
+  provider.complete = async (_instructions, input) => { captured = JSON.parse(input); return 'The pasted snippet and saved file differ. Check the editor path and save the buffer.' }
+  const snippet = 'My editor has print("Requested path:", self.path, flush=True), but I do not see the output.'
+  await post('/api/missions/signal/answer', { id: 'saved-code-context', mode: 'coach', text: snippet })
+  await waitForJobs()
+  assert.ok(captured)
+  assert.equal(captured.learnerAnswer, snippet)
+  assert.equal(captured.question, snippet)
+  assert.equal(captured.studentCode.source, 'saved-files-on-disk')
+  assert.equal(captured.studentCode.workspace, labs.workspace('signal'))
+  assert.equal(captured.studentCode.files['service.py'].content.includes('print("Requested path:"'), false)
+  assert.ok(Number.isFinite(Date.parse(captured.studentCode.files['service.py'].lastModifiedAt)))
+  assert.equal(captured.studentCode.files['service.py'].truncated, false)
+  assert.deepEqual(captured.studentCode.visibility, { unsavedEditorBuffers: false, runningProcessState: false, terminalOutput: false })
+  assert.equal(captured.labEvidenceContext.isLiveTerminal, false)
 })
