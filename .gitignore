@@ -1,0 +1,12 @@
+node_modules/
+dist/
+extension/dist/
+*.vsix
+playwright-report/
+test-results/
+.env
+.DS_Store
+*.sqlite*
+.rankforge/
+coverage/
+__pycache__/

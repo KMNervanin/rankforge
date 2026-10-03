@@ -1,0 +1,37 @@
+{
+  "name": "rankforge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24.0.0" },
+  "scripts": {
+    "dev": "tsx server/main.ts",
+    "web:dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build && npm run extension:build",
+    "start": "tsx server/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test --test-concurrency=1 tests/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:gateway": "node --import tsx tests/gateway.acceptance.ts",
+    "extension:build": "esbuild extension/src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=extension/dist/extension.cjs",
+    "extension:package": "npm run extension:build && node scripts/package-extension.mjs"
+  },
+  "dependencies": {
+    "@fastify/static": "10.1.5",
+    "fastify": "5.12.5",
+    "pixi.js": "8.22.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^25.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/vscode": "^1.110.0",
+    "esbuild": "^0.28.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "8.3.2"
+  }
+}

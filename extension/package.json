@@ -1,0 +1,13 @@
+{
+  "name": "rankforge-bridge",
+  "displayName": "Rankforge Workshop",
+  "description": "Connect a dedicated VS Code workshop window to your local Rankforge game.",
+  "publisher": "rankforge",
+  "version": "0.1.0",
+  "engines": { "vscode": "^1.110.0" },
+  "categories": ["Education"],
+  "main": "./dist/extension.cjs",
+  "activationEvents": ["workspaceContains:.rankforge-mission.json"],
+  "capabilities": { "untrustedWorkspaces": { "supported": false }, "virtualWorkspaces": false },
+  "contributes": { "commands": [{ "command": "rankforge.openBriefing", "title": "Rankforge: Open Mission Briefing" }] }
+}
