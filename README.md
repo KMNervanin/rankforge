@@ -6,17 +6,33 @@ The browser is the game, VS Code is the workshop, and the terminal is a real too
 
 ## Development status
 
-The first chapter has six executable labs, a rendered outpost, durable progress, a subscription adapter and a scoped editor bridge. [Acceptance](docs/ACCEPTANCE.md) distinguishes real checks from deferred account/editor acceptance and language-model calibration.
+The first chapter has six executable labs, a colorful outpost, durable progress, a subscription adapter and a scoped editor bridge. Future chapters include system design, load, operations, messaging, data engineering and basic ML. [Acceptance](docs/ACCEPTANCE.md) distinguishes automated checks, owner-reported use and remaining language-model calibration.
 
-## Run
+## Install and run
 
-Requires Node.js 24+, npm, Python 3.10+ and VS Code. Docker Desktop/Engine is needed for the gateway lab only.
+Install these prerequisites on macOS or a desktop Linux system:
+
+- [Git](https://git-scm.com/downloads), authenticated with access to this private GitHub repository.
+- [Node.js](https://nodejs.org/en/download) 24 or newer, including npm. Node24 and25 have been exercised.
+- [Python](https://www.python.org/downloads/) 3.10 or newer, available as `python3`.
+- [Visual Studio Code](https://code.visualstudio.com/download) 1.110 or newer, with `code` on PATH.
+- A desktop Chromium-based browser. [Docker Desktop/Engine with Compose](https://docs.docker.com/get-started/get-docker/) is needed for the nginx gateway lab, not for starting the game or the Python/SQLite labs.
+
+On macOS, add the editor command through the VS Code Command Palette: **Shell Command: Install 'code' command in PATH**, then open a new terminal. See the [official setup instructions](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
+
+For ChatGPT login, macOS uses Keychain. Desktop Linux needs `secret-tool` and an unlocked Secret Service keyring in the desktop session; the container QA image does not provide this login environment.
+
+Clone the project and install its build/runtime tools:
 
 ```sh
-npm ci
+git clone https://github.com/KMNervanin/rankforge.git
+cd rankforge
+npm ci --include=dev
 npm run build
 npm start
 ```
+
+If you already have the checkout, start with `npm ci --include=dev` inside its folder. Development dependencies are included because the source build and local TypeScript launcher use them.
 
 Open `http://127.0.0.1:4173` yourself. The service does not open browser windows or start a login flow automatically. User state lives in `~/.local/share/rankforge`, outside the checkout. Set `RANKFORGE_HOME` to use a different location and `RANKFORGE_PORT` to change the port.
 
@@ -24,7 +40,24 @@ For development, run `npm run dev` and `npm run web:dev` in separate terminals.
 
 The game opens VS Code only after you click a mission. It uses a dedicated extension-development window, so global extension installation is not required. VS Code may ask you to trust the generated workspace on first use. Keep that workshop window open; later missions replace its workspace after the editor's normal unsaved-file handling. A cancelled transition can be retried with **Open workshop**.
 
+In workshop workspaces, the bridge disables generative inline completions and Copilot next-edit suggestions while retaining ordinary IntelliSense for names, methods and parameters. These are workspace settings; your unrelated work projects keep their own editor settings.
+
 Connect ChatGPT from the game's **Connection** page. Credentials are stored in macOS Keychain; Linux requires a working Secret Service and `secret-tool`. No existing OpenCode or Codex credential is imported automatically. No API key is accepted. This is subscription usage with its normal limits, not a general-purpose OpenAI API account.
+
+## Update an existing installation
+
+Stop the running game service with Ctrl+C in its terminal, then run these commands from the checkout:
+
+```sh
+git pull --ff-only
+npm ci --include=dev
+npm run build
+npm start
+```
+
+Refresh the browser tab. Your saves and learner workspaces are outside the checkout and are preserved. If you modified the game's source itself, save those changes before pulling. A second service cannot take over the same save directory; reuse the running instance or stop it before restarting.
+
+For the first mission and remaining personal checks, follow [the handoff](docs/HANDOFF.md). For the implemented and planned learning content, see [the curriculum](docs/CURRICULUM.md).
 
 ## Verify
 

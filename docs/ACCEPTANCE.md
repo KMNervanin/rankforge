@@ -22,10 +22,18 @@ Checkpoint: 2026-10-03, 05:54 MSK. macOS arm64, Node25.8.1, Python3.14.5, Docker
 
 ## Owner-facing acceptance still required
 
-1. Open the local game, connect the subscription through its sign-in flow and send a real free-text debrief. Confirm response compatibility, latency and the account's effective billing/allowance settings.
-2. Click a mission with both a work window and a workshop window open. Verify the intended editor window, save/cancel handling, extension reconnect and transition back to a previous mission.
+The owner reported successful game startup, GPT connection and opening VS Code on October3. The initial subdued design was rejected, and the brighter revised version was explicitly approved. This is owner-reported acceptance of those steps; it does not extend to every integration scenario below.
+
+1. Send a real free-text debrief. Confirm response compatibility, latency, feedback quality and the account's effective billing/allowance settings.
+2. With both a work window and a workshop window open, verify the intended editor window, save/cancel handling, extension reconnect and transition back to a previous mission.
 3. Try the real learning loop. Establish Python comfort and current English ability. Evaluate tutor feedback using `content/english-calibration.json`, then actual answers. The corpus is authored material, not human-calibrated CEFR ground truth.
 4. Desktop Linux Secret Service/editor integration, Safari/Firefox, speech recognition/synthesis and later curriculum chapters are not yet exercised/shipped. Linux core-runtime portability has separate container evidence above. The first personally usable target is a desktop Chromium browser on this Mac.
+
+## October3 visual/editor iteration
+
+- The redesigned outpost, larger text, separated objectives and collapsed workspace details passed a fresh build,33 tests and2 headless E2E scenarios. The real rendered quest panel measured16px descriptions/objectives,50px main controls and contrast ratios12.59:1/11.73:1 for description/objective text; the two main buttons measured9.80:1/6.06:1. These are specific element measurements, not a complete accessibility audit.
+- The editor bridge applies completion settings at Workspace scope: generated inline blocks/next-edit suggestions off, ordinary name/method/parameter IntelliSense on. The controlled-host test verifies the target and preservation of unrelated font/format settings. The current learning workspace was also configured directly; actual disappearance of an already visible ghost-text proposal was not observed by automation.
+- System design was added to the future curriculum and chapter list. It is a planned track, not an additional executable lab in this version.
 
 ## Product boundaries
 

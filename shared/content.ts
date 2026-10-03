@@ -92,6 +92,7 @@ export const missions: Mission[] = [
 ]
 
 export const futureChapters = [
+  { title: "The architect's guild", topics: 'System design · requirements · capacity estimates · service boundaries · trade-offs · design reviews' },
   { title: 'Under pressure', topics: 'Query plans · indexes · load measurement · timeouts · caching · backpressure' },
   { title: 'Reliable operations', topics: 'CI/CD · migrations · Linux permissions · observability · backup and restore · access control' },
   { title: 'The event frontier', topics: 'Queues · Kafka topics and partitions · consumer groups · offsets · delivery semantics' },

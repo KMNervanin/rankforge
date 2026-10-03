@@ -7,14 +7,18 @@ The private repository is https://github.com/KMNervanin/rankforge and the workin
 From the checkout:
 
 ```sh
-npm ci
+npm ci --include=dev
 npm run build
 npm start
 ```
 
 Open `http://127.0.0.1:4173` in a desktop Chromium browser. The service starts quietly and does not open windows automatically. Build/install artifacts have been removed from the source checkout after verification, so the first two commands are intentional.
 
-## First personal acceptance
+For a new machine, follow [Install and run](../README.md#install-and-run), including prerequisites, cloning the private repository and enabling the `code` command. User credentials and progress are local; they are not shipped through GitHub.
+
+## Personal use and remaining acceptance
+
+On October3, the owner reported that the game started, GPT connected and VS Code opened. The revised, brighter visual style was then approved. This confirms the basic first-run path, not the quality of language assessment or every editor save/cancel scenario.
 
 1. Open **Connection**, click **Connect ChatGPT**, then follow **Continue with ChatGPT**. This is a new local client login using the existing subscription. macOS Keychain/desktop Linux Secret Service may request permission. No previously stored Codex/OpenCode token has been copied.
 2. Enter **A signal in the dark**. The service prepares a separate workspace and opens a dedicated VS Code extension-development window. Accept workspace trust if asked. Keep a normal work window open too and confirm it is not replaced.
@@ -34,9 +38,9 @@ Detailed distinctions and versions: [ACCEPTANCE.md](ACCEPTANCE.md). Decisions an
 
 ## Boundaries and next work
 
-- Real subscription compatibility, actual editor focus/save prompts and formative-language accuracy await the owner-facing steps above.
+- The owner reported successful account connection and opening VS Code. Real tutor-response quality, editor focus alongside work windows, and save/cancel behavior still need the corresponding checks above.
 - The implemented language modality is writing. Listening/speaking and voice integration need a separate iteration.
-- Only Chapter I is executable. Five further chapters have a concrete curriculum blueprint in [CURRICULUM.md](CURRICULUM.md).
+- Only Chapter I is executable. Six further chapters have a concrete curriculum blueprint in [CURRICULUM.md](CURRICULUM.md), including the system-design track added after owner feedback. Design foundations start after Chapter I and return in later practical chapters; ML is not a prerequisite.
 - Game ranks and language thresholds are provisional learning mechanics, not professional or CEFR certification. “Unassisted” reflects recorded in-game assistance, not a proctored exam or knowledge of external help.
 - No lab/service process or newly tagged QA image is intentionally left running. Existing user projects, Docker contexts, VPN and work windows were preserved. Public image/build caches may remain in Docker's normal cache.
 

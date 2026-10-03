@@ -11,6 +11,26 @@ export async function activate(context: vscode.ExtensionContext) {
     if (marker.version !== 1) return
     connection = JSON.parse(await readFile(path.join(folder, '.rankforge-connection.json'), 'utf8'))
   } catch { return }
+  const configuration = vscode.workspace.getConfiguration(undefined, vscode.Uri.file(folder))
+  const learningSettings: Record<string, unknown> = {
+    'editor.inlineSuggest.enabled': false,
+    'github.copilot.enable': { '*': false },
+    'github.copilot.nextEditSuggestions.enabled': false,
+    'editor.quickSuggestions': { other: 'on', comments: 'off', strings: 'off' },
+    'editor.suggestOnTriggerCharacters': true,
+    'editor.parameterHints.enabled': true,
+  }
+  try {
+    for (const [key, value] of Object.entries(learningSettings)) {
+      const current = configuration.inspect(key)
+      if (!current && key.startsWith('github.copilot.')) continue
+      if (JSON.stringify(current?.workspaceValue) !== JSON.stringify(value)) {
+        await configuration.update(key, value, vscode.ConfigurationTarget.Workspace)
+      }
+    }
+  } catch {
+    void vscode.window.showWarningMessage('Rankforge could not apply all learning settings. Disable inline suggestions in this workspace; regular IntelliSense can stay enabled.')
+  }
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 20)
   status.text = '$(radio-tower) Rankforge'; status.command = 'rankforge.openBriefing'; status.show()
   const briefing = async () => {

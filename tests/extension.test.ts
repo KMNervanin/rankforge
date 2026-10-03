@@ -21,11 +21,21 @@ test('the real extension targets its own host, preserves a cancelled transition 
     const headers: string[] = []
     const callbacks: (() => void)[] = []
     const subscriptions: { dispose: () => void }[] = []
+    const settings: Record<string, unknown> = { 'editor.fontSize': 20, 'editor.formatOnSave': true }
+    const settingsTargets: number[] = []
     let command = { id: 1, workspace: second }
     const fakeVSCode = {
-      workspace: { workspaceFolders: [{ uri: { fsPath: first } }], openTextDocument: async (uri: unknown) => uri },
-      window: { createStatusBarItem: () => ({ text: '', command: '', show() {}, dispose() {} }), showTextDocument: async () => {} },
+      workspace: {
+        workspaceFolders: [{ uri: { fsPath: first } }],
+        openTextDocument: async (uri: unknown) => uri,
+        getConfiguration: (_section: unknown, uri: { fsPath: string }) => {
+          assert.equal(uri.fsPath, first)
+          return { inspect: (key: string) => ({ workspaceValue: settings[key] }), update: async (key: string, value: unknown, target: number) => { settings[key] = value; settingsTargets.push(target) } }
+        },
+      },
+      window: { createStatusBarItem: () => ({ text: '', command: '', show() {}, dispose() {} }), showTextDocument: async () => {}, showWarningMessage: () => assert.fail('Learning settings must apply successfully') },
       StatusBarAlignment: { Left: 1 },
+      ConfigurationTarget: { Global: 1, Workspace: 2 },
       Uri: { file: (file: string) => ({ fsPath: file }) },
       commands: { registerCommand: () => ({ dispose() {} }), executeCommand: async (name: string, ...args: unknown[]) => { calls.push({ name, args }) } },
     }
@@ -35,6 +45,15 @@ test('the real extension targets its own host, preserves a cancelled transition 
     const context = vm.createContext({ module, exports: module.exports, require: (name: string) => name === 'vscode' ? fakeVSCode : localRequire(name), URL, AbortSignal, console, setInterval: (callback: () => void) => { callbacks.push(callback); return 1 }, clearInterval: () => {}, fetch: async (_url: string, init: RequestInit) => { headers.push(new Headers(init.headers).get('x-rankforge-bridge')!); return Response.json({ command }) } })
     vm.runInContext(bundle.outputFiles[0]!.text, context)
     await module.exports.activate!({ subscriptions })
+    assert.equal(settings['editor.inlineSuggest.enabled'], false)
+    assert.equal(settings['github.copilot.nextEditSuggestions.enabled'], false)
+    assert.equal(JSON.stringify(settings['github.copilot.enable']), '{"*":false}')
+    assert.equal((settings['editor.quickSuggestions'] as { other: string }).other, 'on')
+    assert.equal(settings['editor.suggestOnTriggerCharacters'], true)
+    assert.equal(settings['editor.parameterHints.enabled'], true)
+    assert.equal(settings['editor.fontSize'], 20)
+    assert.equal(settings['editor.formatOnSave'], true)
+    assert.ok(settingsTargets.length > 0 && settingsTargets.every((target) => target === 2))
     assert.equal(calls.length, 1)
     assert.equal(calls[0]!.name, 'vscode.openFolder')
     assert.equal((calls[0]!.args[0] as { fsPath: string }).fsPath, second)

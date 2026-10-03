@@ -29,7 +29,26 @@ Dependencies: signal → vault → echo → ledger; signal → gateway; gateway 
 
 These chapters are designed, not yet executable. Each row is a planned mission family, not a shipped feature.
 
-### II — Under pressure
+### II — The architect's guild
+
+System design is an explicit learning track, beginning after Chapter I and revisited as the learner acquires more operational experience. It covers building a system from requirements as well as diagnosing an existing one. The optional ML chapter is not a prerequisite.
+
+1. **Before the blueprint:** clarify users, use cases, functional requirements, latency/availability targets and constraints. Separate known facts from assumptions and state what is outside scope.
+2. **Count before choosing:** estimate peak requests, concurrency, data volume, storage growth and bandwidth with explicit units. Identify which estimates need measurement.
+3. **The smallest useful system:** design a simple service and database, trace read/write paths, define API contracts and assign data ownership. Explain when a modular monolith is sufficient and what would justify separating services.
+4. **A decision worth keeping:** compare at least two plausible approaches and write a short architecture decision record: choice, trade-offs, rejected alternative, risks and conditions for revisiting it.
+5. **The moving target:** change one requirement, such as a traffic spike, tighter latency or a new integration. Revise the design and identify the cost of the change instead of rebuilding everything by habit.
+6. **Design review:** present a component/data-flow diagram, estimates and a decision record, then answer challenges about one normal path and one failure path. Plan an executable experiment for the least certain architectural claim.
+
+The first pass focuses on requirements, boundaries and reasoning. Return missions add load balancing, replication, partitioning, consistency, asynchronous boundaries and recovery only after their practical prerequisites. More components, fashionable tools or an elaborate diagram do not earn a higher score by themselves.
+
+Example campaign: design the outpost's delivery service, evolve it as more outposts join, then introduce a delayed or duplicated delivery and explain the effect on stock and reports. The target is a justified, testable design; multiple architectures can satisfy the same contract.
+
+Language goals: clarify an ambiguous requirement, compare alternatives, explain a trade-off and defend a decision in a short design review. Use the learner's current English band; architectural depth and language complexity advance independently.
+
+Prerequisites: Chapter I for the foundation missions. Advanced review returns after the load, operations and event chapters; data/ML variants use those branches only when relevant to the scenario.
+
+### III — Under pressure
 
 1. **Measure before scaling:** latency distribution, throughput, saturation; establish a repeatable workload and a baseline.
 2. **The slow archive:** read a query plan, choose an index, compare both query performance and write cost.
@@ -40,7 +59,9 @@ These chapters are designed, not yet executable. Each row is a planned mission f
 
 Prerequisites: HTTP, relational storage, basic diagnostics. Cross-links: warehouse performance, streaming ingestion, model-serving latency.
 
-### III — Reliable operations
+System-design return: use the measured workload to choose vertical/horizontal scaling, load balancing and caching; compare replication or partitioning with simpler query/schema changes before proposing them.
+
+### IV — Reliable operations
 
 1. **The reproducible machine:** Linux processes, permissions, environment, ports and signals.
 2. **The release bridge:** build/test pipeline and reproducible deployment artifact.
@@ -51,7 +72,9 @@ Prerequisites: HTTP, relational storage, basic diagnostics. Cross-links: warehou
 
 Prerequisites: the first chapter and measurement basics. Cross-links: delivery pipelines and ML operations. No Kubernetes prerequisite; introduce orchestration only when its problem is demonstrated.
 
-### IV — The event frontier
+System-design return: identify failure domains and single points of failure, define availability and recovery objectives, and justify redundancy, failover and rollout strategy against complexity and cost.
+
+### V — The event frontier
 
 1. **A message outlives its sender:** synchronous request versus durable messaging.
 2. **Kafka's map:** topics, partitions, keys and ordering within a partition.
@@ -62,7 +85,9 @@ Prerequisites: the first chapter and measurement basics. Cross-links: delivery p
 
 Prerequisites: durable identity, retries, container networking and basic observability. Start with a single-node disposable learning environment; distinguish it from a production design.
 
-### V — The data district
+System-design return: choose synchronous versus asynchronous boundaries, reason about ordering and consistency per operation, and trace timeout/retry behavior. Introduce consistency/availability trade-offs under network partitions through concrete scenarios, not a universal "pick any two" rule.
+
+### VI — The data district
 
 1. **Sources do not agree:** schema, units, identity, time zones and missing values.
 2. **Only what changed:** incremental ingestion, watermarks, late arrivals and replay.
@@ -73,7 +98,9 @@ Prerequisites: durable identity, retries, container networking and basic observa
 
 Prerequisites: relational integrity, repeatable ETL, event semantics. First use local data; distributed processing is introduced only after measuring a reason for it.
 
-### VI — The model laboratory
+System-design return: separate operational and analytical responsibilities, define freshness and ownership contracts, and compare batch/stream architectures including replay, schema evolution and recovery cost.
+
+### VII — The model laboratory
 
 1. **A useful question:** choose a modest classification/regression task and a non-ML baseline.
 2. **A fair experiment:** training/validation/test splits, leakage and reproducibility.
@@ -98,6 +125,8 @@ Initial objectives: ask a concrete question, describe present state, narrate an 
 ## Evaluation responsibility
 
 Executable checks own technical pass/fail. The model can discuss trade-offs and language but cannot override a failed check. The local state machine owns progression, idempotent awards and paused jobs. Tutor responses are not trusted to change game state directly.
+
+For planned system-design missions, review against explicit requirements, capacity calculations, coherent data/request paths, failure handling and justified trade-offs. Missing a critical requirement requires revision even if the diagram looks convincing. Check arithmetic and any implemented probe with executable tools; treat model critique of the remaining design as formative feedback rather than an objective correctness oracle. Preserve the learner's diagram, assumptions and decision record as evidence, with no mandatory single reference architecture.
 
 Model assessment is useful formative feedback, not an exam certificate. Before accepting reliable rank calibration, evaluate paraphrases, understandable errors, fluent off-topic answers, incorrect technical claims, requests to change the grading rules and ambiguous answers. A second model agreeing is not independent human validation. The calibration corpus is authored test material, not live accuracy evidence.
 
