@@ -4,6 +4,12 @@ A personal, local-first engineering learning RPG. Build a living outpost by solv
 
 [Инструкция на русском: установка, первое задание и работа с чатом](docs/START_RU.md)
 
+[Обзор экранов со скриншотами и пояснениями](docs/TOUR_RU.md)
+
+![Rankforge outpost — demonstration save](docs/images/outpost.png)
+
+The preview uses synthetic documentation data, not a personal account or real conversation. See the [illustrated tour](docs/TOUR_RU.md) for the quest panel, chat, abilities, journal and account connection.
+
 The browser is the game, VS Code is the workshop, and the terminal is a real tool. Subscription access uses a direct ChatGPT OAuth adapter; no Codex CLI or paid API fallback is required.
 
 ## Development status
