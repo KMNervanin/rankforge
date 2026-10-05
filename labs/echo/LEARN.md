@@ -16,6 +16,10 @@ Your function receives a SQLite connection. A parameterized query uses `?` place
 
 Check input before making a durable change. Python's `bool` is a subclass of `int`; the mission requires an integer quantity, not True/False. Keep a conflicting existing row intact.
 
+An event is a dictionary with nonempty string `id` and `item`, and integer `quantity` in SQLite's positive INTEGER range, 1 through 9223372036854775807. Do not trim or case-fold identities; ignore extra fields. Non-dictionaries, any missing required field and any invalid field value raise `ValueError` without changing existing events. The persistent `events` table must have `id` as its primary key; column order is your choice.
+
+The caller owns the supplied connection and commits and closes it. Verify commits before reconnecting. Reading an existing record first and trying an insert first are both valid when replay, conflict and invalid-input behavior agree. Concurrent writers and schema migration are outside this exercise. Existing saved manuals are preserved; the game's objectives show the current contract.
+
 The verifier checks behavior across fresh connections. Your local scratch `events.sqlite` may still contain the original permissive schema; use a new scratch filename when investigating a changed schema rather than assuming IF NOT EXISTS migrates it.
 
 ## Later connection

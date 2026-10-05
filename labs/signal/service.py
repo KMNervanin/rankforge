@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
+        # Deliberately broken response, not a simulated dependency outage.
         self.send_response(503)
         self.send_header("Content-Type", "text/plain")
         self.end_headers()

@@ -6,6 +6,10 @@ A process can be running while its API is wrong. A client sees three things: an 
 
 `200` means this request succeeded. `404` means the route was not found. `503` means the service is unavailable. Returning `200` for every route hides useful information.
 
+In this starter, the unconditional `503` is deliberately wrong. There is no dependency or hidden availability flag to inspect, and no required 503 branch. The exact `/health` path must return 200 directly (no redirect), the two-key relay JSON and the `application/json` media type. Charset parameters and JSON formatting may vary. Every other path returns 404, including `/healthcheck` and `/health/extra`. Query parameters do not change routing; the 404 response body is your choice.
+
+Keep the importable `Handler` in `service.py`; helper modules and different parsing/response construction approaches are welcome. Existing workspaces are not overwritten when the course changes. The game's objectives show the current contract if this saved manual is older.
+
 ## Before changing anything
 
 1. Run `python3 service.py` in the terminal. Keep that terminal open.

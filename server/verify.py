@@ -10,6 +10,7 @@ import tempfile
 import threading
 import urllib.error
 import urllib.request
+from contextlib import closing
 from http.server import HTTPServer
 
 MISSION, WORKSPACE = sys.argv[1:3]
@@ -43,7 +44,12 @@ def load(name):
     if spec is None or spec.loader is None:
         raise ImportError(f"Cannot load {name}.py")
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    except Exception:
+        del sys.modules[spec.name]
+        raise
     return module
 
 
@@ -51,6 +57,12 @@ def connect(path=":memory:"):
     db = sqlite3.connect(path)
     db.execute("PRAGMA foreign_keys=ON")
     return db
+
+
+def primary_key(db, table):
+    columns = db.execute(f'PRAGMA table_info("{table}")').fetchall()
+    require([(row[1], row[5]) for row in columns if row[5]] == [("id", 1)],
+            f"{table}.id must be the sole primary key")
 
 
 def signal():
@@ -64,7 +76,10 @@ def signal():
     server = LocalServer(("127.0.0.1", 0), candidate.Handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+    local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
     def request(route, expected):
         try:
             response = local_http.open(f"http://127.0.0.1:{server.server_port}{route}", timeout=3)
@@ -73,11 +88,14 @@ def signal():
         with response:
             require(response.status == expected, f"Expected HTTP {expected}, got {response.status}")
             if expected == 200:
-                require("application/json" in response.headers.get("Content-Type", ""), "Expected application/json")
+                require(response.headers.get_content_type() == "application/json", "Expected application/json")
                 data = json.loads(response.read())
                 require(data == {"status": "ok", "service": "relay"}, f"Unexpected health body: {data!r}")
     try:
-        for route, expected in [("/health", 200), ("/health?probe=1", 200), ("/missing", 404), ("/missing?probe=1", 404)]:
+        for route, expected in [("/health", 200), ("/health?probe=1&next=/missing", 200),
+                                ("/missing", 404), ("/missing?probe=1", 404),
+                                ("/healthcheck", 404), ("/health/extra", 404),
+                                ("/health/", 404), ("/missing?next=/health", 404)]:
             check(f"HTTP contract: {route}", lambda r=route, e=expected: request(r, e))
     finally:
         server.shutdown()
@@ -89,11 +107,13 @@ def vault():
     def schema():
         db = connect()
         candidate.create_schema(db)
-        db.execute("INSERT INTO items VALUES ('cell','Power cell')")
+        db.execute("INSERT INTO items(id,name) VALUES ('cell','Power cell')")
         return db
     def valid():
         with schema() as db:
-            db.execute("INSERT INTO movements VALUES ('m','cell',2)")
+            primary_key(db, "items")
+            primary_key(db, "movements")
+            db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)")
             candidate.create_schema(db)
             require(db.execute("SELECT quantity FROM movements WHERE id='m'").fetchone() == (2,), "Repeated schema creation lost data")
     check("Valid movement and repeatable schema", valid)
@@ -101,26 +121,53 @@ def vault():
         with schema() as db:
             raises(sqlite3.IntegrityError, lambda: db.execute(sql))
     for label, sql in [
-        ("Reject unknown item", "INSERT INTO movements VALUES ('m','ghost',1)"),
-        ("Reject zero quantity", "INSERT INTO movements VALUES ('m','cell',0)"),
-        ("Reject negative quantity", "INSERT INTO movements VALUES ('m','cell',-2)"),
-        ("Reject missing name", "INSERT INTO items VALUES ('other',NULL)"),
-        ("Reject duplicate item", "INSERT INTO items VALUES ('cell','Other')"),
-        ("Reject missing movement item", "INSERT INTO movements VALUES ('m',NULL,1)"),
-        ("Reject missing quantity", "INSERT INTO movements VALUES ('m','cell',NULL)"),
+        ("Reject unknown item", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','ghost',1)"),
+        ("Reject zero quantity", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',0)"),
+        ("Reject negative quantity", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',-2)"),
+        ("Reject missing name", "INSERT INTO items(id,name) VALUES ('other',NULL)"),
+        ("Reject duplicate item", "INSERT INTO items(id,name) VALUES ('cell','Other')"),
+        ("Reject missing movement item", "INSERT INTO movements(id,item_id,quantity) VALUES ('m',NULL,1)"),
+        ("Reject missing quantity", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',NULL)"),
     ]:
         check(label, lambda s=sql: invalid(s))
     def duplicate():
         with schema() as db:
-            db.execute("INSERT INTO movements VALUES ('m','cell',1)")
-            raises(sqlite3.IntegrityError, lambda: db.execute("INSERT INTO movements VALUES ('m','cell',2)"))
+            db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',1)")
+            raises(sqlite3.IntegrityError, lambda: db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)"))
     check("Movement identity is unique", duplicate)
+    def persistent():
+        with tempfile.TemporaryDirectory() as directory:
+            file = os.path.join(directory, "vault.sqlite")
+            with closing(connect(file)) as db, db:
+                candidate.create_schema(db)
+                db.executemany("INSERT INTO items(id,name) VALUES (?,?)", [("cell", "Power cell"), ("coolant", "Coolant")])
+                db.executemany("INSERT INTO movements(id,item_id,quantity) VALUES (?,?,?)", [("m1", "cell", 2), ("m2", "coolant", 5), ("m3", "cell", 1)])
+            with closing(connect(file)) as db, db:
+                candidate.create_schema(db)
+                require(db.execute("SELECT id,name FROM items ORDER BY id").fetchall() == [("cell", "Power cell"), ("coolant", "Coolant")], "Items were lost after reconnect/setup")
+                require(db.execute("SELECT id,item_id,quantity FROM movements ORDER BY id").fetchall() == [("m1", "cell", 2), ("m2", "coolant", 5), ("m3", "cell", 1)], "Movements were lost after reconnect/setup")
+                raises(sqlite3.IntegrityError, lambda: db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('bad','ghost',1)"))
+    check("Schema and data persist after commit, close and reconnect", persistent)
 
 
 INVALID_EVENTS = [
-    {}, {"id": "", "item": "cell", "quantity": 1}, {"id": "x", "item": "", "quantity": 1},
-    {"id": "x", "item": "cell", "quantity": 0}, {"id": "x", "item": "cell", "quantity": -1},
-    {"id": "x", "item": "cell", "quantity": 1.2}, {"id": "x", "item": "cell", "quantity": True},
+    ("not an object", None), ("list instead of object", []), ("empty object", {}),
+    ("missing id", {"item": "cell", "quantity": 1}),
+    ("missing item", {"id": "x", "quantity": 1}),
+    ("missing quantity", {"id": "x", "item": "cell"}),
+    ("empty id", {"id": "", "item": "cell", "quantity": 1}),
+    ("empty item", {"id": "x", "item": "", "quantity": 1}),
+    ("null id", {"id": None, "item": "cell", "quantity": 1}),
+    ("numeric id", {"id": 1, "item": "cell", "quantity": 1}),
+    ("null item", {"id": "x", "item": None, "quantity": 1}),
+    ("numeric item", {"id": "x", "item": 1, "quantity": 1}),
+    ("null quantity", {"id": "x", "item": "cell", "quantity": None}),
+    ("text quantity", {"id": "x", "item": "cell", "quantity": "1"}),
+    ("zero quantity", {"id": "x", "item": "cell", "quantity": 0}),
+    ("negative quantity", {"id": "x", "item": "cell", "quantity": -1}),
+    ("fractional quantity", {"id": "x", "item": "cell", "quantity": 1.2}),
+    ("boolean quantity", {"id": "x", "item": "cell", "quantity": True}),
+    ("quantity exceeds SQLite INTEGER", {"id": "x", "item": "cell", "quantity": 9223372036854775808}),
 ]
 
 
@@ -130,8 +177,13 @@ def echo():
     def replay():
         with connect() as db:
             require(candidate.ingest(db, event) is True, "New event must return True")
-            require(candidate.ingest(db, dict(event)) is False, "Replay must return False")
+            require(candidate.ingest(db, {**event, "delivery_attempt": 2}) is False, "Replay must ignore extra fields")
             require(db.execute("SELECT id,item,quantity FROM events").fetchall() == [("delivery-93", "coolant", 7)], "Replay changed the effect")
+            primary_key(db, "events")
+            second = {"id": "delivery-94", "item": "coolant", "quantity": 7}
+            require(candidate.ingest(db, second) is True, "Different identities are different events, even with equal payloads")
+            require(candidate.ingest(db, event) is False, "Interleaved replay was counted again")
+            require(db.execute("SELECT COUNT(*) FROM events").fetchone() == (2,), "Interleaved delivery changed the event set")
     check("One effect for repeated delivery", replay)
     def conflict():
         with connect() as db:
@@ -140,18 +192,22 @@ def echo():
             raises(ValueError, lambda: candidate.ingest(db, {**event, "item": "cell"}))
             require(db.execute("SELECT quantity FROM events").fetchall() == [(7,)], "Conflict changed old data")
     check("Conflicting identities are rejected", conflict)
-    for index, bad in enumerate(INVALID_EVENTS):
+    for label, bad in INVALID_EVENTS:
         def reject(value=bad):
             with connect() as db:
-                raises(ValueError, lambda: candidate.ingest(db, value))
-        check(f"Invalid event boundary {index + 1}", reject)
+                candidate.ingest(db, event)
+                raises(ValueError, lambda: candidate.ingest(db, copy.deepcopy(value)))
+                require(db.execute("SELECT id,item,quantity FROM events").fetchall() == [("delivery-93", "coolant", 7)], "Rejected input changed existing events")
+        check(f"Reject {label} without changing events", reject)
     def persistent():
         with tempfile.TemporaryDirectory() as directory:
             file = os.path.join(directory, "events.sqlite")
-            with connect(file) as db:
+            with closing(connect(file)) as db, db:
                 candidate.ingest(db, event)
-            with connect(file) as db:
+            with closing(connect(file)) as db, db:
                 require(candidate.ingest(db, event) is False, "Replay identity was lost after reconnect")
+                large = {"id": "largest", "item": "cell", "quantity": 9223372036854775807}
+                require(candidate.ingest(db, large) is True, "Largest positive SQLite INTEGER is valid")
     check("Identity persists across connections", persistent)
 
 
@@ -179,50 +235,104 @@ def ledger():
             {"id": "c", "date": "2026-12-31", "amount": "0.01"},
         ], {"totals": {"2026-01-01": "0.00", "2026-12-31": "1000000000000.20"}, "rejected": []}),
         ("Empty input", [], {"totals": {}, "rejected": []}),
+        ("Additional fields do not change event identity", [
+            {"id": "extra", "date": "2026-01-01", "amount": "1.00", "source": "one"},
+            {"id": "extra", "date": "2026-01-01", "amount": "1.00", "source": "two"},
+        ], {"totals": {"2026-01-01": "1.00"}, "rejected": []}),
         ("Reject malformed shape and ambiguous dates", [None, {}, {"id": "q", "date": "2026-1-2", "amount": "1.00"}], {"totals": {}, "rejected": [0, 1, 2]}),
+        ("Exact cents at the declared amount boundary", [
+            {"id": "large", "date": "2026-01-01", "amount": "9999999999999999.99"},
+            {"id": "small", "date": "2026-01-01", "amount": "0.01"},
+            {"id": "large", "date": "2026/01/01", "amount": "09999999999999999.99"},
+            {"id": "too-large", "date": "2026-01-01", "amount": "10000000000000000.00"},
+        ], {"totals": {"2026-01-01": "10000000000000000.00"}, "rejected": [3]}),
+        ("Cents must survive aggregation", [
+            {"id": "a", "date": "2026-01-01", "amount": "1000000000000000.01"},
+            {"id": "b", "date": "2026-01-01", "amount": "0.01"},
+        ], {"totals": {"2026-01-01": "1000000000000000.02"}, "rejected": []}),
+        ("Reject unsupported money spellings and types", [
+            {"id": str(index), "date": "2026-01-01", "amount": amount}
+            for index, amount in enumerate(["1e2", "+1.00", " 1.00 ", "1.", ".50", "1_000", "１.００", 1, None, True])
+        ], {"totals": {}, "rejected": list(range(10))}),
+        ("Reject missing fields and non-calendar dates", [
+            {"id": "a", "amount": "1.00"}, {"id": "a", "date": "2026-01-01"},
+            {"date": "2026-01-01", "amount": "1.00"},
+            {"id": 1, "date": "2026-01-01", "amount": "1.00"},
+            {"id": "a", "date": "2026/01-01", "amount": "1.00"},
+            {"id": "a", "date": "2026-04-31", "amount": "1.00"},
+            {"id": "a", "date": "2026-01-01", "amount": "01.0"},
+        ], {"totals": {"2026-01-01": "1.00"}, "rejected": list(range(6))}),
     ]
     for label, rows, expected in cases:
         def verify(source=rows, target=expected):
             original = copy.deepcopy(source)
             actual = candidate.transform(source)
-            require(actual == target, f"Expected {target!r}, got {actual!r}")
+            require(isinstance(actual, dict) and set(actual) == {"totals", "rejected"}, "Return totals and rejected")
+            require(actual["totals"] == target["totals"], f"Expected totals {target['totals']!r}, got {actual['totals']!r}")
+            rejected = actual["rejected"]
+            require(isinstance(rejected, list) and all(type(index) is int for index in rejected), "Rejected must be a list of integer row indices")
+            require(len(rejected) == len(set(rejected)) and set(rejected) == set(target["rejected"]), f"Expected rejected indices {target['rejected']!r} in any order, got {rejected!r}")
             require(list(actual["totals"]) == sorted(actual["totals"]), "Day keys are not sorted")
             require(source == original, "Input was mutated")
-            require(candidate.transform(source) == actual, "Repeated transformation changed output")
+            previous = copy.deepcopy(actual)
+            require(candidate.transform(source) == previous, "Repeated transformation changed output")
+            require(source == original, "Repeated transformation mutated input")
         check(label, verify)
 
 
 def recovery():
     candidate = load("recover")
-    events = [{"id": "a", "item": "cell", "quantity": 4}, {"id": "b", "item": "coolant", "quantity": 2}, {"id": "a", "item": "cell", "quantity": 4}]
+    events = [{"id": "a", "item": "cell", "quantity": 4}, {"id": "b", "item": "coolant", "quantity": 2}, {"id": "a", "item": "cell", "quantity": 4, "delivery_attempt": 2}]
     def replay():
         with tempfile.TemporaryDirectory() as directory:
             file = os.path.join(directory, "recovery.sqlite")
             result = candidate.recover(file, events)
             require(result == {"event_count": 2, "total_quantity": 6}, f"Wrong summary: {result!r}")
             require(candidate.recover(file, events) == result, "Recovery is not repeatable")
-            with connect(file) as db:
+            with closing(connect(file)) as db:
                 require(db.execute("SELECT id,item,quantity FROM events ORDER BY id").fetchall() == [("a", "cell", 4), ("b", "coolant", 2)], "Recovered data is incorrect")
+                primary_key(db, "events")
     check("Recover and repeat the archive", replay)
     def preserved(bad):
         with tempfile.TemporaryDirectory() as directory:
             file = os.path.join(directory, "recovery.sqlite")
-            with connect(file) as db:
-                db.execute("CREATE TABLE events(id TEXT PRIMARY KEY,item TEXT,quantity INTEGER)")
-                db.execute("INSERT INTO events VALUES('old','reserve',99)")
-            raises(ValueError, lambda: candidate.recover(file, [events[0], bad]))
-            with connect(file) as db:
-                require(db.execute("SELECT * FROM events").fetchall() == [("old", "reserve", 99)], "A failed recovery damaged the previous database")
-    for index, bad in enumerate(INVALID_EVENTS + [{"id": "a", "item": "cell", "quantity": 9}]):
-        check(f"Failure preserves previous state {index + 1}", lambda value=bad: preserved(value))
+            def state(db):
+                return (db.execute("SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name").fetchall(),
+                        db.execute("SELECT id,item,quantity FROM events ORDER BY id").fetchall(),
+                        db.execute("SELECT value FROM archive_metadata ORDER BY value").fetchall())
+            with closing(connect(file)) as db, db:
+                db.execute("CREATE TABLE events(quantity INTEGER,id TEXT PRIMARY KEY,item TEXT)")
+                db.executemany("INSERT INTO events(id,item,quantity) VALUES(?,?,?)", [("old", "reserve", 99), ("older", "cell", 5)])
+                db.execute("CREATE TABLE archive_metadata(value TEXT)")
+                db.execute("INSERT INTO archive_metadata VALUES('last-known-good')")
+                before = state(db)
+            raises(ValueError, lambda: candidate.recover(file, copy.deepcopy([*events[:2], bad])))
+            with closing(connect(file)) as db:
+                require(state(db) == before, "Failed recovery changed existing rows, schema or unrelated data")
+    for label, bad in INVALID_EVENTS + [("quantity conflict", {"id": "a", "item": "cell", "quantity": 9}), ("item conflict", {"id": "a", "item": "other", "quantity": 4})]:
+        check(f"Late {label} preserves previous state", lambda value=bad: preserved(value))
     def replacement():
         with tempfile.TemporaryDirectory() as directory:
             file = os.path.join(directory, "recovery.sqlite")
             candidate.recover(file, events)
+            fresh = [{"id": "new", "item": "reserve", "quantity": 3}]
+            require(candidate.recover(file, fresh) == {"event_count": 1, "total_quantity": 3}, "Wrong replacement summary")
+            with closing(connect(file)) as db:
+                require(db.execute("SELECT id,item,quantity FROM events").fetchall() == [("new", "reserve", 3)], "A nonempty archive did not replace all old events")
             require(candidate.recover(file, []) == {"event_count": 0, "total_quantity": 0}, "An empty successful archive must replace old events")
-            with connect(file) as db:
+            with closing(connect(file)) as db:
                 require(db.execute("SELECT COUNT(*) FROM events").fetchone()[0] == 0, "Old events survived replacement")
     check("Successful recovery replaces old state", replacement)
+    def reordered():
+        with tempfile.TemporaryDirectory() as directory:
+            file = os.path.join(directory, "reordered.sqlite")
+            with closing(connect(file)) as db, db:
+                db.execute("CREATE TABLE events(quantity INTEGER,id TEXT PRIMARY KEY,item TEXT)")
+            archive = [{"id": "largest", "item": "cell", "quantity": 9223372036854775807}]
+            require(candidate.recover(file, archive) == {"event_count": 1, "total_quantity": 9223372036854775807}, "SQLite INTEGER boundary or column order changed the result")
+            with closing(connect(file)) as db:
+                require(db.execute("SELECT id,item,quantity FROM events").fetchall() == [("largest", "cell", 9223372036854775807)], "Restored columns do not match their names")
+    check("Existing column order does not change recovery", reordered)
 
 
 try:

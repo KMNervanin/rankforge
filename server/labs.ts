@@ -142,18 +142,20 @@ export class Labs {
     const config = await run('docker', ['compose', 'exec', '-T', 'gateway', 'nginx', '-t'], workspace)
     checks.push({ name: 'nginx configuration is valid', passed: config.code === 0, detail: (config.stderr || config.stdout).slice(0, 2000) })
     const probe = `rankforge-${randomUUID()}`
-    for (const route of ['/api/health', `/api/health?probe=${probe}`, '/missing']) {
+    const forwarded = [`/health?probe=${probe}&check=health`, `/missing?probe=${probe}&check=unknown`]
+    for (const route of ['/api/health', `/api${forwarded[0]}`, '/missing', '/missing?next=/health', `/api${forwarded[1]}`, '/api/healthcheck', '/api/health/extra']) {
       try {
         const response = await fetch(`http://${address}${route}`, { signal: AbortSignal.timeout(5000), redirect: 'manual' })
         const body = await response.text()
-        const healthy = route.startsWith('/api/')
+        const healthy = route.split('?')[0] === '/api/health'
         let valid = false
         try { const json = JSON.parse(body); valid = json.status === 'ok' && json.service === 'relay' } catch { /* An nginx error page is evidence of a broken route. */ }
-        checks.push({ name: `GET ${route}`, passed: healthy ? response.status === 200 && valid && (response.headers.get('content-type') ?? '').includes('application/json') : response.status === 404, detail: `HTTP ${response.status}: ${body.slice(0, 180)}` })
+        const mediaType = (response.headers.get('content-type') ?? '').split(';')[0]!.trim().toLowerCase()
+        checks.push({ name: `GET ${route}`, passed: healthy ? response.status === 200 && valid && mediaType === 'application/json' : response.status === 404, detail: `HTTP ${response.status}: ${body.slice(0, 180)}` })
       } catch { checks.push({ name: `GET ${route}`, passed: false, detail: 'Gateway did not respond within five seconds.' }) }
     }
     const upstream = await run('docker', ['compose', 'logs', '--no-color', '--tail', '100', 'relay'], workspace)
-    checks.push({ name: 'Request really reaches the relay with /api/ removed', passed: upstream.code === 0 && `${upstream.stdout}\n${upstream.stderr}`.includes(`GET /health?probe=${probe} `), detail: upstream.code === 0 ? 'Checked the relay log for this verification’s unique request identifier.' : 'The relay log could not be read.' })
+    checks.push({ name: 'Known and unknown API paths reach the relay with queries preserved', passed: upstream.code === 0 && forwarded.every((route) => `${upstream.stdout}\n${upstream.stderr}`.includes(`GET ${route} `)), detail: upstream.code === 0 ? 'Checked the relay log for both unique requests, with /api/ removed and query parameters intact.' : 'The relay log could not be read.' })
     return { passed: checks.every((item) => item.passed), checks, checkedAt, supported: true, output: '' }
   }
 }
