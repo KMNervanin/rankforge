@@ -69,6 +69,9 @@ try {
   await expect(page.locator('.map-canvas canvas')).toBeVisible()
   await page.evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))')
   await page.screenshot({ path: path.join(output, 'outpost.png') })
+  await page.getByRole('button', { name: '▦ Cards', exact: true }).click()
+  await page.getByLabel('Expedition overview', { exact: true }).screenshot({ path: path.join(output, 'cards.png') })
+  await page.getByLabel('Expedition controls').screenshot({ path: path.join(output, 'controls.png') })
   await page.locator('.mission-panel').screenshot({ path: path.join(output, 'quest.png') })
   await page.getByRole('button', { name: 'Operator chat', exact: true }).click()
   await expect(page.locator('.conversation table')).toBeVisible()
@@ -84,7 +87,7 @@ try {
   await page.getByRole('button', { name: 'Connection', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Connect ChatGPT', exact: true })).toBeVisible()
   await page.screenshot({ path: path.join(output, 'connection.png') })
-  console.log(`Captured six documentation screenshots from synthetic fixtures in ${output}.`)
+  console.log(`Captured eight documentation screenshots from synthetic fixtures in ${output}.`)
 } finally {
   await browser?.close()
   await app.close()

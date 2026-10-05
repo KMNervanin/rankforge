@@ -4,7 +4,8 @@ import { Application, Container, Graphics } from 'pixi.js'
 import { useEffect, useRef, useState } from 'react'
 import type { MissionView } from '../shared/types.js'
 
-const positions = [[.29, .20], [.74, .24], [.23, .49], [.73, .53], [.32, .79], [.77, .82]]
+const smallPositions = [[.29, .20], [.74, .24], [.23, .49], [.73, .53], [.32, .79], [.77, .82]]
+const widePositions = [[.18, .29], [.50, .29], [.82, .29], [.18, .74], [.50, .74], [.82, .74]]
 const palettes = [
   { main: 0xffbf58, light: 0xffedb0, dark: 0x956039, land: 0x686149 },
   { main: 0x70e2b2, light: 0xd1ffe8, dark: 0x34786d, land: 0x426d61 },
@@ -78,8 +79,13 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
   const data = useRef({ missions, selected })
   data.current = { missions, selected }
   const [fallback, setFallback] = useState(false)
+  const [wide, setWide] = useState(false)
   useEffect(() => {
     const element = host.current!
+    const measure = () => setWide(element.clientWidth >= 840)
+    measure()
+    const layoutObserver = new ResizeObserver(measure)
+    layoutObserver.observe(element)
     const app = new Application()
     let disposed = false
     let observer: ResizeObserver | undefined
@@ -89,6 +95,7 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
     const draw = () => {
       if (disposed) return
       const width = element.clientWidth; const height = element.clientHeight
+      const positions = width >= 840 ? widePositions : smallPositions
       app.renderer.resize(width, height)
       app.stage.removeChildren().forEach((child) => child.destroy({ children: true }))
       particles = []
@@ -169,15 +176,16 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
         }
       })
     }).catch(() => { if (!disposed) setFallback(true) })
-    return () => { disposed = true; observer?.disconnect(); redraw.current = null; if (pixi.current === app) { pixi.current = null; app.destroy(true, { children: true }) } }
+    return () => { disposed = true; layoutObserver.disconnect(); observer?.disconnect(); redraw.current = null; if (pixi.current === app) { pixi.current = null; app.destroy(true, { children: true }) } }
   }, [])
   const signature = missions.map((item) => item.status).join(',')
   useEffect(() => { redraw.current?.() }, [signature, selected])
+  const layout = wide ? widePositions : smallPositions
   return <div className={`outpost-map ${fallback ? 'fallback-map' : ''}`} aria-label="Interactive outpost map">
     <div ref={host} className="map-canvas" aria-hidden="true" />
     <span className="map-coordinates">✦ The Northern Reach</span>
     <span className="map-scale">{missions.filter((item) => item.status === 'completed').length} of 6 places brought to life</span>
-    {missions.map((mission, index) => <button key={mission.id} className={`map-node sector-${mission.id} ${mission.status} ${selected === mission.id ? 'selected' : ''}`} style={{ left: `${positions[index]![0]! * 100}%`, top: `${positions[index]![1]! * 100}%` }} onClick={() => onSelect(mission.id)} disabled={disabled || mission.status === 'locked'} aria-label={`Enter ${mission.title}`}>
+    {missions.map((mission, index) => <button key={mission.id} className={`map-node sector-${mission.id} ${mission.status} ${selected === mission.id ? 'selected' : ''}`} style={{ left: `${layout[index]![0]! * 100}%`, top: `${layout[index]![1]! * 100}%` }} onClick={() => onSelect(mission.id)} disabled={disabled} aria-label={`View ${mission.title}`}>
       {fallback && <span className="fallback-building">{mission.icon}</span>}
       <span className="node-label"><span className="node-index">{mission.status === 'completed' ? '✓' : mission.order}</span><span>{mission.sector}<small>{mission.status === 'completed' ? 'Restored!' : mission.status === 'locked' ? 'Yet to discover' : 'Your next quest'}</small></span></span>
     </button>)}

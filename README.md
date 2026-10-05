@@ -8,7 +8,7 @@ A personal, local-first engineering learning RPG. Build a living outpost by solv
 
 ![Rankforge outpost — demonstration save](docs/images/outpost.png)
 
-The preview uses synthetic documentation data, not a personal account or real conversation. See the [illustrated tour](docs/TOUR_RU.md) for the quest panel, chat, abilities, journal and account connection.
+The preview uses synthetic documentation data, not a personal account or real conversation. Switch between map and quest cards inside the full-width overview; profile, navigation and the mission workspace live below it. See the [illustrated tour](docs/TOUR_RU.md) for the workspace, chat, abilities, journal and account connection.
 
 The browser is the game, VS Code is the workshop, and the terminal is a real tool. Subscription access uses a direct ChatGPT OAuth adapter; no Codex CLI or paid API fallback is required.
 
@@ -46,7 +46,7 @@ Open `http://127.0.0.1:4173` yourself. The service does not open browser windows
 
 For development, run `npm run dev` and `npm run web:dev` in separate terminals.
 
-The game opens VS Code only after you click a mission. It uses a dedicated extension-development window, so global extension installation is not required. VS Code may ask you to trust the generated workspace on first use. Keep that workshop window open; later missions replace its workspace after the editor's normal unsaved-file handling. A cancelled transition can be retried with **Open workshop**.
+Selecting a mission previews its briefing without starting an editor. **Accept mission & open VS Code** or **Open workshop** opens a dedicated extension-development window, so global extension installation is not required. VS Code may ask you to trust the generated workspace on first use. Keep that workshop window open; later workshop actions replace its workspace after the editor's normal unsaved-file handling. A cancelled transition can be retried with **Open workshop**.
 
 In workshop workspaces, the bridge disables generative inline completions and Copilot next-edit suggestions while retaining ordinary IntelliSense for names, methods and parameters. These are workspace settings; your unrelated work projects keep their own editor settings.
 
@@ -54,7 +54,7 @@ Connect your own eligible ChatGPT subscription from the game's **Connection** pa
 
 ## Work through a quest
 
-1. Select a sector or use **Enter workshop**. Read `MISSION.md` and `LEARN.md` in the dedicated VS Code window.
+1. Select a sector or use **View quest** in Cards view. Read the current briefing below the overview, then explicitly open VS Code or prepare only the workspace. New workspaces include `MISSION.md` and `LEARN.md`; existing code and annotated documents remain untouched when contracts are clarified.
 2. Edit the exercise files, save with Cmd+S/Ctrl+S, and run the lesson commands in the integrated terminal. The game server (`npm start`) and a lesson server (`python3 service.py`) are different processes.
 3. Use **Verify lab** to check the saved code. The initial fixtures are deliberately broken. In the HTTP lesson, verification runs its own temporary server rather than observing the terminal process you started.
 4. Open **Operator chat** from the navigation or **Open conversation** from the quest. Choose guidance or a debrief. History has its own scroll area; the composer remains visible. Markdown, lists, tables and code fences render directly, and code blocks have a copy button. Enter adds a newline; Ctrl/Cmd+Enter sends.
