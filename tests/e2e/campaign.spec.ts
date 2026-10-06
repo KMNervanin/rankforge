@@ -81,7 +81,7 @@ test('the reward infographic remains interactive under the actual service CSP', 
   const response = await page.goto('/progression.html')
   expect(response?.status()).toBe(200)
   expect(response?.headers()['content-security-policy']).toContain('sha256-')
-  await expect(page.getByRole('heading', { name: /Не просто пройти/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Как растёт твой персонаж/ })).toBeVisible()
   expect(await page.locator('[data-step]').count()).toBeGreaterThan(0)
   await page.locator('[data-step]').first().click()
   expect(errors).toEqual([])

@@ -4,566 +4,694 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Rankforge: интерактивный эскиз постепенного роста навыков, живой базы и осмысленных наград.">
+  <meta name="description" content="Как в Rankforge растёт персонаж: навыки, награды, база и ранг на примере главы из восьми заданий.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Rankforge — рост, который видно</title>
+  <title>Rankforge — как растёт персонаж</title>
   <style>
-    :root { color-scheme: dark; --bg: #17141b; --panel: #211d27; --line: #443b4a; --text: #f6eee1; --muted: #bfb3c5; --gold: #efc17d; --lilac: #c2a3e7; --green: #a6d5b8; --rose: #dfa3a6; font-family: "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    :root { color-scheme: dark; --bg: #17141b; --panel: #211d27; --line: #443b4a; --line-strong: #64566e; --text: #f6eee1; --muted: #c4b9ca; --faint: #a397ab; --gold: #efc17d; --lilac: #c2a3e7; --green: #a6d5b8; --blue: #9cc3e6; --rose: #e3a7aa; font-family: "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 28px; }
-    body { margin: 0; color: var(--text); background: radial-gradient(ellipse at 85% 3%, #59415b25, transparent 30%), var(--bg); font-size: 15px; line-height: 1.6; }
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+    body { margin: 0; color: var(--text); background: radial-gradient(ellipse at 85% 0%, #59415b2a, transparent 32%), var(--bg); font-size: 17px; line-height: 1.55; }
     button, select { font: inherit; }
-    button, a, summary { -webkit-tap-highlight-color: transparent; }
     button { cursor: pointer; }
-    button:disabled { cursor: default; opacity: .5; }
-    button, a, summary, select { outline-offset: 5px; }
-    :focus-visible { outline: 2px solid var(--gold); }
+    button:disabled { cursor: default; opacity: .45; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
     a { color: inherit; text-decoration: none; }
     a:hover { color: var(--gold); }
-    h1, h2, h3, p { margin: 0; }
-    h1, h2, h3 { line-height: 1.15; }
-    h1 { font-size: clamp(48px, 4.6vw, 72px); letter-spacing: -3px; font-weight: 600; }
-    h2 { font-size: clamp(28px, 2.6vw, 38px); font-weight: 550; letter-spacing: -1.1px; }
-    h3 { font-size: 20px; font-weight: 600; letter-spacing: -.35px; }
-    em { font-family: Georgia, "Times New Roman", serif; font-weight: 400; color: var(--gold); }
-    svg { display: block; max-width: 100%; }
-    svg text { font-family: "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    .shell { width: min(1440px, calc(100% - 96px)); margin: auto; }
-    .muted { color: var(--muted); }
-    .gold { color: var(--gold); }
-    .lilac { color: var(--lilac); }
-    .eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: 2.3px; font-weight: 650; }
-    .tag { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 11px; line-height: 1.5; color: var(--muted); }
-    .tag.candidate { color: var(--gold); border-color: #78603e; background: #efc17d09; }
-    .tag.future { color: var(--lilac); border-color: #64516e; }
-    .tag.demo { color: var(--green); border-color: #4a6455; }
-    .skip { position: fixed; left: 20px; top: 12px; padding: 12px 20px; z-index: 10; background: var(--gold); color: var(--bg); clip-path: inset(50%); pointer-events: none; }
+    h1, h2, h3, p, dl, dd, ol, ul { margin: 0; }
+    h1, h2, h3 { line-height: 1.15; font-weight: 600; }
+    h1 { font-size: clamp(44px, 4.4vw, 62px); letter-spacing: -1.5px; }
+    h2 { font-size: clamp(30px, 2.8vw, 40px); letter-spacing: -.8px; }
+    h3 { font-size: 21px; letter-spacing: -.2px; }
+    em { font-family: Georgia, "Times New Roman", serif; font-style: italic; font-weight: 400; color: var(--gold); }
+    .shell { width: min(1280px, calc(100% - 64px)); margin: 0 auto; }
+    .eyebrow { font-size: 13px; font-weight: 650; letter-spacing: 1.8px; text-transform: uppercase; color: var(--lilac); }
+    .c-http { color: var(--gold); }
+    .c-data { color: var(--green); }
+    .c-recovery { color: var(--blue); }
+    .c-mix { color: var(--faint); }
+    .tag { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px 11px; font-size: 13px; color: var(--muted); white-space: nowrap; }
+    .tag.first { color: var(--gold); border-color: #8a6c45; background: #efc17d10; }
+    .tag.later { color: var(--lilac); border-color: #6c5878; }
+    .tag.deferred { color: var(--faint); }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 16px; border: 1px solid var(--line-strong); border-radius: 9px; background: #2c2533; color: var(--text); font-size: 15px; }
+    .button:hover:not(:disabled) { background: #3a3141; border-color: #8a7795; }
+    .button.primary { background: var(--gold); border-color: var(--gold); color: #241a1f; font-weight: 650; }
+    .button.primary:hover:not(:disabled) { background: #ffd9a0; }
+    .skip { position: fixed; left: 16px; top: 12px; z-index: 10; padding: 10px 18px; background: var(--gold); color: var(--bg); clip-path: inset(50%); pointer-events: none; }
     .skip:focus { clip-path: none; pointer-events: auto; }
-    .topbar { min-height: 93px; display: flex; align-items: center; justify-content: space-between; gap: 30px; border-bottom: 1px solid var(--line); }
-    .brand { display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 650; letter-spacing: 2.5px; }
-    .brand svg { width: 26px; height: 36px; color: var(--gold); }
-    .topbar nav { display: flex; gap: 28px; color: var(--muted); font-size: 12px; }
-    .edition { font-size: 10px; letter-spacing: 1.4px; color: var(--muted); }
-    .hero { display: grid; grid-template-columns: 1.45fr 1fr; gap: 60px; align-items: center; padding: 68px 0 50px; }
-    .hero .eyebrow { color: var(--lilac); margin-bottom: 22px; }
-    .hero h1 em { display: block; margin-top: 3px; }
-    .hero p { max-width: 590px; color: var(--muted); margin: 24px 0; font-size: 16px; }
-    .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; }
-    .hero-art { position: relative; max-width: 400px; width: 100%; margin: auto; }
-    .hero-art svg { width: 100%; }
-    .art-caption { text-align: center; color: var(--muted); font-size: 11px; margin-top: -6px; letter-spacing: .6px; }
-    .meaning-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 23px 0; }
-    .meaning { padding: 0 24px; border-left: 1px solid var(--line); }
-    .meaning:first-child { border: 0; padding-left: 0; }
-    .meaning:last-child { padding-right: 0; }
-    .meaning > span { color: var(--gold); font: italic 25px Georgia, serif; margin-right: 8px; }
-    .meaning strong { font-size: 13px; font-weight: 600; }
-    .meaning p { color: var(--muted); font-size: 12px; margin-top: 6px; }
-    section { padding-top: 66px; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 28px; }
-    .section-head .eyebrow { color: var(--lilac); margin-bottom: 11px; }
-    .section-head > p { max-width: 410px; color: var(--muted); font-size: 13px; }
-    .chapter-card { border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(135deg, #28212f80, #201c25); overflow: hidden; }
-    .chapter-meta { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 26px; border-bottom: 1px solid var(--line); }
-    .chapter-meta p { font-size: 12px; color: var(--muted); }
-    .chapter-meta strong { color: var(--text); font-weight: 550; }
-    .chapter-body { display: grid; grid-template-columns: 1.45fr 1fr; }
-    .outpost { position: relative; padding: 22px 24px 10px; border-right: 1px solid var(--line); background: radial-gradient(ellipse at 45% 65%, #66507220, transparent 65%); }
-    .map-label { display: flex; justify-content: space-between; align-items: center; gap: 15px; font-size: 10px; text-transform: uppercase; letter-spacing: 1.6px; color: var(--muted); }
-    .map-label b { color: var(--gold); font-weight: 500; }
-    .outpost svg { width: 100%; height: 288px; }
-    .map-building { color: #695b77; transition: color .3s; }
-    .map-building.lit { color: var(--gold); }
-    .map-building.violet.lit { color: var(--lilac); }
-    .map-building.mint.lit { color: var(--green); }
-    .map-building .window { opacity: .12; transition: opacity .3s; }
-    .map-building.lit .window { opacity: .95; }
-    .map-building .aura { opacity: 0; transition: opacity .3s; }
-    .map-building.lit .aura { opacity: .12; }
-    .map-link { stroke: #695b77; opacity: .4; transition: stroke .3s; }
-    .map-link.lit { stroke: var(--gold); opacity: .8; }
-    .world-effect { display: flex; gap: 10px; align-items: baseline; min-height: 47px; color: var(--muted); font-size: 12px; }
-    .world-effect span:first-child { color: var(--gold); font-size: 18px; }
-    .chapter-readout { padding: 27px 30px; display: flex; flex-direction: column; }
-    .mission-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .mission-top > span:first-child { color: var(--gold); font-size: 11px; letter-spacing: 1.4px; }
-    .chapter-readout h3 { font-size: 29px; margin-bottom: 12px; }
-    .chapter-readout > p { min-height: 65px; color: var(--muted); font-size: 13px; }
-    .mission-evidence { display: flex; gap: 10px; align-items: start; background: #17141b70; border-radius: 8px; padding: 12px 14px; margin: 17px 0; color: var(--green); font-size: 12px; }
-    .mission-evidence > span:first-child { font-size: 16px; }
-    .chapter-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: auto; }
-    .chapter-stats span { display: block; font-size: 10px; color: var(--muted); }
-    .chapter-stats strong { display: block; font-size: 18px; font-weight: 550; color: var(--gold); line-height: 1.7; }
-    .timeline-zone { border-top: 1px solid var(--line); padding: 22px 26px 25px; }
-    .timeline-tools { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 24px; }
-    .timeline-tools p { font-size: 12px; color: var(--muted); }
-    .timeline-tools strong { color: var(--text); font-weight: 500; }
-    .step-controls { display: flex; gap: 8px; }
-    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line); background: #2c2533; color: var(--text); padding: 10px 16px; border-radius: 8px; font-size: 12px; min-height: 42px; }
-    .button:hover:not(:disabled) { background: #39303f; border-color: #837189; }
-    .button.primary { color: #221924; background: var(--gold); border-color: var(--gold); font-weight: 600; }
-    .button.primary:hover:not(:disabled) { background: #ffdaa1; }
-    .button.small { padding: 7px 12px; min-height: 36px; }
-    .mission-track { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); position: relative; gap: 0; }
-    .mission-track::before { content: ""; position: absolute; height: 1px; background: #695974; left: 6.25%; right: 6.25%; top: 20px; }
-    .mission-step { position: relative; border: none; background: none; color: var(--muted); padding: 0 5px 8px; border-radius: 8px; font-size: 11px; }
-    .mission-step .dot { display: grid; place-items: center; width: 41px; height: 41px; border-radius: 50%; border: 1px solid #6a5b75; margin: 0 auto 12px; background: #241e2b; font-size: 12px; transition: background .2s; }
-    .mission-step.done .dot { color: var(--gold); border-color: #aa8555; background: #382c28; }
-    .mission-step[aria-pressed=true] { color: var(--text); }
-    .mission-step[aria-pressed=true] .dot { background: var(--gold); color: #241e2b; border-color: var(--gold); box-shadow: 0 0 0 5px #efc17d15; }
-    .mission-step:hover .dot { border-color: var(--text); }
-    .mission-step .step-kind { display: block; color: var(--muted); font-size: 9px; margin-top: 2px; }
-    .bonus-branch { margin: 14px 0 0 43%; border: 1px dashed #78628c; border-radius: 10px; padding: 13px 16px; position: relative; display: flex; align-items: center; gap: 16px; background: #c2a3e708; }
-    .bonus-branch::before { content: ""; position: absolute; height: 23px; border-left: 1px dashed #78628c; left: 23%; bottom: 100%; }
-    .bonus-branch.ready { border-style: solid; border-color: var(--lilac); background: #c2a3e70d; }
-    .bonus-branch .branch-icon { font: 26px Georgia, serif; color: var(--lilac); }
-    .bonus-branch p { font-size: 12px; }
-    .bonus-branch small { display: block; color: var(--muted); font-size: 11px; }
-    .bonus-branch .button { margin-left: auto; white-space: nowrap; border-color: #78628c; }
-    .bonus-details { margin: 18px 0 0; border: 1px solid #78628c; border-radius: 12px; padding: 22px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 30px; background: #18141f; }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     [hidden] { display: none !important; }
-    .bonus-details h3 { font-size: 19px; margin: 7px 0 10px; }
-    .bonus-details p { font-size: 12px; color: var(--muted); }
-    .bonus-details ul { font-size: 12px; color: var(--muted); padding-left: 16px; margin: 0 0 16px; }
-    .bonus-details label { display: block; color: var(--muted); font-size: 12px; margin-bottom: 7px; }
-    select { width: 100%; padding: 10px; background: #2c2533; color: var(--text); border: 1px solid #78628c; border-radius: 7px; font-size: 12px; margin-bottom: 14px; }
-    .bonus-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .bonus-result { margin-top: 12px; color: var(--green) !important; }
-    .caption { display: flex; gap: 8px; margin-top: 13px; font-size: 11px; color: var(--muted); }
-    .caption > span { color: var(--lilac); }
-    .skills-layout { display: grid; grid-template-columns: 240px 1fr; gap: 26px; }
+    noscript { display: block; margin-top: 24px; padding: 16px 20px; border: 1px solid var(--gold); border-radius: 10px; color: var(--gold); }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 76px; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 16px; font-weight: 650; letter-spacing: 2.4px; }
+    .brand svg { width: 24px; height: 32px; color: var(--gold); }
+    .topbar nav { display: flex; gap: 24px; font-size: 15px; color: var(--muted); }
+
+    .hero { padding: 64px 0 8px; }
+    .hero h1 { margin: 16px 0 20px; }
+    .lead { max-width: 780px; font-size: 20px; color: var(--muted); }
+    .flow { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 48px; margin-top: 48px; padding: 0; list-style: none; }
+    .flow-step { position: relative; padding-top: 22px; border-top: 2px solid var(--line-strong); }
+    .flow-step:not(:last-child)::after { content: "→"; position: absolute; right: -36px; top: 26px; color: var(--gold); font-size: 24px; }
+    .flow-num { display: inline-grid; place-items: center; width: 36px; height: 36px; margin-bottom: 14px; border: 1px solid var(--gold); border-radius: 50%; color: var(--gold); font-weight: 650; }
+    .flow-step h3 { margin-bottom: 8px; }
+    .flow-step p { color: var(--muted); }
+    .result-list { display: grid; gap: 9px; padding: 0; list-style: none; }
+    .result-list li { display: grid; grid-template-columns: 24px 1fr; gap: 8px; color: var(--muted); }
+    .result-list li > span:first-child { color: var(--gold); text-align: center; }
+    .result-list b { color: var(--text); font-weight: 600; }
+    .key-rule { display: flex; align-items: flex-start; gap: 16px; margin-top: 48px; padding: 22px 26px; border: 1px solid #7a6144; border-radius: 14px; background: #efc17d0d; font-size: 19px; }
+    .key-rule > span:first-child { color: var(--gold); font-size: 24px; line-height: 1.2; }
+    .key-rule strong { color: var(--gold); font-weight: 650; }
+
+    section { padding-top: 88px; }
+    .section-head { max-width: 840px; margin-bottom: 28px; }
+    .section-head h2 { margin: 10px 0 12px; }
+    .section-head p { color: var(--muted); font-size: 18px; }
+
+    .chapter-card { overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: linear-gradient(160deg, #28212f, #1f1b24); }
+    .timeline { padding: 24px 28px; border-bottom: 1px solid var(--line); }
+    .timeline-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .timeline-top p { color: var(--muted); }
+    .timeline-top strong { color: var(--text); font-weight: 600; }
+    .step-controls { display: flex; gap: 8px; }
+    .track { position: relative; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); }
+    .track::before { content: ""; position: absolute; left: 6.25%; right: 6.25%; top: 21px; height: 2px; background: #4d4257; }
+    .step { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 4px 4px; border: 0; border-radius: 10px; background: none; color: var(--muted); font-size: 16px; text-align: center; }
+    .step .dot { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 4px; border: 2px solid #5e5169; border-radius: 50%; background: #231d2a; color: var(--faint); font-weight: 650; transition: background .2s, border-color .2s; }
+    .step.done .dot { border-color: #b08a5a; background: #362b2c; color: var(--gold); }
+    .step[aria-pressed="true"] { color: var(--text); font-weight: 600; }
+    .step[aria-pressed="true"] .dot { border-color: var(--gold); background: var(--gold); color: #241a1f; box-shadow: 0 0 0 6px #efc17d1c; }
+    .step:hover .dot { border-color: var(--text); }
+    .step small { font-size: 13px; font-weight: 400; line-height: 1.3; color: var(--faint); white-space: nowrap; }
+    .step small i { font-style: normal; }
+    .branch-row { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); margin-top: 22px; }
+    .branch { position: relative; grid-column: 5 / 9; display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 1px dashed #6c5878; border-radius: 12px; background: #c2a3e706; }
+    .branch::before { content: ""; position: absolute; left: calc(12.5% - 1px); bottom: 100%; height: 22px; border-left: 2px dashed #6c5878; }
+    .branch.open { border-style: solid; border-color: var(--lilac); background: #c2a3e712; }
+    .branch.open::before { border-left-style: solid; border-color: var(--lilac); }
+    .branch-icon { color: var(--lilac); font-size: 24px; }
+    .branch p { font-weight: 600; }
+    .branch small { display: block; color: var(--muted); font-size: 15px; }
+    .branch .button { flex-shrink: 0; margin-left: auto; }
+    .bonus-details { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; margin-top: 16px; padding: 24px; border: 1px solid #6c5878; border-radius: 14px; background: #1a1620; }
+    .bonus-details h3 { margin: 6px 0 10px; }
+    .bonus-details p, .bonus-details li { color: var(--muted); }
+    .bonus-details ul { display: grid; gap: 6px; margin-top: 12px; padding-left: 20px; }
+    .bonus-details label { display: block; margin-bottom: 8px; font-weight: 600; }
+    select { width: 100%; margin-bottom: 14px; padding: 10px 12px; border: 1px solid #6c5878; border-radius: 8px; background: #2c2533; color: var(--text); font-size: 16px; }
+    .bonus-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .bonus-result { margin-top: 14px; color: var(--green) !important; }
+    .chapter-body { display: grid; grid-template-columns: 1.15fr 1fr; }
+    .map { padding: 18px 20px 12px; border-right: 1px solid var(--line); background: radial-gradient(ellipse at 50% 60%, #66507222, transparent 65%); }
+    .map-caption { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 15px; }
+    .map-caption strong { color: var(--text); font-weight: 600; }
+    .readout { padding: 28px 30px; }
+    .step-count { color: var(--gold); font-size: 14px; font-weight: 650; letter-spacing: 1.4px; text-transform: uppercase; }
+    .readout h3 { margin: 8px 0 22px; font-size: 32px; }
+    .facts { display: grid; gap: 18px; }
+    .facts dt { margin-bottom: 4px; color: var(--faint); font-size: 13px; font-weight: 650; letter-spacing: 1px; text-transform: uppercase; }
+    .character { display: grid; grid-template-columns: 150px repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); background: #1b1720; }
+    .character > * { padding: 16px 18px; border-left: 1px solid var(--line); }
+    .character > :first-child { border-left: 0; color: var(--muted); font-size: 15px; line-height: 1.35; align-self: center; }
+    .char-label { display: block; color: var(--muted); font-size: 14px; }
+    .char-label i { font-style: normal; }
+    .char-value { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 18px; font-weight: 650; }
+    .char-value.small { font-size: 16px; line-height: 1.3; }
+    .pips { display: inline-flex; gap: 3px; }
+    .pips i { width: 12px; height: 9px; border: 1px solid #66597a; border-radius: 2px; }
+    .pips i.on { border-color: currentColor; background: currentColor; }
+
+    .map-svg { display: block; width: 100%; height: auto; margin: 0 auto; }
+    .map-svg text { font-family: "Avenir Next", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .platform { fill: #29222f; stroke: #574a63; stroke-width: 1.2; transition: stroke .3s; }
+    .platform.lit { stroke: var(--gold); stroke-width: 2; }
+    .platform-side { fill: #1d1823; stroke: #3f3449; }
+    .platform-grid { fill: none; stroke: #8a7a98; stroke-opacity: .13; }
+    .map-building { color: #6e6180; transition: color .3s; }
+    .map-building.http.lit { color: var(--gold); }
+    .map-building.data.lit { color: var(--green); }
+    .map-building.recovery.lit { color: var(--blue); }
+    .face-left, .face-right, .face-top, .board { stroke: currentColor; stroke-width: 1.2; stroke-linejoin: round; }
+    .face-left { fill: #221c29; }
+    .face-right { fill: #2c2435; }
+    .face-top { fill: #393042; }
+    .board { fill: #2c2435; }
+    .window { fill: currentColor; opacity: .16; transition: opacity .3s; }
+    .lit .window { opacity: .92; }
+    .window.drawer, .window.bars { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+    .door { fill: #110e14; stroke: currentColor; stroke-width: 1.2; }
+    .mast, .wave { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+    .ring { fill: none; stroke: currentColor; stroke-width: 1.5; opacity: .45; }
+    .lit .ring { opacity: 1; }
+    .aura { fill: currentColor; opacity: 0; transition: opacity .3s; }
+    .lit .aura { opacity: .14; }
+    .map-name { fill: currentColor; font-size: 14px; font-weight: 650; letter-spacing: 1.3px; }
+    .map-link { fill: none; stroke: #5d5068; stroke-width: 2; stroke-dasharray: 5 6; opacity: .6; transition: stroke .3s, opacity .3s; }
+    .map-link.lit { stroke: var(--gold); opacity: 1; }
+    .map-link.bonus-route { stroke: var(--lilac); opacity: 0; }
+    .map-link.bonus-route.lit { opacity: .9; }
+    .map-bonus { color: var(--lilac); opacity: .2; transition: opacity .3s; }
+    .map-bonus.lit { opacity: 1; }
+    .islet { fill: #2b2336; stroke: currentColor; stroke-width: 1.2; }
+    .islet-side { fill: #1d1823; stroke: #4a3d58; }
+    .bonus-star { fill: currentColor; }
+    .bonus-check { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+    .map-bonus.done .bonus-check { opacity: 1; }
+    .map-bonus.done .bonus-star { opacity: 0; }
+    .map-traces { fill: none; stroke: var(--gold); stroke-width: 9; stroke-linecap: round; opacity: 0; transition: opacity .3s; }
+    .map-traces.lit { opacity: .22; }
+    .map-traces.lit ~ .map-link.lit { stroke-dasharray: none; }
+    .map-flag { color: var(--gold); opacity: 0; transition: opacity .3s; }
+    .map-flag.lit { opacity: 1; }
+    .map-flag .pennant { fill: var(--gold); }
+    .map-flag text { fill: #2a1f20; font-size: 15px; font-weight: 700; }
+
+    .skills { display: grid; grid-template-columns: 290px 1fr; gap: 28px; }
     .skill-picker { display: flex; flex-direction: column; gap: 10px; }
-    .skill-choice { text-align: left; display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); border-radius: 10px; padding: 16px; background: transparent; color: var(--muted); }
-    .skill-choice[aria-pressed=true] { border-color: #9e8260; background: #efc17d0a; color: var(--gold); }
-    .skill-choice .skill-symbol { font-size: 24px; width: 27px; text-align: center; }
-    .skill-choice strong { display: block; font-size: 13px; font-weight: 550; }
-    .skill-choice small { display: block; font-size: 10px; color: var(--muted); margin-top: 3px; }
-    .skill-note { padding: 9px 3px 0; font-size: 11px; color: var(--muted); }
-    .skill-board { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 25px 28px; }
-    .skill-board-header { display: flex; justify-content: space-between; align-items: start; gap: 20px; }
-    .skill-board-header h3 { font-size: 23px; }
-    .skill-board-header p { margin-top: 7px; color: var(--muted); font-size: 12px; }
-    .skill-ladder { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 30px 0 20px; }
-    .skill-rung { position: relative; border-top: 2px solid #675870; padding-top: 16px; color: var(--muted); }
-    .skill-rung::before { content: ""; width: 9px; height: 9px; border: 2px solid #8c7897; border-radius: 50%; background: var(--panel); position: absolute; top: -7px; left: 0; }
-    .skill-rung.earned { border-color: var(--gold); color: var(--text); }
-    .skill-rung.earned::before { border-color: var(--gold); background: var(--gold); }
-    .skill-rung.current::before { box-shadow: 0 0 0 4px #efc17d25; }
-    .skill-rung b { display: block; font-size: 10px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
-    .skill-rung strong { display: block; font-size: 12px; line-height: 1.4; font-weight: 600; }
-    .skill-rung p { font-size: 11px; line-height: 1.5; margin-top: 8px; color: var(--muted); }
-    .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid var(--line); padding-top: 18px; }
-    .evidence-box .eyebrow { font-size: 9px; letter-spacing: 1.5px; margin-bottom: 8px; color: var(--green); }
-    .evidence-box:last-child .eyebrow { color: var(--lilac); }
-    .evidence-box p { font-size: 12px; color: var(--muted); }
-    .evidence-box strong { font-weight: 500; color: var(--text); }
-    .reward-intro { max-width: 445px !important; }
-    .family-filter { display: grid; grid-template-columns: repeat(6, 1fr); gap: 9px; margin-bottom: 18px; }
-    .family-button { border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); text-align: left; padding: 15px; }
-    .family-button > span:first-child { display: block; font-size: 20px; line-height: 1.2; margin-bottom: 12px; }
-    .family-button strong { font-size: 12px; font-weight: 550; }
-    .family-button small { float: right; font-size: 11px; }
-    .family-button[aria-pressed=true] { color: var(--gold); border-color: #a17b4b; background: #efc17d08; }
-    .family-button:hover { border-color: #a68eb0; }
-    .reward-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin: 20px 0; }
-    .reward-toolbar p { color: var(--muted); font-size: 12px; max-width: 780px; }
-    .reward-toolbar p strong { font-weight: 550; color: var(--text); }
-    .reward-toolbar .button[aria-pressed=true] { border-color: var(--gold); color: var(--gold); }
-    .reward-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; align-items: start; }
-    .reward-card { border: 1px solid var(--line); border-radius: 12px; padding: 22px; min-height: 257px; background: linear-gradient(145deg, #29212e70, #211d2780); }
-    .reward-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 22px; }
-    .reward-index { color: var(--muted); font: italic 22px Georgia, serif; }
-    .reward-card h3 { font-size: 18px; margin-bottom: 11px; }
-    .reward-card > p { font-size: 12px; color: var(--muted); min-height: 40px; }
-    .reward-action { margin: 14px 0; display: flex; align-items: start; gap: 8px; font-size: 12px; color: var(--gold); }
-    .reward-action span:first-child { font-size: 14px; }
-    .reward-card details { border-top: 1px solid var(--line); padding-top: 12px; }
-    summary { cursor: pointer; font-size: 11px; color: var(--muted); }
-    .reward-card details p { font-size: 12px; color: var(--muted); padding-top: 12px; }
-    .reward-card details strong { font-weight: 500; color: var(--text); }
-    .family-anchor { border-radius: 12px; padding: 23px; background: #352a3a66; border: 1px dashed #7b6387; min-height: 257px; }
-    .family-anchor .eyebrow { color: var(--lilac); margin-bottom: 18px; }
-    .family-anchor h3 { font-size: 23px; margin-bottom: 12px; }
-    .family-anchor p { color: var(--muted); font-size: 12px; }
-    .charge-glyph { display: flex; align-items: center; gap: 8px; margin: 20px 0; }
-    .charge-glyph i { width: 29px; height: 13px; border: 1px solid #b89968; transform: skew(-20deg); background: #efc17d70; }
-    .charge-glyph i:nth-child(n+4) { background: transparent; }
-    .charge-glyph span { font-size: 11px; margin-left: 8px; color: var(--gold); }
-    .reward-legend { display: flex; gap: 20px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin-top: 19px; }
-    .reward-legend span::before { content: "●"; color: var(--gold); margin-right: 7px; font-size: 8px; }
-    .reward-legend span:nth-child(2)::before { color: var(--lilac); }
-    .reward-legend span:nth-child(3)::before { color: var(--muted); }
-    .candidate-panel { border: 1px solid #8e704a; border-radius: 16px; background: radial-gradient(ellipse at 0 0, #9a6f3220, transparent 60%), #211c25; padding: 30px; }
-    .candidate-top { display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px; align-items: center; }
-    .candidate-top h3 { font-size: 27px; margin: 13px 0; }
-    .candidate-top p { color: var(--muted); font-size: 13px; }
-    .slice-flow { display: flex; gap: 10px; align-items: center; justify-content: center; }
-    .slice-flow .flow-node { width: 100px; min-height: 95px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #6d567a; border-radius: 12px; color: var(--lilac); font-size: 11px; text-align: center; }
-    .slice-flow .flow-node b { font-size: 24px; font-weight: 450; color: var(--gold); margin-bottom: 5px; }
-    .slice-flow > span { color: var(--muted); }
-    .slice-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 27px; border-top: 1px solid #5c4738; padding-top: 24px; }
-    .inventory-demo, .profile-demo { display: flex; gap: 17px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 18px; background: #17141b70; }
-    .inventory-demo .chip-icon { display: grid; place-items: center; flex-shrink: 0; width: 46px; height: 46px; border: 1px solid var(--gold); color: var(--gold); border-radius: 9px; font-size: 26px; transform: rotate(-8deg); }
-    .inventory-demo strong, .profile-demo strong { display: block; font-size: 13px; font-weight: 500; }
-    .inventory-demo small, .profile-demo small { display: block; color: var(--muted); font-size: 11px; }
-    .profile-emblem { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 53px; border: 1px solid #796487; border-radius: 10px; color: var(--lilac); font: 30px Georgia, serif; transition: border-color .2s, box-shadow .2s; }
-    .profile-emblem.equipped { border-color: var(--gold); box-shadow: 0 0 0 3px #efc17d22, inset 0 0 18px #efc17d18; color: var(--gold); }
-    .profile-demo .button { margin-left: auto; flex-shrink: 0; }
-    .candidate-foot { display: flex; justify-content: space-between; align-items: start; gap: 25px; margin-top: 20px; }
-    .candidate-foot p { font-size: 11px; color: var(--muted); }
-    .candidate-foot strong { color: var(--green); font-weight: 500; }
-    .choices { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; }
-    .choice-card { padding: 24px 0; border-top: 2px solid var(--line); }
-    .choice-card .eyebrow { margin-bottom: 15px; color: var(--muted); }
-    .choice-card h3 { font-size: 19px; margin-bottom: 12px; }
-    .choice-card p { font-size: 12px; color: var(--muted); }
-    .choice-card.keep { border-color: var(--green); }
-    .choice-card.keep .eyebrow { color: var(--green); }
-    .choice-card.later { border-color: var(--lilac); }
-    .choice-card.later .eyebrow { color: var(--lilac); }
-    .choice-card.reject { border-color: var(--rose); }
-    .choice-card.reject .eyebrow { color: var(--rose); }
-    .anti-loop { display: flex; gap: 18px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 19px 24px; margin-top: 6px; }
-    .anti-loop > span { font-size: 27px; color: var(--green); }
-    .anti-loop p { color: var(--muted); font-size: 12px; }
-    .anti-loop strong { font-weight: 500; color: var(--text); }
-    footer { display: flex; justify-content: space-between; align-items: center; gap: 30px; padding: 30px 0; margin-top: 54px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
-    footer .footer-note { max-width: 640px; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-    noscript { display: block; border: 1px solid var(--gold); color: var(--gold); padding: 20px; }
-    @media (min-width: 1500px) { .hero { padding: 78px 0 60px; } .outpost svg { height: 304px; } }
-    @media (max-width: 1150px) { .shell { width: calc(100% - 64px); } .hero { gap: 30px; } .topbar nav { gap: 20px; } .edition { display: none; } .chapter-body { grid-template-columns: 1.2fr 1fr; } .chapter-readout { padding: 25px 22px; } .outpost { padding: 22px 17px 10px; } .outpost svg { height: 310px; } .skills-layout { grid-template-columns: 200px 1fr; gap: 18px; } .skill-board { padding: 23px; } .family-button { padding: 13px 10px; } .family-button strong { font-size: 11px; } .reward-card { padding: 19px; } .bonus-branch { margin-left: 33%; } .bonus-branch::before { left: 35%; } .profile-demo { flex-wrap: wrap; } }
-    @media (max-width: 850px) { .shell { width: calc(100% - 40px); } .topbar nav { gap: 14px; } .topbar nav a:last-child { display: none; } .hero { grid-template-columns: 1fr; padding: 45px 0 32px; } .hero-art { display: none; } h1 { letter-spacing: -2px; } .meaning-strip { grid-template-columns: 1fr 1fr; gap: 24px 0; } .meaning:nth-child(3) { border: 0; padding-left: 0; } .section-head { align-items: start; flex-direction: column; gap: 15px; } .chapter-body { grid-template-columns: 1fr; } .outpost { border-right: 0; border-bottom: 1px solid var(--line); } .outpost svg { height: 280px; } .mission-step { font-size: 10px; } .mission-step .step-kind { display: none; } .timeline-zone { padding: 20px 14px; } .bonus-branch { margin-left: 12%; flex-wrap: wrap; } .bonus-branch::before { left: 50%; } .skills-layout { grid-template-columns: 1fr; } .skill-picker { flex-direction: row; flex-wrap: wrap; } .skill-choice { flex: 1; padding: 12px; } .skill-note { width: 100%; } .family-filter { grid-template-columns: repeat(3, 1fr); } .reward-grid { grid-template-columns: 1fr 1fr; } .candidate-top { grid-template-columns: 1fr; } .slice-actions { grid-template-columns: 1fr; } .choices { gap: 16px; } }
-    @media (max-width: 560px) { .topbar nav { display: none; } .chapter-meta { flex-wrap: wrap; } .timeline-tools { flex-direction: column; align-items: start; } .mission-track { grid-template-columns: repeat(4, 1fr); gap: 14px 0; } .mission-track::before { display: none; } .bonus-branch { margin-left: 0; } .bonus-branch::before { display: none; } .bonus-details { grid-template-columns: 1fr; } .skill-choice { min-width: 100%; } .skill-board-header { flex-direction: column; } .skill-ladder { grid-template-columns: 1fr; } .skill-rung { padding: 12px 0 0 15px; } .skill-rung p { margin-top: 3px; } .evidence-grid, .reward-grid, .choices { grid-template-columns: 1fr; } .reward-toolbar, .candidate-foot, footer { flex-direction: column; align-items: start; } .candidate-panel { padding: 22px; } .meaning { padding-inline: 16px; } }
+    .skill-choice { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--muted); text-align: left; }
+    .skill-choice:hover { border-color: #8a7795; }
+    .skill-choice[aria-pressed="true"] { border-color: #9e8260; background: #efc17d0c; color: var(--text); }
+    .skill-icon { width: 28px; font-size: 24px; text-align: center; }
+    .skill-choice strong { display: block; font-size: 17px; font-weight: 600; }
+    .skill-choice small { display: block; color: var(--muted); font-size: 14px; }
+    .skill-note { margin-top: 8px; color: var(--muted); font-size: 15px; }
+    .skill-board { padding: 28px 30px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); --skill: var(--gold); }
+    .skill-board[data-skill="data"] { --skill: var(--green); }
+    .skill-board[data-skill="recovery"] { --skill: var(--blue); }
+    .skill-board-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .skill-board-head h3 { font-size: 26px; }
+    .skill-board-head p { margin-top: 6px; color: var(--muted); }
+    .ladder { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin: 32px 0 26px; padding: 0; list-style: none; }
+    .rung { position: relative; padding-top: 18px; border-top: 3px solid #4d4257; color: var(--muted); }
+    .rung::before { content: ""; position: absolute; top: -9px; left: 0; width: 15px; height: 15px; border: 2px solid #7c6b88; border-radius: 50%; background: var(--panel); }
+    .rung.earned { border-color: var(--skill); color: var(--text); }
+    .rung.earned::before { border-color: var(--skill); background: var(--skill); }
+    .rung.next::before { border-color: var(--skill); }
+    .rung-status { display: block; margin-bottom: 6px; color: var(--faint); font-size: 13px; font-weight: 650; letter-spacing: .6px; text-transform: uppercase; }
+    .rung.earned .rung-status, .rung.next .rung-status { color: var(--text); }
+    .rung strong { display: block; font-size: 17px; line-height: 1.3; }
+    .rung p { margin-top: 6px; color: var(--muted); font-size: 15px; }
+    .skill-now { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .skill-now .label { margin-bottom: 6px; color: var(--faint); font-size: 13px; font-weight: 650; letter-spacing: 1px; text-transform: uppercase; }
+
+    .families { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+    .family { display: flex; flex-direction: column; gap: 2px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--muted); text-align: left; }
+    .family > span:first-child { margin-bottom: 8px; color: var(--gold); font-size: 22px; line-height: 1.2; }
+    .family strong { color: var(--text); font-size: 17px; font-weight: 600; }
+    .family small { font-size: 14px; line-height: 1.35; }
+    .family:hover { border-color: #8a7795; }
+    .family[aria-pressed="true"] { border-color: #a17b4b; background: #efc17d0d; }
+    .reward-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin: 22px 0 18px; }
+    .reward-bar p { color: var(--muted); }
+    .reward-bar strong { color: var(--text); font-weight: 600; }
+    .reward-bar .button { flex-shrink: 0; }
+    .reward-bar .button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+    .reward-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+    .reward-card { padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: #221d28; }
+    .reward-card.first { border-color: #7a6144; }
+    .reward-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .reward-id { color: var(--faint); font: italic 20px Georgia, serif; }
+    .reward-card h3 { margin-bottom: 8px; font-size: 20px; }
+    .reward-card > p { color: var(--muted); }
+    .reward-line { margin-top: 12px; font-size: 15px; }
+    .reward-line b { font-weight: 600; }
+    .reward-line.use { color: var(--gold); }
+    .reward-line.get { color: var(--muted); }
+    .reward-line.get b { color: var(--text); }
+    .reward-card details { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+    summary { color: var(--muted); font-size: 15px; cursor: pointer; }
+    .reward-card details p { margin-top: 8px; color: var(--muted); font-size: 15px; }
+    .family-note { padding: 24px; border: 1px dashed #6c5878; border-radius: 14px; background: #352a3a55; }
+    .family-note h3 { margin: 10px 0; font-size: 22px; }
+    .family-note p { color: var(--muted); }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 22px; color: var(--muted); font-size: 15px; }
+    .legend > span { display: inline-flex; align-items: center; gap: 10px; }
+
+    .first-panel { padding: 30px; border: 1px solid #7a6144; border-radius: 18px; background: radial-gradient(ellipse at 0 0, #9a6f321e, transparent 60%), #211c25; }
+    .formula { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-size: 18px; }
+    .formula .pill { padding: 8px 14px; border: 1px solid var(--line-strong); border-radius: 10px; background: #2a2330; }
+    .formula .pill.gold { border-color: var(--gold); color: var(--gold); }
+    .formula > span[aria-hidden="true"] { color: var(--faint); }
+    .four { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 26px 0; }
+    .four article { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: #1b1720; }
+    .four .icon { color: var(--gold); font-size: 26px; }
+    .four h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 8px 0 6px; font-size: 19px; }
+    .four .reward-id { font-size: 16px; }
+    .four p { color: var(--muted); font-size: 16px; }
+    .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 24px; border-top: 1px solid #5c4738; }
+    .demo-item { display: flex; align-items: center; gap: 16px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #17141b80; }
+    .chip-icon { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border: 1px solid var(--gold); border-radius: 10px; color: var(--gold); font-size: 26px; transform: rotate(-8deg); }
+    .demo-item strong { display: block; font-weight: 600; }
+    .demo-item small { display: block; color: var(--muted); font-size: 15px; }
+    .emblem { display: grid; place-items: center; flex-shrink: 0; width: 50px; height: 56px; border: 1px solid #6f5d7c; border-radius: 10px; color: var(--lilac); font: 30px Georgia, serif; transition: border-color .2s, box-shadow .2s; }
+    .emblem.equipped { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 0 3px #efc17d26, inset 0 0 18px #efc17d1c; }
+    .demo-item .button { flex-shrink: 0; margin-left: auto; }
+    .first-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 18px; color: var(--muted); }
+    .first-foot .button { flex-shrink: 0; }
+
+    .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+    .rule { padding-top: 20px; border-top: 3px solid var(--line); }
+    .rule h3 { margin: 8px 0 12px; }
+    .rule ul { display: grid; gap: 5px; padding-left: 20px; color: var(--muted); }
+    .rule.do { border-color: var(--green); }
+    .rule.later { border-color: var(--lilac); }
+    .rule.do .eyebrow { color: var(--green); }
+    .rule.never { border-color: var(--rose); }
+    .rule.never .eyebrow { color: var(--rose); }
+    .pause { display: flex; align-items: flex-start; gap: 18px; margin-top: 32px; padding: 22px 26px; border: 1px solid var(--line); border-radius: 14px; color: var(--muted); font-size: 18px; }
+    .pause > span:first-child { color: var(--green); font-size: 26px; line-height: 1.1; }
+    .pause strong { color: var(--text); font-weight: 600; }
+    footer { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 80px; padding: 26px 0 36px; border-top: 1px solid var(--line); color: var(--faint); font-size: 15px; }
+
+    @media (max-width: 1150px) {
+      .shell { width: calc(100% - 48px); }
+      .topbar nav { gap: 16px; font-size: 14px; }
+      .flow { gap: 40px; }
+      .flow-step:not(:last-child)::after { right: -31px; }
+      .chapter-body { grid-template-columns: 1fr; }
+      .map { border-right: 0; border-bottom: 1px solid var(--line); }
+      .map-svg { max-width: 760px; }
+      .timeline { padding: 22px 18px; }
+      .step { padding: 0 1px 4px; }
+      .skills { grid-template-columns: 1fr; gap: 16px; }
+      .skill-picker { flex-direction: row; flex-wrap: wrap; }
+      .skill-choice { flex: 1 1 0; }
+      .skill-note { flex-basis: 100%; margin-top: 0; }
+      .skill-board { padding: 24px; }
+      .families { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 900px) {
+      .topbar nav { display: none; }
+      .flow { grid-template-columns: 1fr; gap: 28px; }
+      .flow-step:not(:last-child)::after { display: none; }
+      .character { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .character > * { border-top: 1px solid var(--line); }
+      .character > :first-child { grid-column: 1 / -1; border-top: 0; }
+      .character > :nth-child(5) { border-left: 0; }
+      .skill-choice { flex: 1 1 220px; }
+      .ladder, .skill-now, .bonus-details, .demo, .rules { grid-template-columns: 1fr; }
+      .reward-grid, .four { grid-template-columns: 1fr 1fr; }
+      .step small { display: none; }
+      .branch { grid-column: 1 / 9; }
+      .branch::before { display: none; }
+    }
+    @media (max-width: 600px) {
+      .shell { width: calc(100% - 32px); }
+      .track { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 14px; }
+      .track::before { display: none; }
+      .timeline-top, .reward-bar, .first-foot, .branch, footer { flex-direction: column; align-items: flex-start; }
+      .branch .button { margin-left: 0; }
+      .families, .reward-grid, .four { grid-template-columns: 1fr; }
+      .character { grid-template-columns: 1fr 1fr; }
+      .character > :nth-child(5) { border-left: 1px solid var(--line); }
+      .character > :nth-child(2n) { border-left: 0; }
+    }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
-    @media print { body { background: #17141b; print-color-adjust: exact; } .shell { width: 100%; } .topbar nav, .step-controls { display: none; } section, .reward-card { break-inside: avoid; } }
+    @media print { body { background: var(--bg); print-color-adjust: exact; } .shell { width: 100%; } .topbar nav, .step-controls { display: none; } section, .reward-card { break-inside: avoid; } }
   </style>
 </head>
 <body>
-  <a class="skip" href="#chapter">Перейти к интерактивной главе</a>
+  <a class="skip" href="#chapter">Перейти к примеру главы</a>
   <div class="shell">
     <header class="topbar">
       <a class="brand" href="#top" aria-label="Rankforge — в начало">
         <svg viewBox="0 0 30 40" fill="none" aria-hidden="true"><path d="M15 2 27 9v19L15 38 3 28V9Z" stroke="currentColor"/><path d="M10 29V11h8l3 5-3 5h-8m7 0 5 8" stroke="currentColor" stroke-width="2"/></svg>
         RANKFORGE
       </a>
-      <nav aria-label="Разделы инфографики"><a href="#chapter">Глава</a><a href="#skills">Навыки</a><a href="#rewards">Награды</a><a href="#candidate">Первый шаг</a></nav>
-      <span class="edition">DESIGN NOTES / 06.10.2026</span>
+      <nav aria-label="Разделы страницы"><a href="#how">Как это работает</a><a href="#chapter">Пример главы</a><a href="#skills">Навыки</a><a href="#rewards">Награды</a><a href="#first">С чего начнём</a><a href="#rules">Правила</a></nav>
     </header>
     <main id="top">
-      <noscript>Для переключения шагов, навыков и каталога нужен JavaScript. Здесь нет сетевых запросов; открой файл в браузере с разрешённым локальным JavaScript.</noscript>
-      <div class="hero">
-        <div>
-          <div class="eyebrow">Система прогрессии · интерактивный эскиз</div>
-          <h1>Не просто пройти.<em>Стать сильнее.</em></h1>
-          <p>Каждая решённая задача оставляет след: в навыке, в твоей базе и в возможностях следующего приключения. Но один починенный HTTP-запрос — ещё не владение HTTP.</p>
-          <div class="hero-tags"><span class="tag candidate">Предложение для обсуждения</span><span class="tag">Русский обзор · игра остаётся на английском</span></div>
-        </div>
-        <div class="hero-art">
-          <svg viewBox="0 0 400 295" role="img" aria-labelledby="hero-title hero-desc">
-            <title id="hero-title">Растёт не только число — растёт круг возможностей</title><desc id="hero-desc">От проверенного артефакта через новую ступень навыка к дополнительному маршруту, изменениям базы и личной коллекции.</desc>
-            <defs><radialGradient id="halo"><stop stop-color="#c2a3e7" stop-opacity=".14"/><stop offset="1" stop-color="#c2a3e7" stop-opacity="0"/></radialGradient></defs>
-            <circle cx="205" cy="145" r="144" fill="url(#halo)"/><circle cx="205" cy="145" r="105" fill="none" stroke="#695777" stroke-dasharray="2 8"/><path d="M99 145a106 106 0 0 1 179-77" fill="none" stroke="#c2a3e7"/><circle cx="205" cy="145" r="69" fill="none" stroke="#584960"/>
-            <path d="m205 91 42 23v51l-42 31-42-31v-51Z" fill="#302538" stroke="#efc17d"/><path d="m191 158 14-36 14 36m-24-10h20" fill="none" stroke="#efc17d" stroke-width="2"/><path d="M187 173h36" stroke="#786344"/>
-            <circle cx="100" cy="145" r="7" fill="#efc17d"/><circle cx="275" cy="67" r="7" fill="#c2a3e7"/><circle cx="290" cy="207" r="7" fill="#a6d5b8"/>
-            <text x="26" y="111" fill="#efc17d" font-size="11">ДОКАЗАТЬ</text><text x="284" y="40" fill="#c2a3e7" font-size="11">СВЯЗАТЬ</text><text x="290" y="240" fill="#a6d5b8" font-size="11">ПЕРЕНЕСТИ</text>
-            <path d="M101 154v64h69m112-12h-26M276 77v20" fill="none" stroke="#695777"/><text x="159" y="250" fill="#bfb3c5" font-size="10" letter-spacing="2">НОВЫЙ КОНТЕКСТ</text>
-          </svg>
-          <div class="art-caption">не бесконечная шкала XP · сеть реальных умений</div>
-        </div>
-      </div>
+      <noscript>Чтобы переключать шаги, навыки и награды, включи JavaScript. Страница работает без интернета.</noscript>
 
-      <div class="meaning-strip" aria-label="Четыре разных слоя прогресса">
-        <div class="meaning"><span>01</span><strong>Ранг — путь</strong><p>Крупные рубежи кампании. Игровая роль, не профессиональный грейд.</p></div>
-        <div class="meaning"><span>02</span><strong>Навык — глубина</strong><p>Несколько разных проверенных контекстов. Не сумма одинаковых побед.</p></div>
-        <div class="meaning"><span>03</span><strong>Evidence — основание</strong><p>Артефакт, контракт, проверки и помощь. Самостоятельный перенос — отдельно.</p></div>
-        <div class="meaning"><span>04</span><strong>Награда — возможность</strong><p>Новый маршрут, инструмент, вид базы или предмет. Не «+10% к знаниям».</p></div>
-      </div>
+      <section id="how" class="hero" aria-labelledby="page-title">
+        <p class="eyebrow">Rankforge · как устроена прокачка</p>
+        <h1 id="page-title">Как растёт <em>твой персонаж</em></h1>
+        <p class="lead">Ты решаешь настоящие инженерные задачи: чинишь сервисы, настраиваешь базы данных и прокси. Игра проверяет твой код — и по результату растут навыки, появляются награды, а база на карте оживает.</p>
+        <ol class="flow" aria-label="Как задание превращается в прогресс">
+          <li class="flow-step"><span class="flow-num" aria-hidden="true">1</span><h3>Задание</h3><p>Чинишь или строишь настоящий сервис: код в VS Code, команды в терминале. Например, учишь сервис правильно отвечать на HTTP-запросы.</p></li>
+          <li class="flow-step"><span class="flow-num" aria-hidden="true">2</span><h3>Проверка</h3><p>Игра запускает тесты на твоём коде: сервис действительно отвечает, данные не теряются. Подсказки брать можно — за них не штрафуют.</p></li>
+          <li class="flow-step"><span class="flow-num" aria-hidden="true">3</span><h3>Результат</h3>
+            <ul class="result-list">
+              <li><span aria-hidden="true">▲</span><span><b>Навык</b> растёт на уровень, когда тема встречается в новой ситуации.</span></li>
+              <li><span aria-hidden="true">★</span><span><b>Награда</b> — новый квест, инструмент, украшение или заряд для наставника.</span></li>
+              <li><span aria-hidden="true">⌂</span><span><b>База</b> — здание на карте загорается.</span></li>
+              <li><span aria-hidden="true">◆</span><span><b>Ранг</b> повышается после финала главы: E → D → C…</span></li>
+            </ul>
+          </li>
+        </ol>
+        <p class="key-rule"><span aria-hidden="true">✦</span><span><strong>Главное правило.</strong> Одно задание — это первый шаг, а не «освоил тему». Навык растёт, когда ты справляешься с темой снова, в другой и более сложной ситуации.</span></p>
+      </section>
 
-      <section id="chapter" aria-labelledby="chapter-heading">
-        <div class="section-head"><div><div class="eyebrow">01 / Попробуй будущее</div><h2 id="chapter-heading">Уровень растёт <em>по ходу главы.</em></h2></div><p>Выбери шаг. На пятом HTTP соединяется с маршрутизацией — боковой квест открывается до шестого.</p></div>
+      <section id="chapter" aria-labelledby="chapter-title">
+        <div class="section-head">
+          <p class="eyebrow">01 · Пример главы</p>
+          <h2 id="chapter-title">8 заданий <em>и бонусный квест</em></h2>
+          <p>Нажимай на шаги и смотри, что меняется после каждого задания: здания на базе, уровни навыков и награды.</p>
+        </div>
         <div class="chapter-card">
-          <div class="chapter-meta"><p><strong>8 основных заданий + 1 необязательная ветка</strong> · пример, не текущая глава</p><span class="tag demo">Локальная демонстрация</span></div>
-          <div class="chapter-body">
-            <div class="outpost">
-              <div class="map-label"><span>Твоя база / состояние после шага</span><b id="world-phase">05 / 08</b></div>
-              <svg viewBox="0 0 650 300" role="img" aria-labelledby="outpost-title outpost-description">
-                <title id="outpost-title">Развивающаяся база</title><desc id="outpost-description">Включаются реле, хранилище, маршрутизатор и архив. Их свет отражает проверенные результаты выбранного шага.</desc>
-                <defs><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="matrix(1 .45 -1 .45 325 0)"><path d="M28 0H0v28" fill="none" stroke="#70617d" stroke-opacity=".14"/></pattern></defs>
-                <path d="M36 186 311 47 615 178 340 287Z" fill="url(#grid)" stroke="#6b557e" stroke-opacity=".25"/>
-                <path d="m74 186 253-116 245 108-242 112Z" fill="#2e2636" stroke="#574361"/><path d="m74 186 256 104 242-112v13L330 302 74 200Z" fill="#211b2b" stroke="#44324e"/>
-                <path id="link-signal" class="map-link" d="m161 183 135 56 1-93" fill="none" stroke-width="2" stroke-dasharray="5 5"/>
-                <path id="link-gateway" class="map-link" d="m298 237 134-57 74 30" fill="none" stroke-width="2" stroke-dasharray="5 5"/>
-                <path id="link-vault" class="map-link" d="m304 139 116-48 89 116" fill="none" stroke-width="2" stroke-dasharray="5 5"/>
-                <g id="building-signal" class="map-building">
-                  <ellipse class="aura" cx="166" cy="195" rx="70" ry="26" fill="currentColor"/>
-                  <path d="m121 184 44-22 46 19-45 23Z" fill="#403044" stroke="currentColor"/><path d="m166 204v15l45-23v-15m-90 3v15l45 20" fill="#2e2232" stroke="currentColor"/>
-                  <path d="M151 179v-57l16-10 17 10v57l-17 10Z" fill="#372d3d" stroke="currentColor"/><path d="M166 112V76m-20 4a28 28 0 0 1 40 0m-47-11a40 40 0 0 1 54 0" stroke="currentColor" fill="none"/>
-                  <path class="window" d="M159 130v34m15-34v34" stroke="currentColor" stroke-width="4"/>
-                  <text x="119" y="249" fill="currentColor" font-size="11" letter-spacing="1">SIGNAL</text>
-                </g>
-                <g id="building-vault" class="map-building mint">
-                  <ellipse class="aura" cx="303" cy="147" rx="68" ry="26" fill="currentColor"/>
-                  <path d="m258 91 46-21 45 21v50l-45 23-46-23Z" fill="#2b3033" stroke="currentColor"/><path d="m258 91 46 22 45-22m-45 22v51" fill="none" stroke="currentColor"/>
-                  <path class="window" d="m270 104 21 10v9l-21-10Zm0 18 21 10v9l-21-10Zm46-8 21-10v9l-21 10Zm0 18 21-10v9l-21 10Z" fill="currentColor"/>
-                  <text x="281" y="56" fill="currentColor" font-size="11" letter-spacing="1">VAULT</text>
-                </g>
-                <g id="building-gateway" class="map-building violet">
-                  <ellipse class="aura" cx="436" cy="178" rx="65" ry="24" fill="currentColor"/>
-                  <path d="m397 175 13-7V98l26-13 34 15v72l12 6-47 24Z" fill="#362941" stroke="currentColor"/><path d="M424 188v-60l12-6 19 8v61M410 99l27 14 33-13m-33 13v9" stroke="currentColor" fill="none"/>
-                  <path class="window" d="m416 99 20-9 27 11-26 10Z" fill="currentColor"/>
-                  <circle class="window" cx="438" cy="148" r="4" fill="currentColor"/>
-                  <text x="397" y="224" fill="currentColor" font-size="11" letter-spacing="1">GATEWAY</text>
-                </g>
-                <g id="building-recovery" class="map-building">
-                  <ellipse class="aura" cx="521" cy="211" rx="45" ry="16" fill="currentColor"/>
-                  <path d="m491 183 30-14 30 13v30l-30 15-30-15Z" fill="#3b3038" stroke="currentColor"/><path d="m491 183 30 14 30-15m-30 15v30" fill="none" stroke="currentColor"/><path class="window" d="m501 190 11 5v10l-11-5m29-5 12-6v10l-12 6" stroke="currentColor" stroke-width="3" fill="none"/>
-                  <text x="504" y="252" fill="currentColor" font-size="10">ARCHIVE</text>
-                </g>
-                <g id="bonus-beacon" opacity=".2"><path d="M368 228v-36l20-9v24l-20 9" fill="#c2a3e71a" stroke="#c2a3e7"/><path d="m375 196 6 3-6 3" stroke="#c2a3e7" fill="none"/></g>
-              </svg>
-              <div class="world-effect"><span aria-hidden="true">↳</span><p id="world-effect">Gateway соединяет реле и базу. На карте появляется маяк дополнительного маршрута.</p></div>
-            </div>
-            <div class="chapter-readout">
-              <div class="mission-top"><span id="mission-number">ПОСЛЕ ЗАДАНИЯ 05</span><span class="tag" id="mission-origin">Существующий lab</span></div>
-              <h3 id="mission-title">Gateway</h3>
-              <p id="mission-description">Тот же HTTP-контракт теперь проходит через прокси. Видно, где заканчивается маршрут и начинается сервис.</p>
-              <div class="mission-evidence"><span aria-hidden="true">✓</span><p id="mission-evidence">В примере: реальный nginx + запрос до upstream + проверка неизвестного пути.</p></div>
-              <div class="chapter-stats"><div><span>Результаты главы</span><strong id="core-progress">5 / 8</strong></div><div><span>HTTP · ступень</span><strong id="http-stage">02 / 05</strong></div><div><span>Игровой ранг</span><strong id="rank-label">E · путь</strong></div></div>
-            </div>
-          </div>
-          <div class="timeline-zone">
-            <div class="timeline-tools"><p><strong>Пролистай главу</strong> · снимки примера, не потеря прогресса</p><div class="step-controls"><button class="button small" id="previous" type="button" aria-label="Предыдущий шаг">← Назад</button><button class="button small" id="next" type="button" aria-label="Следующий шаг">Дальше →</button></div></div>
-            <div id="mission-track" class="mission-track" role="group" aria-label="Выбери завершённый шаг главы"></div>
-            <div id="bonus-branch" class="bonus-branch ready">
-              <span class="branch-icon" aria-hidden="true">◇</span><div><p id="bonus-status" class="lilac">HTTP II → открыта боковая ветка</p><small>«Чужой маршрут» · вне обязательных 8 заданий</small></div><button id="open-bonus" class="button small" type="button" aria-expanded="false" aria-controls="bonus-details">Изучить ветку ↗</button>
+          <div class="timeline">
+            <div class="timeline-top"><p><strong>Шаги главы.</strong> Выбран шаг <span id="step-now">5</span> из 8.</p><div class="step-controls"><button class="button" id="previous" type="button">← Назад</button><button class="button" id="next" type="button">Дальше →</button></div></div>
+            <div id="track" class="track" role="group" aria-label="Задания главы"></div>
+            <div class="branch-row">
+              <div id="branch" class="branch">
+                <span class="branch-icon" aria-hidden="true">★</span>
+                <div><p id="branch-status"></p><small id="branch-note"></small></div>
+                <button id="open-bonus" class="button" type="button" aria-expanded="false" aria-controls="bonus-details">Что за квест?</button>
+              </div>
             </div>
             <div id="bonus-details" class="bonus-details" hidden>
-              <div><div class="eyebrow lilac">Предлагаемый transfer-квест</div><h3>Чужой маршрут</h3><p>Новый сервис за прокси: вместо знакомого health endpoint — status endpoint с опубликованным правилом для query. Найди, на каком hop теряется путь, и почини границу.</p><p style="margin-top:12px">Отдельный owned workspace и новая fixture. Signal и Gateway сохраняются. Квест можно отложить и сразу идти к Recovery.</p></div>
-              <div><ul><li>Настоящие HTTP-запросы до и через прокси.</li><li>Свежие значения, неизвестный путь, сохранённый trace.</li><li>Новые требования опубликованы заранее.</li></ul><label for="support-mode">Как пройдена демонстрационная попытка?</label><select id="support-mode"><option value="supported">С поддержкой — технический результат засчитывается</option><option value="independent">Самостоятельно — отдельная transfer-запись</option></select><div class="bonus-actions"><button class="button primary" id="complete-bonus" type="button">Показать успешный результат</button><button class="button" id="close-bonus" type="button">Отложить</button></div><p id="bonus-result" class="bonus-result" role="status"></p></div>
+              <div>
+                <p class="eyebrow">Бонусный квест</p>
+                <h3>Чужой маршрут</h3>
+                <p>Новый сервис стоит за прокси, и часть запросов теряется по дороге. Найди, на каком участке ломается путь, и почини.</p>
+                <ul>
+                  <li>Квест необязательный: можно пройти сейчас, позже или пропустить. Глава дальше не ждёт.</li>
+                  <li>Решения Signal и Gateway не трогаются — квест лежит в отдельной папке.</li>
+                  <li>Решишь без подсказок — квест засчитается в 3-й уровень HTTP.</li>
+                </ul>
+              </div>
+              <div>
+                <label for="bonus-mode">Как ты прошёл квест? (для примера)</label>
+                <select id="bonus-mode"><option value="hints">С подсказками</option><option value="solo">Сам, без подсказок</option></select>
+                <div class="bonus-actions"><button class="button primary" id="complete-bonus" type="button">Пройти квест</button><button class="button" id="close-bonus" type="button">Свернуть</button></div>
+                <p id="bonus-result" class="bonus-result" role="status"></p>
+              </div>
             </div>
           </div>
+          <div class="chapter-body">
+            <div class="map">
+              <p class="map-caption"><strong>Твоя база</strong><span id="map-step">после задания 5</span></p>
+              <svg class="map-svg" viewBox="40 36 615 330" role="img" aria-labelledby="map-title map-desc">
+                <title id="map-title">Карта базы</title><desc id="map-desc"></desc>
+                <path class="platform-side" d="M60,195 L350,330 L640,195 L640,211 L350,346 L60,211Z"/>
+                <path id="map-platform" class="platform" d="M350,60 L640,195 L350,330 L60,195Z"/>
+                <path class="platform-grid" d="M422.5,93.8 L132.5,228.8 M277.5,93.8 L567.5,228.8 M495,127.5 L205,262.5 M205,127.5 L495,262.5 M567.5,161.3 L277.5,296.3 M132.5,161.3 L422.5,296.3"/>
+                <g id="map-bonus" class="map-bonus"><ellipse class="aura" cx="118" cy="300" rx="46" ry="20.909090909090907"/><path class="islet-side" d="M70,300 L118,324 L166,300 L166,309 L118,333 L70,309Z"/><path class="islet" d="M118,276 L166,300 L118,324 L70,300Z"/><path class="face-left" d="M106,264 L118,270 L118,304 L106,298Z"/><path class="face-right" d="M118,270 L130,264 L130,298 L118,304Z"/><path class="face-top" d="M118,258 L130,264 L118,270 L106,264Z"/><path class="bonus-star" d="M118,236 l3.5,8 8.5,0.8 -6.5,5.6 2,8.4 -7.5,-4.4 -7.5,4.4 2,-8.4 -6.5,-5.6 8.5,-0.8Z"/><path class="bonus-check" d="M111,250 l5,5 10,-11"/><text class="map-name" x="118" y="354" text-anchor="middle">БОНУС</text></g>
+                <g id="map-traces" class="map-traces"><path d="M183.3,184.9 L270.3,225.4"/><path d="M270.3,225.4 L335.5,127.5"/><path d="M335.5,127.5 L422.5,168"/><path d="M422.5,168 L509.5,208.5"/><path d="M335.5,127.5 L357.3,265.9"/></g>
+                <path id="map-link-signal-gateway" class="map-link" d="M183.3,184.9 L270.3,225.4"/>
+                <path id="map-link-gateway-vault" class="map-link" d="M270.3,225.4 L335.5,127.5"/>
+                <path id="map-link-vault-echo" class="map-link" d="M335.5,127.5 L422.5,168"/>
+                <path id="map-link-echo-ledger" class="map-link" d="M422.5,168 L509.5,208.5"/>
+                <path id="map-link-vault-recovery" class="map-link" d="M335.5,127.5 L357.3,265.9"/>
+                <path id="map-link-bonus" class="map-link bonus-route" d="M270.3,225.4 Q184.1,292.7 118,300"/>
+                <g id="map-vault" class="map-building data"><ellipse class="aura" cx="335.5" cy="127.5" rx="62" ry="28.18181818181818"/><path class="face-left" d="M295.5,83.5 L335.5,103.5 L335.5,147.5 L295.5,127.5Z"/><path class="face-right" d="M335.5,103.5 L375.5,83.5 L375.5,127.5 L335.5,147.5Z"/><path class="face-top" d="M335.5,63.5 L375.5,83.5 L335.5,103.5 L295.5,83.5Z"/><path class="window" d="M302.7,95.9 L312.3,100.7 L312.3,110.4 L302.7,105.6Z"/><path class="window" d="M342.7,108.7 L352.3,103.9 L352.3,113.6 L342.7,118.4Z"/><path class="window" d="M318.7,103.9 L328.3,108.7 L328.3,118.4 L318.7,113.6Z"/><path class="window" d="M358.7,100.7 L368.3,95.9 L368.3,105.6 L358.7,110.4Z"/><path class="window" d="M302.7,111.3 L312.3,116.1 L312.3,125.8 L302.7,121Z"/><path class="window" d="M342.7,124.1 L352.3,119.3 L352.3,129 L342.7,133.8Z"/><path class="window" d="M318.7,119.3 L328.3,124.1 L328.3,133.8 L318.7,129Z"/><path class="window" d="M358.7,116.1 L368.3,111.3 L368.3,121 L358.7,125.8Z"/><text class="map-name" x="335.5" y="167.5" text-anchor="middle">VAULT</text></g>
+                <g id="map-echo" class="map-building data"><ellipse class="aura" cx="422.5" cy="168" rx="46" ry="20.909090909090907"/><path class="face-left" d="M396.5,134 L422.5,147 L422.5,181 L396.5,168Z"/><path class="face-right" d="M422.5,147 L448.5,134 L448.5,168 L422.5,181Z"/><path class="face-top" d="M422.5,121 L448.5,134 L422.5,147 L396.5,134Z"/><path class="window" d="M404.3,146.4 L414.7,151.6 L414.7,166.9 L404.3,161.7Z"/><path class="window" d="M430.3,151.6 L440.7,146.4 L440.7,161.7 L430.3,166.9Z"/><path class="mast" d="M422.5,134 V112"/><ellipse class="ring" cx="422.5" cy="120" rx="16" ry="6"/><ellipse class="ring" cx="422.5" cy="110" rx="24" ry="9"/><text class="map-name" x="422.5" y="201" text-anchor="middle">ECHO</text></g>
+                <g id="map-signal" class="map-building http"><ellipse class="aura" cx="183.3" cy="184.9" rx="54" ry="24.545454545454543"/><path class="face-left" d="M151.3,172.9 L183.3,188.9 L183.3,200.9 L151.3,184.9Z"/><path class="face-right" d="M183.3,188.9 L215.3,172.9 L215.3,184.9 L183.3,200.9Z"/><path class="face-top" d="M183.3,156.9 L215.3,172.9 L183.3,188.9 L151.3,172.9Z"/><path class="face-left" d="M167.3,114.9 L183.3,122.9 L183.3,180.9 L167.3,172.9Z"/><path class="face-right" d="M183.3,122.9 L199.3,114.9 L199.3,172.9 L183.3,180.9Z"/><path class="face-top" d="M183.3,106.9 L199.3,114.9 L183.3,122.9 L167.3,114.9Z"/><path class="window" d="M172.1,126 L178.5,129.2 L178.5,166.9 L172.1,163.7Z"/><path class="window" d="M188.1,129.2 L194.5,126 L194.5,163.7 L188.1,166.9Z"/><path class="mast" d="M183.3,110.9 V84.9"/><path class="wave" d="M171.3,84.9 a16,16 0 0 1 24,0 M163.3,76.9 a28,28 0 0 1 40,0"/><text class="map-name" x="183.3" y="220.9" text-anchor="middle">SIGNAL</text></g>
+                <g id="map-ledger" class="map-building data"><ellipse class="aura" cx="509.5" cy="208.5" rx="58" ry="26.36363636363636"/><path class="face-left" d="M473.5,188.5 L509.5,206.5 L509.5,226.5 L473.5,208.5Z"/><path class="face-right" d="M509.5,206.5 L545.5,188.5 L545.5,208.5 L509.5,226.5Z"/><path class="face-top" d="M509.5,170.5 L545.5,188.5 L509.5,206.5 L473.5,188.5Z"/><path class="window" d="M477.8,197.7 L505.2,211.3 L505.2,217.3 L477.8,203.7Z"/><path class="window" d="M513.8,211.3 L541.2,197.7 L541.2,203.7 L513.8,217.3Z"/><path class="board" d="M485.5,186.5 L529.5,164.5 L529.5,132.5 L485.5,154.5Z"/><path class="window bars" d="M494.5,176.5 v-10 M504.5,171.5 v-17 M514.5,166.5 v-12 M523.5,162.5 v-20"/><text class="map-name" x="509.5" y="246.5" text-anchor="middle">LEDGER</text></g>
+                <g id="map-gateway" class="map-building http"><ellipse class="aura" cx="270.3" cy="225.4" rx="58" ry="26.36363636363636"/><path class="face-left" d="M236.3,181.4 L270.3,198.4 L270.3,242.4 L236.3,225.4Z"/><path class="face-right" d="M270.3,198.4 L304.3,181.4 L304.3,225.4 L270.3,242.4Z"/><path class="face-top" d="M270.3,164.4 L304.3,181.4 L270.3,198.4 L236.3,181.4Z"/><path class="door" d="M246.5,199.7 L260.1,206.5 L260.1,237.3 L246.5,230.5Z"/><path class="window" d="M277.1,204.7 L297.5,194.5 L297.5,203.3 L277.1,213.5Z"/><path class="window" d="M246.5,191.8 L260.1,198.6 L260.1,203 L246.5,196.2Z"/><circle class="window" cx="270.3" cy="173.4" r="5"/><text class="map-name" x="270.3" y="262.4" text-anchor="middle">GATEWAY</text></g>
+                <g id="map-recovery" class="map-building recovery"><ellipse class="aura" cx="357.3" cy="265.9" rx="54" ry="24.545454545454543"/><path class="face-left" d="M325.3,235.9 L357.3,251.9 L357.3,281.9 L325.3,265.9Z"/><path class="face-right" d="M357.3,251.9 L389.3,235.9 L389.3,265.9 L357.3,281.9Z"/><path class="face-top" d="M357.3,219.9 L389.3,235.9 L357.3,251.9 L325.3,235.9Z"/><path class="window drawer" d="M330.1,245.8 L352.5,257 M362.1,257 L384.5,245.8"/><path class="window drawer" d="M330.1,253.3 L352.5,264.5 M362.1,264.5 L384.5,253.3"/><path class="window drawer" d="M330.1,260.8 L352.5,272 M362.1,272 L384.5,260.8"/><path class="wave" d="M367.3,219.9 a11,11 0 1 1 -4,-8"/><path class="wave" d="M364.3,207.9 l-1,5 5,1"/><text class="map-name" x="357.3" y="301.9" text-anchor="middle">RECOVERY</text></g>
+                <g id="map-flag" class="map-flag"><path class="mast" d="M234,120.8 V58.8"/><path class="pennant" d="M234,58.8 h34 l-8,11 8,11 h-34Z"/><text x="247" y="75.8" text-anchor="middle">D</text></g>
+              </svg>
+            </div>
+            <div class="readout">
+              <p class="step-count" id="step-count">Задание 5 из 8</p>
+              <h3 id="step-title">Gateway</h3>
+              <dl class="facts">
+                <div><dt>Что делаешь</dt><dd id="step-task"></dd></div>
+                <div><dt>Что проверяет игра</dt><dd id="step-check"></dd></div>
+                <div><dt>Что меняется на базе</dt><dd id="step-effect"></dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="character" role="group" aria-label="Персонаж после выбранного шага">
+            <p>Персонаж после шага <span id="char-step">5</span></p>
+            <div><span class="char-label">Ранг</span><span class="char-value" id="char-rank">E</span></div>
+            <div><span class="char-label"><i class="c-http" aria-hidden="true">⇄</i> HTTP</span><span class="char-value"><span class="pips c-http" id="pips-http" aria-hidden="true"></span><span id="char-http"></span></span></div>
+            <div><span class="char-label"><i class="c-data" aria-hidden="true">▤</i> Данные</span><span class="char-value"><span class="pips c-data" id="pips-data" aria-hidden="true"></span><span id="char-data"></span></span></div>
+            <div><span class="char-label"><i class="c-recovery" aria-hidden="true">↺</i> Восстановление</span><span class="char-value"><span class="pips c-recovery" id="pips-recovery" aria-hidden="true"></span><span id="char-recovery"></span></span></div>
+            <div><span class="char-label">Награды</span><span class="char-value small" id="char-rewards"></span></div>
+          </div>
         </div>
-        <p class="caption"><span>↳</span>В roadmap есть 6 исходных labs. Здесь они переупорядочены, а шаги 7–8 и бонус — новые эскизы. Это не изменение текущей кампании и не запуск проверок.</p>
       </section>
 
-      <section id="skills" aria-labelledby="skills-heading">
-        <div class="section-head"><div><div class="eyebrow">02 / Глубина вместо галочки</div><h2 id="skills-heading">Навык — это <em>несколько возвращений.</em></h2></div><p>Ступени имеют конкретные основания. Даже вся эта глава не заполняет ветку HTTP целиком.</p></div>
-        <div class="skills-layout">
+      <section id="skills" aria-labelledby="skills-title">
+        <div class="section-head">
+          <p class="eyebrow">02 · Навыки</p>
+          <h2 id="skills-title">5 уровней <em>в каждой ветке</em></h2>
+          <p>Одно задание по HTTP даёт первый уровень, а не «освоил HTTP». Каждый следующий уровень требует новой, более сложной ситуации. Уровни ниже показаны для шага <span id="skills-step">5</span> из примера главы.</p>
+        </div>
+        <div class="skills">
           <div class="skill-picker" role="group" aria-label="Выбери навык">
-            <button class="skill-choice" data-skill="http" type="button" aria-pressed="true"><span class="skill-symbol" aria-hidden="true">⌁</span><span><strong>HTTP & routing</strong><small>Сервис → прокси → перенос</small></span></button>
-            <button class="skill-choice" data-skill="data" type="button" aria-pressed="false"><span class="skill-symbol" aria-hidden="true">▤</span><span><strong>Data integrity</strong><small>Правила → повторы → гонки</small></span></button>
-            <button class="skill-choice" data-skill="recovery" type="button" aria-pressed="false"><span class="skill-symbol" aria-hidden="true">↶</span><span><strong>Recovery</strong><small>Архив → восстановление → отказ</small></span></button>
-            <p class="skill-note">Подсказка не отнимает результат.<br>Помощь отмечается у попытки, а не превращается в штраф навсегда.</p>
+            <button class="skill-choice" data-skill="http" type="button" aria-pressed="true"><span class="skill-icon c-http" aria-hidden="true">⇄</span><span><strong>HTTP и маршрутизация</strong><small>сервис → прокси → новые задачи</small></span></button>
+            <button class="skill-choice" data-skill="data" type="button" aria-pressed="false"><span class="skill-icon c-data" aria-hidden="true">▤</span><span><strong>Целостность данных</strong><small>правила → повторы → одновременные записи</small></span></button>
+            <button class="skill-choice" data-skill="recovery" type="button" aria-pressed="false"><span class="skill-icon c-recovery" aria-hidden="true">↺</span><span><strong>Восстановление</strong><small>архив → авария → бэкапы</small></span></button>
+            <p class="skill-note">Подсказки не отнимают ни уровни, ни награды. Только 3-й уровень проверяет, что ты справляешься сам: для него нужна новая задача без подсказок.</p>
           </div>
-          <div class="skill-board">
-            <div class="skill-board-header"><div><h3 id="skill-title">HTTP & routing</h3><p id="skill-subtitle">Узкая ступень II: контракт виден в двух контекстах.</p></div><span id="skill-tier" class="tag candidate">Ступень 02 из 05</span></div>
-            <div id="skill-ladder" class="skill-ladder" aria-label="Пять ступеней навыка"></div>
-            <div class="evidence-grid"><div class="evidence-box"><div class="eyebrow">Технический результат</div><p id="supported-evidence"></p></div><div class="evidence-box"><div class="eyebrow">Самостоятельный перенос</div><p id="transfer-evidence"></p></div></div>
+          <div class="skill-board" id="skill-board" data-skill="http">
+            <div class="skill-board-head"><div><h3 id="skill-title">HTTP и маршрутизация</h3><p id="skill-summary"></p></div><span class="tag first" id="skill-level"></span></div>
+            <ol id="ladder" class="ladder" aria-label="Уровни навыка"></ol>
+            <div class="skill-now"><div><p class="label">Сейчас</p><p id="skill-now"></p></div><div><p class="label">Следующий уровень</p><p id="skill-next"></p></div></div>
           </div>
         </div>
-        <p class="caption"><span>↳</span>Ступень II — checkpoint, не mastery. Если есть общий skill XP, это только игровой счётчик: он не заменяет разные задачи, проверенные артефакты и наблюдение самостоятельности.</p>
       </section>
 
-      <section id="rewards" aria-labelledby="rewards-heading">
-        <div class="section-head"><div><div class="eyebrow">03 / Шесть семейств · тридцать разных идей</div><h2 id="rewards-heading">Награда должна <em>что-то менять.</em></h2></div><p class="reward-intro">Не только числа. У каждого предмета или рубежа — действие в интерфейсе и видимое последствие. Нажми на семейство.</p></div>
-        <div id="family-filter" class="family-filter" role="group" aria-label="Фильтр семейства наград"></div>
-        <div class="reward-toolbar"><p id="family-description"></p><button class="button small" id="show-all" type="button" aria-pressed="false">Все 30 идей</button></div>
+      <section id="rewards" aria-labelledby="rewards-title">
+        <div class="section-head">
+          <p class="eyebrow">03 · Награды</p>
+          <h2 id="rewards-title">30 идей <em>в шести группах</em></h2>
+          <p>Хорошая награда даёт что-то сделать: открыть новый квест, получить инструмент, изменить базу или надеть украшение. Выбери группу, чтобы посмотреть идеи.</p>
+        </div>
+        <div id="families" class="families" role="group" aria-label="Группы наград"></div>
+        <div class="reward-bar"><p id="family-text"></p><button class="button" id="show-all" type="button" aria-pressed="false">Показать все 30</button></div>
         <div id="reward-grid" class="reward-grid"></div>
-        <div class="reward-legend"><span>Первый срез — небольшой кандидат</span><span>Дальше — перспективная идея</span><span>Отложено — нужна отдельная проверка пользы</span></div>
-        <p id="filter-announcement" class="sr-only" role="status"></p>
+        <div class="legend"><span><span class="tag first">Делаем первым</span>входит в первую версию</span><span><span class="tag later">Потом</span>хорошая идея на следующие версии</span><span><span class="tag deferred">Отложено</span>сначала нужно понять, нужно ли это</span></div>
+        <p id="filter-status" class="sr-only" role="status"></p>
       </section>
 
-      <section id="candidate" aria-labelledby="candidate-heading">
-        <div class="section-head"><div><div class="eyebrow">04 / От концепта к первой реализации</div><h2 id="candidate-heading">Начать с <em>одной связки.</em></h2></div><p>Это кандидат следующего среза, не список уже работающих механик. Для него не нужна новая экономика наставника.</p></div>
-        <div class="candidate-panel">
-          <div class="candidate-top"><div><span class="tag candidate">Кандидат · Signal → Gateway</span><h3>Два контекста. Один новый путь.</h3><p>Проверенные исходы дают HTTP II, необязательный transfer-квест, чип в инвентаре и рамку профиля. На базе загорается соединение. Награды выдаются один раз за рубеж.</p></div><div class="slice-flow" aria-label="Проверенные Signal и Gateway дают ступень 2, затем необязательный перенос"><div class="flow-node"><b>✓ + ✓</b>Signal / Gateway</div><span aria-hidden="true">→</span><div class="flow-node"><b>II</b>узкий checkpoint</div><span aria-hidden="true">→</span><div class="flow-node"><b>↗</b>другой контекст</div></div></div>
-          <div class="slice-actions">
-            <div class="inventory-demo"><span class="chip-icon" aria-hidden="true">ϟ</span><div><strong id="chip-count">1 чип в демонстрационном инвентаре</strong><small>Запас заряда наставника. Не количество ответов.</small><small class="gold">Начисление — первый срез · расход — после harness</small></div></div>
-            <div class="profile-demo"><span id="profile-emblem" class="profile-emblem" aria-hidden="true">E</span><div><strong>Рамка «Первый канал»</strong><small id="cosmetic-status">Получена за связку Signal + Gateway.</small></div><button class="button small" id="equip-cosmetic" type="button" aria-pressed="false">Примерить</button></div>
+      <section id="first" aria-labelledby="first-title">
+        <div class="section-head">
+          <p class="eyebrow">04 · С чего начнём</p>
+          <h2 id="first-title">Первые 4 награды — <em>за один рубеж</em></h2>
+          <p>В первой версии все награды выдаются в один момент: пройдены Signal и Gateway, и HTTP дошёл до 2-го уровня. Остальные 26 идей — на потом.</p>
+        </div>
+        <div class="first-panel">
+          <p class="formula" aria-label="Signal и Gateway дают второй уровень HTTP и четыре награды"><span class="pill">Signal ✓</span><span aria-hidden="true">+</span><span class="pill">Gateway ✓</span><span aria-hidden="true">→</span><span class="pill gold">HTTP: уровень 2</span><span aria-hidden="true">→</span><span class="pill gold">4 награды</span></p>
+          <div class="four">
+            <article><span class="icon" aria-hidden="true">ϟ</span><h3>Чип заряда <span class="reward-id">C1</span></h3><p>Попадает в инвентарь. Пока только копится — тратить научимся позже.</p></article>
+            <article><span class="icon" aria-hidden="true">↗</span><h3>Бонусный квест <span class="reward-id">R1</span></h3><p>«Чужой маршрут» появляется на карте. Можно пройти сразу или потом.</p></article>
+            <article><span class="icon" aria-hidden="true">⌂</span><h3>Линия на карте <span class="reward-id">O1</span></h3><p>Ретранслятор и шлюз соединяются. Клик по линии покажет, что проверила игра.</p></article>
+            <article><span class="icon" aria-hidden="true">◇</span><h3>Рамка профиля <span class="reward-id">I1</span></h3><p>Золотая рамка «Первый канал». Можно надеть и снять.</p></article>
           </div>
-          <div class="candidate-foot"><p id="award-note"><strong>1 уникальный рубеж → 1 комплект.</strong> Повторный Verify и возвращение на шаг не создают вторую награду.</p><button id="reset-demo" class="button small" type="button">Начать пример заново</button></div>
+          <div class="demo">
+            <div class="demo-item"><span class="chip-icon" aria-hidden="true">ϟ</span><div><strong id="chip-count"></strong><small id="chip-note"></small></div></div>
+            <div class="demo-item"><span id="emblem" class="emblem" aria-hidden="true">E</span><div><strong>Рамка «Первый канал»</strong><small id="frame-note"></small></div><button class="button" id="equip" type="button" aria-pressed="false">Надеть</button></div>
+          </div>
+          <div class="first-foot"><p>Каждая награда выдаётся один раз: повторная проверка того же задания второй комплект не даёт.</p><button id="reset" class="button" type="button">Сбросить пример</button></div>
         </div>
-        <p class="caption"><span>↳</span>Чип — резерв заряда, не обещание «20 вопросов» или длинных ответов. Будущий harness ограничит контекст, вывод и стоимость. Здесь нет модели, списаний, тарифов или сохранения в игру.</p>
       </section>
 
-      <section id="principles" aria-labelledby="principles-heading">
-        <div class="section-head"><div><div class="eyebrow">05 / Фильтр хороших идей</div><h2 id="principles-heading">Интерес — <em>без обязательной гонки.</em></h2></div></div>
-        <div class="choices">
-          <article class="choice-card keep"><div class="eyebrow">Развивать</div><h3>Новые способы действовать</h3><p>Transfer-квесты, экспериментальные стенды, растущая база и свободный выбор следующей ветки. Награда расширяет практику, а исходные требования и базовая помощь всегда доступны.</p></article>
-          <article class="choice-card later"><div class="eyebrow">Сознательно отложить</div><h3>Сложность должна окупиться</h3><p>Команда и гильдии — только после полноценного solo-пути. Также позже: продажа наград, обмен чипами и экономика ресурсов базы. Prestige — новый сценарий без обнуления навыков.</p></article>
-          <article class="choice-card reject"><div class="eyebrow">Не подходит</div><h3>Не учить избегать помощи</h3><p>Штраф за подсказку, потеря серии за пропущенный день, loot boxes, фарм одного fixture и платный обход проверки создают неправильную мотивацию. «Купить PASS» нельзя.</p></article>
+      <section id="rules" aria-labelledby="rules-title">
+        <div class="section-head">
+          <p class="eyebrow">05 · Правила</p>
+          <h2 id="rules-title">Правила <em>честной игры</em></h2>
+          <p>Награды помогают учиться. Они не должны заставлять заходить каждый день или бояться подсказок.</p>
         </div>
-        <div class="anti-loop"><span aria-hidden="true">↶</span><p><strong>Вернулся после паузы? Продолжай с того же места.</strong> Вместо штрафа — короткое напоминание и добровольная разминка. Заряд и полученные вещи не сгорают. Post-brief и английский не блокируют техническую победу.</p></div>
+        <div class="rules">
+          <article class="rule do"><p class="eyebrow">Делаем</p><h3>Новые возможности</h3><ul><li>бонусные квесты и испытания</li><li>инструменты мастерской</li><li>база, которая растёт вместе с тобой</li><li>свобода выбирать, куда идти дальше</li></ul></article>
+          <article class="rule later"><p class="eyebrow">Потом</p><h3>Когда станет ясно, что это нужно</h3><ul><li>гильдии и командная игра — после хорошей одиночной</li><li>обмен и продажа наград</li><li>экономика ресурсов базы</li></ul></article>
+          <article class="rule never"><p class="eyebrow">Никогда</p><h3>То, что портит учёбу</h3><ul><li>штраф за подсказку</li><li>потеря серии за пропущенный день</li><li>лутбоксы и случайные награды</li><li>фарм одного и того же задания</li><li>«купить» прохождение</li></ul></article>
+        </div>
+        <p class="pause"><span aria-hidden="true">↺</span><span><strong>Сделал перерыв? Продолжаешь с того же места.</strong> Чипы и вещи не сгорают. Вместо штрафа — короткая разминка по желанию. Письменный разбор после задания и английский никогда не мешают засчитать задание.</span></p>
       </section>
     </main>
-    <footer><span>RANKFORGE / PROGRESSION STUDY 01</span><p class="footer-note">Работает локально, в том числе через file://. Все переключатели меняют только этот эскиз. Актуальный курс и требования к реализации — в COURSE-ROADMAP.md и PROGRESSION-DESIGN.md.</p><a href="#top">Наверх ↑</a></footer>
-    <p id="chapter-announcement" class="sr-only" role="status" aria-atomic="true"></p>
-    <p id="skill-announcement" class="sr-only" role="status" aria-atomic="true"></p>
+    <footer><span>Rankforge · как устроена прокачка · 06.10.2026</span><a href="#top">Наверх ↑</a></footer>
+    <p id="chapter-status" class="sr-only" role="status" aria-atomic="true"></p>
+    <p id="skill-status" class="sr-only" role="status" aria-atomic="true"></p>
   </div>
   <script>
     'use strict';
     const missions = [
-      { name: 'Signal', origin: 'Существующий lab', description: 'Реле впервые отвечает по контракту. Ты различаешь path и query, возвращаешь верные status, headers и JSON.', evidence: 'Статус, Content-Type, тело и неизвестный путь проверены на настоящем сервисе.', effect: 'Антенна загорается. Карточка реле показывает последний проверенный контракт.' },
-      { name: 'Vault', origin: 'Существующий lab', description: 'У базы появляется память с правилами. Некорректные состояния отвергает сама БД, а не только форма ввода.', evidence: 'Прямые записи в SQLite проверяют ограничения и повторный setup.', effect: 'В хранилище включаются ячейки. Можно открыть схему и evidence целостности.' },
-      { name: 'Echo', origin: 'Существующий lab', description: 'Доставка может повториться, её эффект — нет. Идентичный повтор отличается от конфликта под тем же ID.', evidence: 'Новый event, replay, конфликт и повторное соединение проверены.', effect: 'В журнале склада появляются отдельные следы: новый факт, повтор и конфликт.' },
-      { name: 'Ledger', origin: 'Существующий lab', description: 'Отчёт начинает сходиться с исходными фактами. Точные суммы и отвергнутые строки больше не теряются.', evidence: 'Сверены суммы, решения по дублям и неизменность входных данных.', effect: 'На базе открывается ведомость: исходное → принято → отклонено → итог.' },
-      { name: 'Gateway', origin: 'Существующий lab', description: 'Тот же HTTP-контракт теперь проходит через прокси. Видно, где заканчивается маршрут и начинается сервис.', evidence: 'Реальный nginx, запрос до upstream и неизвестный путь проверены.', effect: 'Gateway соединяет реле и базу. Появляется маяк дополнительного маршрута.' },
-      { name: 'Recovery', origin: 'Существующий lab', description: 'Восстанови состояние из архива атомарно. Ошибка в конце архива не должна уничтожить старые данные.', evidence: 'Результат, replay и сохранность старого состояния при поздней ошибке проверены.', effect: 'Архив включается. В карточке восстановления видны снимки до и после.' },
-      { name: 'Field trace', origin: 'Новый эскиз', description: 'С поддержкой проследи другой запрос через уже знакомую систему. Сопоставь наблюдения, а не угадывай виновный слой.', evidence: 'Будущий checker должен связать trace с реальными hops на новом локальном fixture.', effect: 'Линии на карте становятся кликабельными: клик показывает наблюдение на каждом hop.' },
-      { name: 'Outpost drill', origin: 'Новый эскиз', description: 'Собери итог главы: запрос через прокси, один устойчивый эффект, сверенный отчёт и безопасное восстановление.', evidence: 'Будущий составной сценарий проверяет сохранённые контракты и данные после отказа.', effect: 'База работает как связная система. Открывается итог главы, но ветки навыков ещё растут.' }
+      { name: 'Signal', topic: 'http', label: 'HTTP', task: 'Сервис-ретранслятор запущен, но база считает его мёртвым. Почини его HTTP-ответы: правильный статус, заголовки и JSON.', check: 'Игра шлёт настоящие запросы: /health должен отвечать 200, неизвестный адрес — 404.', effect: 'Загорается антенна ретранслятора.' },
+      { name: 'Vault', topic: 'data', label: 'данные', task: 'Спроектируй таблицы склада в SQLite так, чтобы база данных сама не принимала неправильные записи.', check: 'Игра пишет в базу заведомо плохие данные в обход твоего кода — база должна их отклонить.', effect: 'Включается хранилище.' },
+      { name: 'Echo', topic: 'data', label: 'данные', task: 'Одно и то же сообщение может прийти дважды. Сделай так, чтобы повтор не учитывался второй раз, а сообщение с тем же номером, но другими данными отклонялось.', check: 'Новое сообщение, точный повтор, конфликт и перезапуск процесса.', effect: 'Загорается узел сообщений и его дорога к хранилищу.' },
+      { name: 'Ledger', topic: 'mix', label: 'отчёты', task: 'Собери дневной отчёт из сырых записей: суммы до копейки, дубли убраны, ошибочные строки отмечены.', check: 'Суммы сходятся, дубли и ошибки обработаны, исходные данные не изменились.', effect: 'Загорается ведомость: видно, сколько записей пришло, сколько принято и сколько отклонено.' },
+      { name: 'Gateway', topic: 'http', label: 'HTTP', task: 'Настрой nginx так, чтобы запросы шли через шлюз к сервису и ничего не терялось по дороге.', check: 'Настоящий nginx в Docker: запрос доходит до сервиса с правильным путём и параметрами.', effect: 'Шлюз соединяет ретранслятор с хранилищем. Рядом с базой появляется остров бонусного квеста.' },
+      { name: 'Recovery', topic: 'recovery', label: 'восстановление', task: 'Восстанови данные из архива. Если архив повреждён в самом конце, старые данные должны остаться целыми.', check: 'Восстановление проходит целиком или не применяется вообще; при ошибке старая база цела.', effect: 'Включается архив и его дорога к хранилищу.' },
+      { name: 'Field trace', topic: 'mix', label: 'всё вместе', task: 'Проследи путь одного запроса через всю базу и найди, на каком участке он ломается.', check: 'Твой разбор совпадает с тем, что на самом деле происходило на каждом участке.', effect: 'Все дороги на карте светятся: по ним можно проследить путь любого запроса.' },
+      { name: 'Outpost drill', topic: 'mix', label: 'финал главы', task: 'Финал главы, всё сразу: запрос через шлюз, запись в базу, отчёт и восстановление после аварии.', check: 'После аварии всё, что ты починил раньше, продолжает работать.', effect: 'База работает как единое целое: край платформы светится, над базой поднят флаг ранга D.' }
     ];
     const skills = {
-      http: { title: 'HTTP & routing', levels: ['Первый сигнал', 'Два контекста', 'Перенос', 'Надёжность', 'Система'], criteria: ['Signal: path, headers, status.', 'Signal + Gateway: сервис и прокси.', 'Два разных новых случая без подсказки.', 'Timeout, TLS, retry в разных labs.', 'Изменить систему и сохранить контракты.'], next: 'Следующая глубина: два различающихся самостоятельных переноса. Затем — отказы, TLS и изменения системы.' },
-      data: { title: 'Data integrity', levels: ['Инвариант', 'Повтор и факт', 'Конкуренция', 'Эволюция', 'Система'], criteria: ['Vault: ограничения прямых записей.', 'Vault + Echo: правила и durable identity.', 'Разные расписания новых writers.', 'Миграция и совместимость на новых данных.', 'Связать OLTP, lineage и reconciliation.'], next: 'Следующая глубина: несколько новых конкурентных расписаний с проверкой фактических записей, не повтором готового SQL.' },
-      recovery: { title: 'Recovery', levels: ['Атомарность', 'Связный сценарий', 'Новый отказ', 'Эксплуатация', 'Система'], criteria: ['Recovery: архив и поздняя ошибка.', 'Recovery + составной drill.', 'Разные незнакомые точки отказа.', 'Другой backup, RPO/RTO, restore.', 'Проверить release, restore и данные вместе.'], next: 'Следующая глубина: самостоятельное восстановление после разных новых отказов, затем реальная репетиция backup/restore.' }
+      http: {
+        title: 'HTTP и маршрутизация', short: 'HTTP', reach: [1, 5],
+        summary: 'Как сервисы отвечают на запросы и как запросы доходят до них через прокси.',
+        levels: [['Первый ответ', 'Signal: сервис правильно отвечает на запросы.'], ['Через прокси', 'Signal + Gateway: то же самое работает через nginx.'], ['Сам в новой задаче', 'Две новые HTTP-задачи без подсказок.'], ['Надёжность', 'Таймауты, повторы запросов, шифрование TLS.'], ['Система', 'Меняешь связанные сервисы и ничего не ломаешь.']],
+        now: ['Уровней пока нет.', 'Сервис отвечает правильно, но это одно место и одна задача. Начало, а не «освоил HTTP».', 'HTTP работает и напрямую, и через прокси. Дальше — незнакомые задачи без подсказок.'],
+        next: ['Пройди Signal (шаг 1): сервис должен правильно отвечать на запросы.', 'Пройди Gateway (шаг 5): тот же сервис, но запросы идут через nginx.', 'Реши две новые HTTP-задачи без подсказок. Бонусный квест «Чужой маршрут» может стать первой из них.']
+      },
+      data: {
+        title: 'Целостность данных', short: 'Данные', reach: [2, 3],
+        summary: 'Как не потерять и не испортить данные: правила в базе, повторные сообщения, одновременные записи.',
+        levels: [['Правила в базе', 'Vault: база данных сама отклоняет плохие записи.'], ['Повтор — не новое', 'Vault + Echo: повторное сообщение не портит данные.'], ['Одновременные записи', 'Несколько программ пишут сразу, а данные целы.'], ['Миграции', 'Меняешь структуру базы и не теряешь данные.'], ['Система', 'База, отчёты и сверка работают согласованно.']],
+        now: ['Уровней пока нет.', 'База данных сама защищает себя от ошибочных записей.', 'Данные защищены и от ошибочных записей, и от повторных сообщений.'],
+        next: ['Пройди Vault (шаг 2): база данных должна сама отклонять плохие записи.', 'Пройди Echo (шаг 3): повторное сообщение не должно портить данные.', 'Задачи, где несколько программ пишут в базу одновременно, — в следующих главах.']
+      },
+      recovery: {
+        title: 'Восстановление', short: 'Восстановление', reach: [6, 8],
+        summary: 'Как вернуть систему к жизни после аварии и ничего не потерять.',
+        levels: [['Всё или ничего', 'Recovery: восстановление не оставляет полуготового состояния.'], ['Авария во всей базе', 'Recovery + финал главы.'], ['Новые аварии', 'Незнакомые сбои, сам и без подсказок.'], ['Бэкапы', 'Настоящий бэкап и восстановление за заданное время.'], ['Система', 'Выпуск версии, откат и данные вместе.']],
+        now: ['Уровней пока нет.', 'Восстановление из архива проходит целиком или не применяется вообще.', 'Восстановление выдерживает аварию во всей базе, а не только в одном архиве.'],
+        next: ['Пройди Recovery (шаг 6): восстановление из архива целиком или никак.', 'Пройди финал главы (шаг 8): восстановление после аварии во всей базе.', 'Новые, незнакомые аварии, которые нужно починить самому, — в следующих главах.']
+      }
     };
     const families = [
-      { id: 'charge', label: 'Заряд', icon: 'ϟ', description: 'Резерв для наставника. Получение предметов отделено от будущего механизма расхода.', principle: 'Сначала запас. Потом harness.', note: 'Базовые объяснения, инструкции, hints и Verify не зависят от инвентаря. Чип не равен вопросу, минуте или токену.' },
-      { id: 'routes', label: 'Маршруты', icon: '↗', description: 'Новая задача — сама награда. Дополнительные ветки не перекрывают основной путь.', principle: 'Больше контекстов, не повторов.', note: 'Различается ситуация, а не только число в том же ответе. У каждой задачи свои публичные требования и проверенный checker.' },
-      { id: 'outpost', label: 'Живая база', icon: '⌂', description: 'Изменения в коде становятся видимыми в мире и открывают конкретные панели.', principle: 'У каждого огня — причина.', note: 'Свет отражает проверенный артефакт. Диагностика текущей ошибки доступна всегда; награда — новый вид истории или дополнительная площадка.' },
-      { id: 'identity', label: 'Коллекция', icon: '◇', description: 'Личная история через вещи, которые можно надеть, разместить или открыть.', principle: 'Память о сделанном.', note: 'Косметика не выдаёт профессиональный грейд и не улучшает результат проверки. Полученная вещь остаётся после паузы.' },
-      { id: 'practice', label: 'Мастерская', icon: '⌘', description: 'Дополнительные лабораторные инструменты. Они расширяют практику, а не делают PASS дешевле.', principle: 'Лучше видеть, а не легче сдать.', note: 'Все средства, необходимые для основной задачи, доступны с начала. Расширенные стенды получают собственные resource limits и owned workspace.' },
-      { id: 'agency', label: 'Свобода', icon: '⑂', description: 'Больше права выбирать тему, форму эксперимента и следующий проект. Solo-first.', principle: 'Свой маршрут без тупика.', note: 'Выбор обратим, основные prerequisites сохраняются. Ни класс, ни специализация не отнимают помощь, сохранения или уже открытые пути.' }
+      { id: 'charge', label: 'Заряд', icon: 'ϟ', hint: 'энергия для наставника', description: 'Запас энергии для ИИ-наставника — чат-помощника внутри игры.', principle: 'Сначала копим, тратить научимся потом', note: 'Обычные подсказки, инструкции и проверка кода работают без чипов. Один чип — это не «один вопрос»: сколько стоит ответ наставника, решим, когда настроим лимиты на ответы.' },
+      { id: 'routes', label: 'Маршруты', icon: '↗', hint: 'новые квесты', description: 'Новые задания как награда: бонусные квесты, испытания, возвращения в знакомые места.', principle: 'Больше разных ситуаций, а не повторов', note: 'Каждый бонусный квест — новая ситуация со своими условиями. Основная глава от них не зависит.' },
+      { id: 'outpost', label: 'Живая база', icon: '⌂', hint: 'карта меняется', description: 'Прогресс видно на карте базы: свет, дороги, новые здания.', principle: 'Каждый огонёк что-то значит', note: 'Здание горит, потому что твой код прошёл проверку. Награды здесь — новые виды и здания, а не скрытые бонусы.' },
+      { id: 'identity', label: 'Коллекция', icon: '◇', hint: 'украшения и трофеи', description: 'Вещи, которые напоминают о сделанном: рамки, трофеи, звания.', principle: 'Память о пройденном', note: 'Украшения не влияют на проверки и не пропадают после перерыва.' },
+      { id: 'practice', label: 'Мастерская', icon: '⌘', hint: 'инструменты', description: 'Инструменты для дополнительной практики: сравнение решений, безопасные сбои, разбор запросов.', principle: 'Помогает лучше видеть, а не легче сдать', note: 'Всё нужное для основных заданий доступно с самого начала. Мастерская — чтобы копнуть глубже.' },
+      { id: 'agency', label: 'Свобода', icon: 'Ψ', hint: 'выбор пути', description: 'Больше выбора: куда идти дальше, на чём сфокусироваться, свой проект.', principle: 'Свой маршрут без тупиков', note: 'Любой выбор можно поменять. Ничего не закрывается навсегда.' }
     ];
     const ideas = [
-      { id: 'C1', family: 'charge', name: 'Чип за рубеж', state: 'slice', text: 'Материальный запас заряда за новый проверенный checkpoint.', action: 'Инвентарь → увидеть чип и источник выдачи.', trigger: 'Signal + Gateway впервые удовлетворяют одному milestone.', boundary: 'В первом срезе только начисление. Никакого обещанного числа ответов и никакого списания.' },
-      { id: 'C2', family: 'charge', name: 'Капсула полевого отчёта', state: 'later', text: 'Добровольное короткое объяснение добавляет отдельную награду за участие.', action: 'Post-brief → сохранить заметку → открыть капсулу.', trigger: 'Один осмысленный отчёт на уникальный эпизод; конкретный критерий участия ещё нужно проверить.', boundary: 'Нельзя требовать длину, грамматику или одобрение модели. Техническая награда уже получена; повтор текста не фармится.' },
-      { id: 'C3', family: 'charge', name: 'Исследовательский резерв', state: 'later', text: 'Выделенный запас для разбора необязательного сложного случая.', action: 'Карточка challenge → зарезервировать чип для этого маршрута.', trigger: 'Новый authored challenge получает разовый грант, а не награду за количество ошибок.', boundary: 'После harness; не удерживать поддержку до успешного прохождения. Резерв можно снять без потери.' },
-      { id: 'C4', family: 'charge', name: 'Общая ячейка хранения', state: 'later', text: 'Собранные чипы можно переносить между темами, не угадывая нужную заранее.', action: 'Инвентарь → выбрать тему резерва → переназначить.', trigger: 'Открыта вторая учебная ветка; сама возможность управления бесплатна.', boundary: 'Нет срока годности, торговли и конвертации в PASS. Чип не привязан навсегда к навыку.' },
-      { id: 'C5', family: 'charge', name: 'Выбор внутри тайника', state: 'deferred', text: 'Вместо случайного лута — осознанно выбрать заряд или косметический предмет.', action: 'Награда главы → посмотреть оба варианта → выбрать.', trigger: 'Уникальный chapter milestone; варианты и правила показаны до выбора.', boundary: 'Отложить до испытания harness и баланса. Выбор косметики не должен оставлять ученика без основной помощи.' },
-      { id: 'R1', family: 'routes', name: 'Чужой маршрут', state: 'slice', text: 'HTTP II открывает новый сервис за прокси прямо в середине главы.', action: 'Маяк на карте → открыть необязательный transfer-квест.', trigger: 'Есть version-bound evidence Signal и Gateway, не просто накопленный XP.', boundary: 'Core-путь продолжается без бонуса. Новая fixture; прохождение с помощью допустимо, независимость отмечается отдельно.' },
-      { id: 'R2', family: 'routes', name: 'Перекрёстное испытание', state: 'later', text: 'HTTP + integrity встречаются в запросе, повтор которого не меняет склад дважды.', action: 'Пересечение ветвей → принять составной ticket.', trigger: 'Подтверждены нужные узкие способности обеих веток.', boundary: 'Не новый слой ради сложности: один bounded инвариант, реальный запрос и проверка записанного эффекта.' },
-      { id: 'R3', family: 'routes', name: 'Другой рабочий способ', state: 'later', text: 'Посмотреть, выдержит ли альтернативное решение тот же публичный контракт.', action: 'После PASS → создать отдельную копию эксперимента.', trigger: 'Первый вариант проверен; новый вариант использует другой подход.', boundary: 'Не перезаписывает исходник. Прежние требования не ослабляются; это сравнение подходов, не повторная core-награда.' },
-      { id: 'R4', family: 'routes', name: 'Экспедиция с ограничением', state: 'later', text: 'Тот же класс проблем при иной задержке, памяти или доступности зависимости.', action: 'Выбор экспедиции → посмотреть изменённый контракт → начать.', trigger: 'После обычного сценария и знакомства с нужной диагностикой.', boundary: 'Ограничение опубликовано заранее. Никаких скрытых правил или соревнования мощности ноутбуков.' },
-      { id: 'R5', family: 'routes', name: 'Возвращение к старому узлу', state: 'later', text: 'Позже приходит новый симптом на знакомую базу — проверка переноса во времени.', action: 'Карта → новый ticket у прежнего узла → свежая попытка.', trigger: 'Несколько других задач между попытками; ждать календарный день не обязательно.', boundary: 'Исторический успех сохраняется. Новая ситуация и evidence, не фарм того же fixture.' },
-      { id: 'O1', family: 'outpost', name: 'Включённый канал', state: 'slice', text: 'Реле и шлюз загораются; соединение на карте получает собственную историю.', action: 'Клик по светящейся линии → открыть evidence связки.', trigger: 'Тот же уникальный Signal + Gateway milestone.', boundary: 'Первый срез — свет и ссылка на проверки. Это отображение состояния, не выдуманный прирост производительности.' },
-      { id: 'O2', family: 'outpost', name: 'Стол картографа', state: 'later', text: 'База получает обзор твоих версий схемы и проектных решений.', action: 'Здание → сравнить две схемы и связанные ADR.', trigger: 'Проверены ссылки и исполняемые probes design-блока; review остаётся отдельным.', boundary: 'Сложность диаграммы не награждается. Стол не объявляет schema-valid архитектуру правильной.' },
-      { id: 'O3', family: 'outpost', name: 'Архив восстановления', state: 'later', text: 'Снимки экспериментов становятся видимыми точками истории базы.', action: 'Архив → выбрать снимок → репетиция в новой копии.', trigger: 'Recovery и первый отдельно проверенный restore.', boundary: 'Создание обычного безопасного checkpoint доступно всегда. Награда — каталог репетиций, не право сохранить работу.' },
-      { id: 'O4', family: 'outpost', name: 'Обсерватория', state: 'later', text: 'Отдельный вид базы показывает путь запроса, задержки и причинные связи.', action: 'Башня → включить overlay выбранного request ID.', trigger: 'Есть связанный trace из proxy, app и DB на собственном стенде.', boundary: 'Логи и сообщения о текущих ошибках не запираются. Overlay не заменяет raw evidence.' },
-      { id: 'O5', family: 'outpost', name: 'Новый участок базы', state: 'later', text: 'Свободная площадка для маленького авторского сервиса или data-проекта.', action: 'Пустой участок → выбрать bounded шаблон → создать workspace.', trigger: 'Готов соответствующий core-блок и resource profile шаблона.', boundary: 'Реальные файлы в отдельной owned папке. Выбор участка не сбрасывает и не чинит за игрока другие workspaces.' },
-      { id: 'I1', family: 'identity', name: 'Рамка «Первый канал»', state: 'slice', text: 'Неброский золотой контур профиля за первую связанную способность.', action: 'Коллекция → примерить → надеть или снять рамку.', trigger: 'Один раз за Signal + Gateway milestone.', boundary: 'Рамка не повышает skill tier и не влияет на проверки. Её можно снять без потери владения.' },
-      { id: 'I2', family: 'identity', name: 'Трофей с историей', state: 'later', text: 'Маленький предмет на базе хранит память о конкретном восстановленном инциденте.', action: 'Полка → поставить трофей → открыть связанный trace.', trigger: 'Уникальный проверенный incident, не число намеренно сломанных запусков.', boundary: 'Не поощрять создание аварий ради трофея. Источник предмета виден в карточке.' },
-      { id: 'I3', family: 'identity', name: 'Позывной', state: 'later', text: 'Игровое имя роли: Path keeper, Archivist, Signal finder.', action: 'Профиль → выбрать один из полученных позывных.', trigger: 'Тематический набор разных проверенных исходов.', boundary: 'Это история персонажа, не титул Senior и не сертификат профессии.' },
-      { id: 'I4', family: 'identity', name: 'Чертёж облика', state: 'later', text: 'Другая архитектурная форма уже работающего здания: крыша, свет, материал.', action: 'Здание → внешний вид → применить полученный чертёж.', trigger: 'Глава завершена с сохранением её публичных контрактов.', boundary: 'Только оформление. Никаких скрытых технических бонусов или случайных платных наборов.' },
-      { id: 'I5', family: 'identity', name: 'Хроника базы', state: 'later', text: 'Собираемый разворот «было → стало» из настоящих артефактов и собственных заметок.', action: 'Хроника → выбрать эпизод → открыть сравнение.', trigger: 'Новый самостоятельный или supported результат; режим подписан.', boundary: 'Нет авторизации или личных секретов в экспорте. Хроника — история обучения, не доказательство всех навыков.' },
-      { id: 'P1', family: 'practice', name: 'Стенд сравнения', state: 'later', text: 'Два твоих решения запускаются на одном наборе входов с понятным diff.', action: 'Мастерская → выбрать артефакты → сравнить поведение.', trigger: 'Есть два сохранённых варианта и опубликованный общий контракт.', boundary: 'Базовый diff доступен всегда. Расширение лишь собирает сравнение; pass/fail правила прежние.' },
-      { id: 'P2', family: 'practice', name: 'Комната неисправностей', state: 'later', text: 'Управляемый timeout, потеря связи или crash между записями.', action: 'Песочница → выбрать отказ → воспроизвести локально.', trigger: 'Освоены средства безопасной остановки и нужная диагностическая граница.', boundary: 'Только owned ресурсы, лимит длительности и данных. Обычный сбой основной задачи можно разбирать без разблокировки.' },
-      { id: 'P3', family: 'practice', name: 'Повтор трассы', state: 'later', text: 'Разобрать сохранённый запрос по шагам, сопоставляя hops и эффекты.', action: 'Trace → двигать playhead → смотреть событие и состояние.', trigger: 'Новый эпизод с настоящей записанной трассой.', boundary: 'Просмотр лога доступен изначально. Replay не запускает внешние запросы и не считается свежей практикой.' },
-      { id: 'P4', family: 'practice', name: 'Миксер практики', state: 'later', text: 'Собрать короткую тренировку из нескольких уже открытых типов случаев.', action: 'Практика → выбрать темы → получить проверенный набор.', trigger: 'Открыты две совместимые библиотеки authored вариантов.', boundary: 'Меняются контексты, не скрытые требования. Повтор seed не выдаёт новый milestone; объём ограничен.' },
-      { id: 'P5', family: 'practice', name: 'Репетиция дежурства', state: 'later', text: 'Применить runbook в свежем окружении с одним заранее объявленным классом отказов.', action: 'Репетиция → начать → проверить восстановление и данные.', trigger: 'Есть проверенные rollback, backup и наблюдаемость.', boundary: 'Детерминированный сценарий честно обозначен. Это не оценка живой командой и не экзамен на скорость.' },
-      { id: 'A1', family: 'agency', name: 'Выбор следующего контракта', state: 'later', text: 'Два равноценных tickets: игрок решает, какой полезнее его базе сейчас.', action: 'Доска → сравнить исходы → закрепить следующий ticket.', trigger: 'У обоих заданий удовлетворены реальные prerequisites.', boundary: 'Второй путь остаётся доступен. Нет штрафа за смену решения или искусственного замка на несвязанные темы.' },
-      { id: 'A2', family: 'agency', name: 'Фокус специализации', state: 'later', text: 'Выбрать operations, backend или data как приоритет рекомендаций.', action: 'Профиль → сменить фокус → получить другой порядок предложений.', trigger: 'Доступны реальные задания в нескольких направлениях.', boundary: 'Это обратимый фильтр рекомендаций, не класс с навсегда закрытыми навыками.' },
-      { id: 'A3', family: 'agency', name: 'Личный проект', state: 'later', text: 'Своя тема внутри ограниченного контракта с проверяемым эффектом.', action: 'Проекты → выбрать основу → предложить bounded изменение.', trigger: 'Есть связанные навыки и проверяемый baseline.', boundary: 'Свободный текст не получает автоматическую certification. Executable claims и design review разделены.' },
-      { id: 'A4', family: 'agency', name: 'Prestige без сброса', state: 'deferred', text: 'После финала — новый outpost с иными условиями при сохранённой истории.', action: 'Кампании → создать новую экспедицию → выбрать ограничения.', trigger: 'Завершён bounded capstone и подготовлен иной набор проверенных ситуаций.', boundary: 'Все ранги, вещи и evidence остаются. Повтор прежних fixtures не делает навык глубже.' },
-      { id: 'A5', family: 'agency', name: 'Асинхронная передача смены', state: 'deferred', text: 'Поделиться воспроизводимым incident-пакетом с другом, если захочется.', action: 'Handover → предпросмотр очищенного пакета → экспорт.', trigger: 'Solo-runbook воспроизводится; социальный слой нужен самому игроку.', boundary: 'Без обязательной команды и рейтинга. Имя реального reviewer указывается только после реального ревью; никаких сетевых действий автоматически.' }
+      { id: 'C1', family: 'charge', state: 'first', name: 'Чип за рубеж', text: 'Чип с зарядом для ИИ-наставника за новый уровень навыка.', use: 'Инвентарь → чип и за что он выдан.', get: 'HTTP дошёл до 2-го уровня (Signal + Gateway).', note: 'Пока чипы только копятся. Как их тратить, решим, когда появятся лимиты на ответы наставника.' },
+      { id: 'C2', family: 'charge', state: 'later', name: 'Капсула полевого отчёта', text: 'Написал после задания короткий разбор (по желанию) — получил капсулу с зарядом.', use: 'После задания → написать разбор → открыть капсулу.', get: 'Один разбор на каждое пройденное задание.', note: 'Разбор не оценивают по длине и грамматике. Задание засчитывается и без него. Скопированный текст капсулу не даёт.' },
+      { id: 'C3', family: 'charge', state: 'later', name: 'Резерв на трудный случай', text: 'Отдельный запас заряда под сложное необязательное задание.', use: 'Карточка задания → отложить чип для него.', get: 'Разово за каждое новое сложное задание, а не за количество ошибок.', note: 'Отложенный заряд можно вернуть обратно в общий запас.' },
+      { id: 'C4', family: 'charge', state: 'later', name: 'Общая ячейка', text: 'Чипы можно перекладывать между темами — не нужно заранее угадывать, где они понадобятся.', use: 'Инвентарь → выбрать тему → переложить чип.', get: 'Открывается вместе со второй веткой навыков.', note: 'Чипы не сгорают. Их нельзя продать или обменять на прохождение задания.' },
+      { id: 'C5', family: 'charge', state: 'deferred', name: 'Тайник с выбором', text: 'Вместо случайной награды сам выбираешь: заряд или украшение.', use: 'Награда за главу → сравнить варианты → выбрать.', get: 'За завершение главы.', note: 'Отложено: сначала нужно понять, сколько на самом деле стоит заряд.' },
+      { id: 'R1', family: 'routes', state: 'first', name: 'Чужой маршрут', text: 'Бонусный квест посреди главы: новый сервис за прокси, часть запросов теряется по дороге.', use: 'Остров на карте → открыть квест.', get: 'HTTP дошёл до 2-го уровня (Signal + Gateway).', note: 'Необязательный: основная глава не ждёт. С подсказками тоже засчитывается.' },
+      { id: 'R2', family: 'routes', state: 'later', name: 'Перекрёстное испытание', text: 'Задача на стыке двух навыков: повторный HTTP-запрос не должен второй раз списать товар со склада.', use: 'Навыки → пересечение двух веток → взять задание.', get: 'Нужные уровни в обеих ветках.', note: 'Одна понятная задача, а не нагромождение сложностей.' },
+      { id: 'R3', family: 'routes', state: 'later', name: 'Другой способ', text: 'Реши пройденное задание по-другому и сравни два подхода.', use: 'Пройденное задание → создать копию для эксперимента.', get: 'Задание уже пройдено.', note: 'Первое решение не трогается. Повторной награды за то же задание нет.' },
+      { id: 'R4', family: 'routes', state: 'later', name: 'Экспедиция с ограничением', text: 'Знакомая задача, но с медленной сетью, малым объёмом памяти или ненадёжным соседним сервисом.', use: 'Выбрать экспедицию → прочитать условия → начать.', get: 'Обычная версия задачи уже пройдена.', note: 'Все ограничения известны заранее. Мощность твоего компьютера значения не имеет.' },
+      { id: 'R5', family: 'routes', state: 'later', name: 'Возвращение', text: 'Через несколько заданий в знакомом месте базы появляется новая поломка.', use: 'Карта → новая заявка у старого здания.', get: 'Между визитами пройдено несколько других заданий.', note: 'Проверяет, помнишь ли ты тему спустя время. Старый успех остаётся.' },
+      { id: 'O1', family: 'outpost', state: 'first', name: 'Включённый канал', text: 'Ретранслятор и шлюз соединяются светящейся линией.', use: 'Клик по линии → что именно проверила игра.', get: 'HTTP дошёл до 2-го уровня (Signal + Gateway).', note: 'Это только отображение: никаких бонусов к скорости или очкам.' },
+      { id: 'O2', family: 'outpost', state: 'later', name: 'Стол картографа', text: 'Здание, где хранятся твои схемы и решения по архитектуре. Можно сравнить версии.', use: 'Здание → выбрать две схемы → сравнить.', get: 'Задания на проектирование систем.', note: 'Большая и сложная схема не значит правильная: награда не за размер.' },
+      { id: 'O3', family: 'outpost', state: 'later', name: 'Архив снимков', text: 'Сохранённые состояния базы. Любое можно восстановить в отдельную копию и потренироваться.', use: 'Архив → выбрать снимок → восстановить в копию.', get: 'Recovery и первое проверенное восстановление.', note: 'Обычное сохранение работы доступно всегда, без всяких наград.' },
+      { id: 'O4', family: 'outpost', state: 'later', name: 'Обсерватория', text: 'Показывает, как запрос проходит через базу и сколько времени занимает каждый участок.', use: 'Башня → выбрать запрос → подсветить его путь.', get: 'Первый прослеженный запрос через прокси, сервис и базу данных.', note: 'Обычные логи и ошибки доступны и без обсерватории.' },
+      { id: 'O5', family: 'outpost', state: 'later', name: 'Новый участок', text: 'Пустое место на базе под твой собственный небольшой сервис или проект с данными.', use: 'Участок → выбрать шаблон → создать папку проекта.', get: 'Пройден нужный блок заданий.', note: 'Проект живёт в отдельной папке и не трогает другие задания.' },
+      { id: 'I1', family: 'identity', state: 'first', name: 'Рамка «Первый канал»', text: 'Золотая рамка для профиля.', use: 'Коллекция → надеть или снять.', get: 'HTTP дошёл до 2-го уровня (Signal + Gateway).', note: 'Только украшение: на проверки и навыки не влияет. Снятая рамка остаётся в коллекции.' },
+      { id: 'I2', family: 'identity', state: 'later', name: 'Трофей с историей', text: 'Предмет на полке базы в память о конкретной аварии, которую ты починил.', use: 'Полка → поставить трофей → открыть историю аварии.', get: 'За каждую новую аварию, а не за количество неудачных запусков.', note: 'Специально ломать что-то ради трофея бессмысленно.' },
+      { id: 'I3', family: 'identity', state: 'later', name: 'Позывной', text: 'Игровое звание: Path keeper, Archivist, Signal finder.', use: 'Профиль → выбрать позывной.', get: 'За несколько разных заданий одной темы.', note: 'Это имя персонажа, а не профессиональный грейд вроде Senior.' },
+      { id: 'I4', family: 'identity', state: 'later', name: 'Чертёж здания', text: 'Другой облик здания: крыша, свет, материалы.', use: 'Здание → внешний вид → применить чертёж.', get: 'За завершённую главу.', note: 'Только внешний вид, никаких скрытых бонусов.' },
+      { id: 'I5', family: 'identity', state: 'later', name: 'Хроника базы', text: 'Альбом «было → стало» из твоих настоящих решений и заметок.', use: 'Хроника → выбрать эпизод → сравнить.', get: 'Пополняется с каждым пройденным заданием.', note: 'Видно, где были подсказки. Ключи и личные данные в хронику не попадают.' },
+      { id: 'P1', family: 'practice', state: 'later', name: 'Стенд сравнения', text: 'Запускает два твоих решения на одних и тех же данных и показывает разницу.', use: 'Мастерская → выбрать два решения → сравнить.', get: 'Есть два сохранённых варианта одной задачи.', note: 'Правила проверки те же — стенд просто нагляднее показывает разницу.' },
+      { id: 'P2', family: 'practice', state: 'later', name: 'Комната неисправностей', text: 'Безопасно устроить сбой: таймаут, обрыв связи, падение процесса.', use: 'Выбрать сбой → воспроизвести на своём стенде.', get: 'Освоены базовые способы диагностики.', note: 'Только на твоих учебных ресурсах и с ограничением по времени.' },
+      { id: 'P3', family: 'practice', state: 'later', name: 'Повтор запроса', text: 'Пошагово прокрутить записанный запрос, как видео.', use: 'Запись → двигать ползунок → смотреть каждый шаг.', get: 'Новое задание, в котором путь запроса был записан.', note: 'Обычный просмотр логов доступен всегда.' },
+      { id: 'P4', family: 'practice', state: 'later', name: 'Миксер практики', text: 'Собрать тренировку из уже открытых тем.', use: 'Практика → выбрать темы → получить набор задач.', get: 'Открыты хотя бы две темы с вариантами задач.', note: 'Тренировка не даёт новых уровней навыка, но хорошо освежает память.' },
+      { id: 'P5', family: 'practice', state: 'later', name: 'Репетиция дежурства', text: 'Пройти инструкцию дежурного по устранению аварии на свежем стенде.', use: 'Начать → устранить сбой → проверить данные.', get: 'Пройдены задания про откат, бэкапы и мониторинг.', note: 'Авария известна заранее: это тренировка, а не экзамен на скорость.' },
+      { id: 'A1', family: 'agency', state: 'later', name: 'Выбор следующего задания', text: 'Два задания на выбор: решаешь, какое сейчас полезнее твоей базе.', use: 'Доска заданий → сравнить → выбрать.', get: 'Оба задания уже доступны.', note: 'Второе задание никуда не исчезает.' },
+      { id: 'A2', family: 'agency', state: 'later', name: 'Фокус специализации', text: 'Выбираешь направление — backend, данные или эксплуатация, — и задания предлагаются в этом порядке.', use: 'Профиль → сменить фокус.', get: 'Открыты задания в нескольких направлениях.', note: 'Это порядок рекомендаций, а не класс персонажа: другие ветки не закрываются.' },
+      { id: 'A3', family: 'agency', state: 'later', name: 'Личный проект', text: 'Своя идея в рамках задания, которое можно проверить.', use: 'Проекты → выбрать основу → предложить изменение.', get: 'Есть нужные навыки и рабочая основа проекта.', note: 'Засчитывается только то, что можно запустить и проверить тестами.' },
+      { id: 'A4', family: 'agency', state: 'deferred', name: 'Новая экспедиция', text: 'После финала — новая база с другими условиями. Всё заработанное сохраняется.', use: 'Кампании → новая экспедиция → выбрать условия.', get: 'Пройдена финальная глава.', note: 'Отложено: нужен действительно новый контент, а не повтор старых заданий.' },
+      { id: 'A5', family: 'agency', state: 'deferred', name: 'Передача смены', text: 'Поделиться с другом аварией, которую он сможет воспроизвести и починить у себя.', use: 'Передача → проверить пакет → экспорт.', get: 'По желанию, когда есть что передать.', note: 'Отложено: сначала хорошая одиночная игра. Без рейтингов и обязательной команды.' }
     ];
-    const stateLabels = { slice: 'Первый срез', later: 'Дальше', deferred: 'Отложено' };
+    const stateTags = { first: 'Делаем первым', later: 'Потом', deferred: 'Отложено' };
+    const mapParts = [['map-signal', 1], ['map-vault', 2], ['map-echo', 3], ['map-link-vault-echo', 3], ['map-ledger', 4], ['map-link-echo-ledger', 4], ['map-gateway', 5], ['map-link-signal-gateway', 5], ['map-link-gateway-vault', 5], ['map-bonus', 5], ['map-link-bonus', 5], ['map-recovery', 6], ['map-link-vault-recovery', 6], ['map-traces', 7], ['map-flag', 8], ['map-platform', 8]];
     let step = 5;
     let selectedSkill = 'http';
     let selectedFamily = 'charge';
-    let bonusCompleted = false;
+    let bonusDone = false;
     let bonusMode = null;
     let equipped = false;
     const byId = id => document.getElementById(id);
-    const two = number => String(number).padStart(2, '0');
+    const level = key => skills[key].reach.filter(at => step >= at).length;
+    const pips = count => Array.from({ length: 5 }, (_, index) => `<i class="${index < count ? 'on' : ''}"></i>`).join('');
+    const soloBonus = () => step >= 5 && bonusDone && bonusMode === 'solo';
 
-    byId('mission-track').innerHTML = missions.map((mission, index) => `<button class="mission-step" type="button" data-step="${index + 1}" aria-pressed="false" aria-label="Шаг ${index + 1}: ${mission.name}"><span class="dot">${two(index + 1)}</span><span>${mission.name}</span><span class="step-kind">${index < 6 ? 'исходный lab' : 'новый эскиз'}</span></button>`).join('');
-    byId('family-filter').innerHTML = families.map(family => `<button type="button" class="family-button" data-family="${family.id}" aria-pressed="false"><span aria-hidden="true">${family.icon}</span><strong>${family.label}</strong><small>05</small></button>`).join('');
-
-    function skillStage() {
-      if (selectedSkill === 'http') return step >= 5 ? 2 : step >= 1 ? 1 : 0;
-      if (selectedSkill === 'data') return step >= 3 ? 2 : step >= 2 ? 1 : 0;
-      return step >= 8 ? 2 : step >= 6 ? 1 : 0;
-    }
+    byId('track').innerHTML = missions.map((mission, index) => `<button class="step" type="button" data-step="${index + 1}" aria-pressed="false" aria-label="Задание ${index + 1}: ${mission.name}, ${mission.label}"><span class="dot">${index + 1}</span><span>${mission.name}</span><small><i class="c-${mission.topic}" aria-hidden="true">●</i> ${mission.label}</small></button>`).join('');
+    byId('families').innerHTML = families.map(family => `<button type="button" class="family" data-family="${family.id}" aria-pressed="false"><span aria-hidden="true">${family.icon}</span><strong>${family.label}</strong><small>${family.hint}</small></button>`).join('');
 
     function renderSkill() {
       const skill = skills[selectedSkill];
-      const stage = skillStage();
+      const current = level(selectedSkill);
+      const solo = selectedSkill === 'http' && current === 2 && soloBonus();
       document.querySelectorAll('[data-skill]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.skill === selectedSkill)));
+      byId('skill-board').dataset.skill = selectedSkill;
       byId('skill-title').textContent = skill.title;
-      byId('skill-subtitle').textContent = stage === 0 ? 'В выбранном срезе главы ещё нет нужного evidence.' : stage === 1 ? 'Есть первый проверенный исход. Другие контексты ещё впереди.' : 'Узкая ступень II: два контекста, не полное владение темой.';
-      byId('skill-tier').textContent = `Ступень ${two(stage)} из 05`;
-      byId('skill-ladder').innerHTML = skill.levels.map((level, index) => `<div class="skill-rung ${index < stage ? 'earned' : ''} ${index === stage - 1 ? 'current' : ''}"><b>${two(index + 1)} · ${index < stage ? 'в примере есть' : 'впереди'}</b><strong>${level}</strong><p>${skill.criteria[index]}</p></div>`).join('');
-      let supported;
-      if (selectedSkill === 'http') supported = stage === 0 ? 'Нет попыток.' : stage === 1 ? 'Signal: контракт проверен с поддержкой. Основной исход и награда засчитаны.' : 'Signal + Gateway: два разных артефакта, один публичный контракт на сервисной и proxy-границе. Поддержка разрешена.';
-      else if (selectedSkill === 'data') supported = stage === 0 ? 'Нет проверенных записей БД.' : stage === 1 ? 'Vault: ограничения проверены прямыми записями с поддержкой.' : 'Vault + Echo: ограничения БД и durable identity проверены в разных задачах с поддержкой.';
-      else supported = stage === 0 ? 'Recovery ещё впереди. Другие победы не подменяют evidence восстановления.' : stage === 1 ? 'Recovery: атомарный результат и поздняя ошибка проверены с поддержкой.' : 'Recovery + Outpost drill: узкий restore и составной сценарий с поддержкой. Второй — ещё эскиз.';
-      byId('supported-evidence').textContent = supported;
-      const independent = selectedSkill === 'http' && step >= 5 && bonusCompleted && bonusMode === 'independent';
-      const supportedBonus = selectedSkill === 'http' && step >= 5 && bonusCompleted && bonusMode === 'supported';
-      byId('transfer-evidence').textContent = independent ? '1 из 2 новых контекстов в примере: «Чужой маршрут» решён самостоятельно. Это отдельная запись; ступень III ещё не подтверждена.' : supportedBonus ? 'Бонус решён с поддержкой: технический PASS сохранён, самостоятельный перенос ещё не наблюдался. Следующая новая попытка может быть самостоятельной.' : `Пока не наблюдался. ${skill.next}`;
+      byId('skill-summary').textContent = skill.summary;
+      byId('skill-level').textContent = `Уровень ${current} из 5`;
+      byId('ladder').innerHTML = skill.levels.map(([name, need], index) => {
+        const state = index < current ? 'earned' : index === current ? 'next' : 'later';
+        const status = state === 'earned' ? '✓ Есть' : state === 'next' ? (solo ? 'Следующий · 1 из 2' : 'Следующий') : 'Впереди';
+        return `<li class="rung ${state}"><span class="rung-status">${status}</span><strong>${index + 1}. ${name}</strong><p>${need}</p></li>`;
+      }).join('');
+      let now = skill.now[current];
+      let next = skill.next[current];
+      if (selectedSkill === 'http' && current === 2 && step >= 5 && bonusDone) {
+        now += bonusMode === 'solo' ? ' Бонус «Чужой маршрут» решён без подсказок — это 1 из 2 задач для 3-го уровня.' : ' Бонус «Чужой маршрут» пройден с подсказками: квест и награды засчитаны.';
+        next = bonusMode === 'solo' ? 'Реши ещё одну новую HTTP-задачу без подсказок.' : 'Реши две новые HTTP-задачи без подсказок. Бонус с подсказками сюда не входит, но и ничего не отнимает.';
+      }
+      byId('skill-now').textContent = now;
+      byId('skill-next').textContent = next;
     }
 
     function renderChapter(announce = true) {
-      const mission = missions[Math.max(0, step - 1)];
-      const unlocked = step >= 5;
-      byId('world-phase').textContent = `${two(step)} / 08`;
-      byId('mission-number').textContent = step ? `ПОСЛЕ ЗАДАНИЯ ${two(step)}` : 'ДО ПЕРВОГО ЗАДАНИЯ';
-      byId('mission-origin').textContent = step ? mission.origin : 'Начало примера';
-      byId('mission-title').textContent = step ? mission.name : 'Тихая база';
-      byId('mission-description').textContent = step ? mission.description : 'Всё ещё впереди. Начни с Signal: один небольшой результат уже изменит базу, но не заполнит целый навык.';
-      byId('mission-evidence').textContent = step ? `В примере: ${mission.evidence}` : 'Проверок пока нет. Эта страница показывает предполагаемые состояния, а не запускает labs.';
-      byId('world-effect').textContent = step ? mission.effect : 'Реле, хранилище и шлюз пока не активны. Их состояния изменяются после проверок.';
-      byId('core-progress').textContent = `${step} / 8`;
-      byId('http-stage').textContent = `${two(unlocked ? 2 : step ? 1 : 0)} / 05`;
-      byId('rank-label').textContent = step === 8 ? 'D · рубеж' : 'E · путь';
-      byId('profile-emblem').textContent = step === 8 ? 'D' : 'E';
+      const mission = missions[step - 1];
+      const open = step >= 5;
+      byId('step-now').textContent = step;
+      byId('step-count').textContent = step ? `Задание ${step} из 8` : 'Начало главы';
+      byId('step-title').textContent = step ? mission.name : 'База ещё спит';
+      byId('step-task').textContent = step ? mission.task : 'Ничего не пройдено. Первое задание — Signal: оживить ретранслятор.';
+      byId('step-check').textContent = step ? mission.check : 'Пока нечего проверять.';
+      byId('step-effect').textContent = step ? mission.effect : 'Все здания тёмные. Каждое задание зажжёт своё.';
+      byId('map-step').textContent = step ? `после задания ${step}` : 'до первого задания';
+      byId('map-desc').textContent = byId('step-effect').textContent;
+      mapParts.forEach(([id, at]) => byId(id).classList.toggle('lit', step >= at));
+      byId('map-bonus').classList.toggle('done', open && bonusDone);
       document.querySelectorAll('[data-step]').forEach(button => {
-        const n = Number(button.dataset.step);
-        button.setAttribute('aria-pressed', String(n === step));
-        button.classList.toggle('done', n <= step);
+        const number = Number(button.dataset.step);
+        button.setAttribute('aria-pressed', String(number === step));
+        button.classList.toggle('done', number < step);
       });
       byId('previous').disabled = step === 0;
       byId('next').disabled = step === 8;
-      [['building-signal', 1], ['building-vault', 2], ['building-gateway', 5], ['building-recovery', 6], ['link-signal', 1], ['link-vault', 3], ['link-gateway', 5]].forEach(([id, threshold]) => byId(id).classList.toggle('lit', step >= threshold));
-      byId('bonus-beacon').setAttribute('opacity', unlocked ? '1' : '.2');
-      byId('outpost-description').textContent = byId('world-effect').textContent;
-      byId('bonus-branch').classList.toggle('ready', unlocked);
-      byId('bonus-status').textContent = !unlocked ? 'Откроется после Signal + Gateway на шаге 5' : bonusCompleted ? 'Бонус проверен в примере · основной путь свободен' : 'HTTP II → открыта боковая ветка';
-      byId('open-bonus').disabled = !unlocked;
-      if (!unlocked) { byId('bonus-details').hidden = true; byId('open-bonus').setAttribute('aria-expanded', 'false'); }
-      byId('chip-count').textContent = unlocked ? '1 чип в демонстрационном инвентаре' : '0 чипов · рубеж ещё впереди';
-      byId('equip-cosmetic').disabled = !unlocked;
-      byId('equip-cosmetic').setAttribute('aria-pressed', String(unlocked && equipped));
-      byId('equip-cosmetic').textContent = equipped && unlocked ? 'Снять' : 'Примерить';
-      byId('profile-emblem').classList.toggle('equipped', unlocked && equipped);
-      byId('cosmetic-status').textContent = !unlocked ? 'Откроется вместе с HTTP II.' : equipped ? 'Надета в этом эскизе. Бонусов к проверке нет.' : 'Получена за связку Signal + Gateway.';
+
+      byId('branch').classList.toggle('open', open);
+      byId('branch-status').textContent = !open ? 'Бонусный квест откроется после задания 5' : bonusDone ? 'Бонусный квест «Чужой маршрут» пройден' : 'Открыт бонусный квест «Чужой маршрут»';
+      byId('branch-note').textContent = !open ? 'Для него нужен 2-й уровень HTTP: Signal + Gateway.' : bonusDone ? (bonusMode === 'solo' ? 'Без подсказок: засчитан в 3-й уровень HTTP.' : 'С подсказками: награды получены полностью.') : 'HTTP дошёл до 2-го уровня. Квест необязательный.';
+      byId('open-bonus').disabled = !open;
+      if (!open) { byId('bonus-details').hidden = true; byId('open-bonus').setAttribute('aria-expanded', 'false'); }
+
+      byId('char-step').textContent = step;
+      byId('char-rank').textContent = step === 8 ? 'D' : 'E';
+      Object.keys(skills).forEach(key => { byId(`char-${key}`).textContent = `${level(key)} из 5`; byId(`pips-${key}`).innerHTML = pips(level(key)); });
+      byId('char-rewards').textContent = open ? `1 чип · рамка · ${bonusDone ? 'бонус пройден' : 'бонусный квест'}` : 'пока нет';
+
+      byId('chip-count').textContent = open ? 'Инвентарь: 1 чип' : 'Инвентарь пуст';
+      byId('chip-note').textContent = open ? 'Получен за 2-й уровень HTTP. Пока только копится.' : 'Чип появится после задания 5 (Gateway).';
+      byId('equip').disabled = !open;
+      byId('equip').textContent = open && equipped ? 'Снять' : 'Надеть';
+      byId('equip').setAttribute('aria-pressed', String(open && equipped));
+      byId('emblem').textContent = step === 8 ? 'D' : 'E';
+      byId('emblem').classList.toggle('equipped', open && equipped);
+      byId('frame-note').textContent = !open ? 'Откроется после задания 5 (Gateway).' : equipped ? 'Надета. На проверки и навыки не влияет.' : 'Получена за 2-й уровень HTTP.';
+      byId('skills-step').textContent = step;
       renderSkill();
-      if (announce) byId('chapter-announcement').textContent = `Шаг ${step} из 8. ${byId('mission-title').textContent}. HTTP — ступень ${unlocked ? 2 : step ? 1 : 0}. ${byId('bonus-status').textContent}. Это демонстрация.`;
+      if (announce) byId('chapter-status').textContent = `${byId('step-count').textContent}. ${byId('step-title').textContent}. ${byId('step-effect').textContent}`;
     }
 
     function renderRewards(announce = true) {
       const family = families.find(item => item.id === selectedFamily);
-      const filtered = family ? ideas.filter(idea => idea.family === family.id) : ideas;
+      const list = family ? ideas.filter(idea => idea.family === family.id) : ideas;
       document.querySelectorAll('[data-family]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.family === selectedFamily)));
       byId('show-all').setAttribute('aria-pressed', String(!family));
-      byId('family-description').innerHTML = family ? `<strong>${family.label} · 5 из 30 идей.</strong> ${family.description}` : '<strong>Все 30 идей.</strong> Четыре относятся к первому срезу; остальные — возможное развитие, не обещание реализации.';
-      const anchor = family ? `<aside class="family-anchor"><div class="eyebrow">Принцип семейства</div><h3>${family.principle}</h3>${family.id === 'charge' ? '<div class="charge-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span>резерв ≠ вопросы</span></div>' : ''}<p>${family.note}</p></aside>` : '';
-      byId('reward-grid').innerHTML = filtered.map(idea => `<article class="reward-card" data-idea="${idea.id}"><div class="reward-card-top"><span class="reward-index">${idea.id}</span><span class="tag ${idea.state === 'slice' ? 'candidate' : idea.state === 'later' ? 'future' : ''}">${stateLabels[idea.state]}</span></div><h3>${idea.name}</h3><p>${idea.text}</p><div class="reward-action"><span aria-hidden="true">↳</span><span>${idea.action}</span></div><details><summary>За что и с какими границами</summary><p><strong>Получение.</strong> ${idea.trigger}</p><p><strong>Граница.</strong> ${idea.boundary}</p></details></article>`).join('') + anchor;
-      if (announce) byId('filter-announcement').textContent = family ? `${family.label}: показаны 5 из 30 идей.` : 'Показаны все 30 идей.';
+      byId('family-text').innerHTML = family ? `<strong>${family.label}.</strong> ${family.description}` : '<strong>Все 30 идей.</strong> Четыре входят в первую версию, остальные — на потом.';
+      const note = family ? `<aside class="family-note"><p class="eyebrow">Принцип группы</p><h3>${family.principle}</h3><p>${family.note}</p></aside>` : '';
+      byId('reward-grid').innerHTML = list.map(idea => `<article class="reward-card ${idea.state}" data-idea="${idea.id}"><div class="reward-top"><span class="reward-id">${idea.id}</span><span class="tag ${idea.state}">${stateTags[idea.state]}</span></div><h3>${idea.name}</h3><p>${idea.text}</p><p class="reward-line use"><b>В игре:</b> ${idea.use}</p><p class="reward-line get"><b>Как получить:</b> ${idea.get}</p><details><summary>Важно знать</summary><p>${idea.note}</p></details></article>`).join('') + note;
+      if (announce) byId('filter-status').textContent = family ? `${family.label}: 5 идей.` : 'Показаны все 30 идей.';
     }
 
     document.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => { step = Number(button.dataset.step); renderChapter(); }));
     byId('previous').addEventListener('click', () => { step = Math.max(0, step - 1); renderChapter(); });
     byId('next').addEventListener('click', () => { step = Math.min(8, step + 1); renderChapter(); });
-    document.querySelectorAll('[data-skill]').forEach(button => button.addEventListener('click', () => { selectedSkill = button.dataset.skill; renderSkill(); byId('skill-announcement').textContent = `${skills[selectedSkill].title}. Ступень ${skillStage()} из 5 в этом примере. ${byId('transfer-evidence').textContent}`; }));
+    document.querySelectorAll('[data-skill]').forEach(button => button.addEventListener('click', () => { selectedSkill = button.dataset.skill; renderSkill(); byId('skill-status').textContent = `${skills[selectedSkill].title}: уровень ${level(selectedSkill)} из 5.`; }));
     document.querySelectorAll('[data-family]').forEach(button => button.addEventListener('click', () => { selectedFamily = button.dataset.family; renderRewards(); }));
     byId('show-all').addEventListener('click', () => { selectedFamily = 'all'; renderRewards(); });
-    byId('open-bonus').addEventListener('click', () => { const open = byId('bonus-details').hidden; byId('bonus-details').hidden = !open; byId('open-bonus').setAttribute('aria-expanded', String(open)); });
+    byId('open-bonus').addEventListener('click', () => { const show = byId('bonus-details').hidden; byId('bonus-details').hidden = !show; byId('open-bonus').setAttribute('aria-expanded', String(show)); });
     byId('close-bonus').addEventListener('click', () => { byId('bonus-details').hidden = true; byId('open-bonus').setAttribute('aria-expanded', 'false'); byId('open-bonus').focus(); });
     byId('complete-bonus').addEventListener('click', () => {
-      bonusCompleted = true;
-      bonusMode = byId('support-mode').value;
+      bonusDone = true;
+      bonusMode = byId('bonus-mode').value;
       byId('complete-bonus').disabled = true;
-      byId('support-mode').disabled = true;
-      byId('bonus-result').textContent = bonusMode === 'independent' ? 'Демонстрация: PASS + 1 transfer-контекст. HTTP остаётся на II; нужен ещё другой независимый случай. Дополнительного чипа за этот показ нет.' : 'Демонстрация: PASS с поддержкой. Квест засчитан; самостоятельный перенос пока не подтверждён. Основные награды не уменьшены.';
+      byId('bonus-mode').disabled = true;
+      byId('bonus-result').textContent = bonusMode === 'solo' ? 'Готово: квест пройден без подсказок. Это 1 из 2 задач для 3-го уровня HTTP, нужна ещё одна.' : 'Готово: квест пройден с подсказками. Награды получены полностью. Для 3-го уровня HTTP понадобится новая задача без подсказок.';
       renderChapter();
     });
-    byId('equip-cosmetic').addEventListener('click', () => { equipped = !equipped; renderChapter(false); byId('chapter-announcement').textContent = equipped ? 'Рамка примерена в эскизе. Проверки и навык не изменились.' : 'Рамка снята, предмет остаётся в коллекции.'; });
-    byId('reset-demo').addEventListener('click', () => {
-      step = 0; bonusCompleted = false; bonusMode = null; equipped = false;
-      byId('support-mode').value = 'supported'; byId('support-mode').disabled = false;
+    byId('equip').addEventListener('click', () => { equipped = !equipped; renderChapter(false); byId('chapter-status').textContent = equipped ? 'Рамка надета. На проверки и навыки она не влияет.' : 'Рамка снята и осталась в коллекции.'; });
+    byId('reset').addEventListener('click', () => {
+      step = 0; bonusDone = false; bonusMode = null; equipped = false;
+      byId('bonus-mode').value = 'hints'; byId('bonus-mode').disabled = false;
       byId('complete-bonus').disabled = false; byId('bonus-result').textContent = '';
       renderChapter();
       byId('chapter').scrollIntoView({ block: 'start' });
