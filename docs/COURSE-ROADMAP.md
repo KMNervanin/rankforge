@@ -8,11 +8,11 @@ There are **86 missions**: **68 core**, **12 optional foundations**, and **6 opt
 
 | Status at this planning baseline | IDs | Count | Meaning |
 | --- | --- | --- | --- |
-| Implemented labs | I01–I06 | 6 | Existing `signal`, `vault`, `gateway`, `echo`, `ledger`, `recovery` workspaces/checkers; implementation is not proof of fairness, mastery or live tutor quality |
-| Next candidate block, unimplemented | D01–D03 | 3 | Small requirements, capacity and contract labs recommended for authoring after the UI and six-mission audit have their own acceptance evidence |
-| Remaining proposal, unimplemented | F01–F12, D04–D06, B01–B08, T01–T04, S01–S06, O01–O08, L01–L08, A01–A08, W01–W10, M01–M06, C01–C04 | 77 | No new starters, validators, unlocks, language routing or integrated campaign are supplied by this document |
+| Implemented catalog labs | I01–I06, D01–D03 | 9 | Original outpost plus `briefing`, `capacity`, `contract`; see the actual acceptance records, not a mastery claim |
+| Next design block, unimplemented | D04–D06 | 3 | Service boundaries, an evidence-backed decision and a changed requirement; free architecture judgement stays formative |
+| Remaining proposal, unimplemented | F01–F12, B01–B08, T01–T04, S01–S06, O01–O08, L01–L08, A01–A08, W01–W10, M01–M06, C01–C04 | 74 | Proposed authoring units, not shipped labs |
 
-All 80 additions need implementation and validation. The UI work and fairness audit are separate workstreams; this document does not claim they have passed. Existing acceptance records describe earlier runs, not a fresh run of this catalog. The planning IDs do not rename runtime missions or modify learner progress.
+77catalog missions still need implementation and validation. The separate optional `http-trial` implements HTTP transfer after Signal+Gateway and is not counted among the86catalog entries. It does not gate the main route. See [Acceptance](ACCEPTANCE.md), [guild evidence](ARCHITECT-ACCEPTANCE.md), [mission audit](MISSION-AUDIT-2026-10-06.md) and [reward/trial evidence](PROGRESSION-ACCEPTANCE.md) for observed results. Planning IDs do not rename runtime missions or reset progress.
 
 The target learner has substantial iOS experience and some API/SQL/backend experience. Python, deeper database work, quantitative reasoning and operations must be diagnosed separately. New programmers receive the optional entry workshop, with explanations and small guided attempts; they are not expected to infer SQL, Python or terminal skills from a later failure. All player-facing material is English. A lower English band changes scaffolding, not engineering expectations or the correctness contract.
 
@@ -59,7 +59,7 @@ The order deliberately introduces contracts and a simple design before more back
 
 Each row provides an objective, a concrete artifact and an executable verification target. The final column contains **Alt** (valid alternative), **Fail** (negative/failure evidence) and **Transfer** (a changed input or situation). Transfer cases are authored under the same visible contract or introduced as a new ticket with an explicit contract delta; they never add hidden requirements after submission.
 
-For planned missions, the checks are a specification for future checkers, not results. Except for I01–I06, no row is runnable yet. For existing missions, the table summarizes the intended public behavior and acceptance direction; the actual source, published brief and fairness-audit evidence must resolve any mismatch. Design review notes are formative wherever a row says `review`; only the stated executable claim receives a deterministic verdict.
+For planned missions, the checks are a specification for future checkers, not results. I01–I06 and D01–D03 now have runnable labs. The table summarizes intended public behavior; source, published briefs and release evidence resolve any mismatch. Design review notes are formative wherever a row says `review`; only the stated executable claim receives a deterministic verdict.
 
 ## Entry workshop — optional foundations (12)
 
@@ -95,7 +95,7 @@ Language goal: ask a precise question, distinguish "saved" from "running", and r
 
 The added F dependencies describe entry capabilities for the proposed course, not new locks on current saves. Language goals remain symptom/action/evidence, request path, cause/effect, expected/observed and handover. Fairness review must separate required outcomes, deliberate starter defects and optional learning material in all six labs.
 
-## II — The architect's guild (6 planned)
+## II — The architect's guild (3 implemented, 3 planned)
 
 | ID / mission | Prerequisites | Objective | Artifact | Verification | Alternative, failure and transfer evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -237,7 +237,11 @@ The capstone is a bounded vertical slice of the same system, not a request to bu
 
 Language goal: give a concise handover and answer a challenge using evidence. Rank records demonstrated capabilities and support used, not professional seniority. An unavailable human design reviewer leaves review pending; it does not make model praise a certificate or prevent an already verified technical result from being recorded.
 
-## Next candidate block
+<a id="next-candidate-block"></a>
+
+## D01–D03 authoring specification (now implemented)
+
+The following describes the specification used to author the three implemented guild labs. Runtime interfaces and exact bounds are published in their field manuals. D01 checks structural traceability; D02 checks arithmetic; D03 checks an actual consumer probe. They do not automatically certify free-text architecture quality. Next catalog authoring starts at D04–D06.
 
 Recommend **D01 → {D02, D03}**, three small independently executable labs using Python standard library, local JSON and supplied loopback HTTP fixtures. They extend the first chapter into system design without requiring a subjective architecture judge, a new backend framework or heavy infrastructure. F04/F05/F10 are optional just-in-time support for file/test/units gaps; they are not compulsory repeats for the owner. Scaffold the runner and file formats so the problem is requirement reasoning, arithmetic or contract checking, not guessing how to launch a lab.
 
@@ -338,4 +342,4 @@ The following ten sources were read via background HTTP/documentation tools on 2
 
 The Council of Europe descriptor page returned HTTP 403 in this session; the accessible Europass descriptor page above was used instead. Reference coverage is not an endorsement and no source exercises or proprietary course text have been copied. Before redistributing external examples, datasets or diagrams, review their specific licenses; this roadmap authors its own missions rather than treating linked teaching materials as reusable assets.
 
-Unresolved implementation work includes all 80 new labs, real resource profiles, diagnostic/skip routing, safe artifact continuity, architecture-evidence states and the future release records. Beginner pacing, full-course effectiveness, tutor accuracy, English calibration and live ML utility have not been measured. There is no claim of new build/test/E2E runs, live provider evaluation, completed fairness audit or production deployment from this documentation-only work.
+Remaining work includes77catalog labs, their resource profiles, diagnostic/skip routing, safe artifact continuity and richer architecture-review states. Beginner pacing, full-course effectiveness, tutor accuracy, English calibration and live ML utility have not been measured. The original roadmap was a documentation-only proposal; the later implemented slice has its own linked build/test/E2E evidence. There is no production deployment or live provider-quality claim.

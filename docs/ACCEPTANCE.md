@@ -1,5 +1,19 @@
 # Acceptance record
 
+## Current checkpoint — 2026-10-06
+
+- macOS arm64 / Node25.8.1 / Python3.14.5: fresh `npm run build` PASS, **152/152 Node tests PASS**, **9/9 headless Chromium E2E PASS**, 0 skips. The initial149-test run exceeded its enclosing120-second shell deadline after Node completed; E2E was then run separately. Final152+9 ran to completion with a300-second deadline.
+- Linux arm64 / Node24.21.0 / Python3.11.2: the same production build and **152/152 Node tests PASS**, 0 skips, in the existing reproducible Docker recipe with2CPUs/2GiB. Only required source paths were copied to the temporary build context; owner research, saves and credentials were excluded. The owned image tag and `--rm` containers were removed. No claim of fresh amd64, desktop Linux auth/editor or Linux browser acceptance.
+- UI: full-width exclusive Map/Cards, persistent choice, chapter selection, preview without IDE launch, fixed top navigation and compact right-hand profile. Selected mission directly follows the map. Checked1024/1280/1600 without overflow, current/legacy evidence distinction, delayed-check focus protection, hint/draft/history retention and short input viewports.
+- Four new real labs: requirements traceability, unit-aware capacity, consumer HTTP probe and optional HTTP pagination trial. Each starter fails; distinct correct implementations pass; plausible wrong implementations fail. Guild HTTP tests exercise direct/table-style fixtures, field presence/value, encoded/chunked request bodies, duplicate effects and bounded timeout/unavailable distinctions. Trial checks include complete framing, trailing whitespace,16KiB bound and unchanged snapshots.
+- Real browser → API → owned workspace → starter FAIL → saved reference → PASS for all four new labs; repeated verification does not duplicate XP or charge. Earlier chapter prerequisites in that browser scenario are explicitly controlled state fixtures. First-chapter gateway has its separate real Docker/nginx evidence:7configurations,2valid variants each9/9, invalid variants rejected, owned Compose resources removed.
+- Reward/state checks cover4branches,12boundedcheckpoints,13one-timechips/140gamecharge,2frames and1bonusunlock, transactional rollback, legacy migrations, preserved pending answers and4concurrent writer processes. Current local practice continues while tutor submissions are paused; pending answers survive and no paid fallback exists. Charge spending is not implemented.
+- Russian infographic:30ideas/6families, standalone10/10 interaction checks plus actual service CSP/browser acceptance. The document is a design proposal; the smaller implemented mechanics have separate evidence.
+
+Detailed records: [mission audit](MISSION-AUDIT-2026-10-06.md), [guild](ARCHITECT-ACCEPTANCE.md), [skills/trial](PROGRESSION-ACCEPTANCE.md), [session](SESSION-2026-10-06.md). New runtime total: **9core quests +1optional trial**. Catalog total:86proposed missions,9of them implemented;77remain planned. The extra trial is outside that count. Source formulas and alternative solutions were reviewed; no live tutor calibration or independent human learner study is claimed.
+
+## Historical records
+
 Checkpoint: 2026-10-03, 05:54 MSK. macOS arm64, Node25.8.1, Python3.14.5, Docker29.1.2 / Compose2.40.3, VS Code1.138.0. User authorization and GUI interaction are intentionally not part of the unattended run.
 
 ## Verified on the actual implementation
@@ -37,7 +51,7 @@ The owner reported successful game startup, GPT connection and opening VS Code o
 
 ## Product boundaries
 
-Six first-chapter labs are executable; later chapters are a curriculum blueprint. Language adaptation currently changes mission briefings and tutor instructions, with varied follow-up questions. It does not claim every external reference or code comment dynamically changes level. Only written interaction is tracked. Rank is a game progression indicator, not a job grade or language certification.
+At the original October3 checkpoint, six first-chapter labs were executable and later chapters were a blueprint; see the current checkpoint for additions. Language adaptation changes mission briefings and tutor instructions, with varied follow-up questions. It does not claim every external reference or code comment dynamically changes level. Only written interaction is tracked. Rank is a game progression indicator, not a job grade or language certification.
 
 ## Chat workspace and code-context iteration
 

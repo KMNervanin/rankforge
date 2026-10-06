@@ -8,13 +8,15 @@ A personal, local-first engineering learning RPG. Build a living outpost by solv
 
 ![Rankforge outpost — demonstration save](docs/images/outpost.png)
 
-The preview uses synthetic documentation data, not a personal account or real conversation. Switch between map and quest cards inside the full-width overview; profile, navigation and the mission workspace live below it. See the [illustrated tour](docs/TOUR_RU.md) for the workspace, chat, abilities, journal and account connection.
+The preview uses synthetic documentation data, not a personal account or real conversation. Switch between map and quest cards inside the full-width overview; the mission sits directly below it. Navigation and the compact player profile stay at the top. See the [illustrated tour](docs/TOUR_RU.md) for the workspace, chat, skills/rewards, journal and account connection.
 
 The browser is the game, VS Code is the workshop, and the terminal is a real tool. Subscription access uses a direct ChatGPT OAuth adapter; no Codex CLI or paid API fallback is required.
 
 ## Development status
 
-The first chapter has six executable labs, a colorful outpost, durable progress, a subscription adapter and a scoped editor bridge. Future chapters include system design, load, operations, messaging, data engineering and basic ML. [Acceptance](docs/ACCEPTANCE.md) distinguishes automated checks, owner-reported use and remaining language-model calibration.
+Ten labs are executable: six outpost quests, three guild quests (requirements, capacity, consumer contracts) and one optional HTTP transfer trial. Four skill paths connect verified outcomes to one-time charge chips, profile frames and the bonus quest. Charge is banked for a future tutor harness; it is not spent or converted into tokens/questions here. The [86-mission course roadmap](docs/COURSE-ROADMAP.md) describes the wider proposed course, not 86 shipped labs. [Acceptance](docs/ACCEPTANCE.md) records real checks and their limits.
+
+An interactive [reward/progression design infographic](public/progression.html) explores 30 ideas in Russian for the owner. Open `/progression.html` on the running local service, or open the standalone file. The actual game remains in English.
 
 ## Install and run
 
@@ -108,7 +110,7 @@ Both arm64 and amd64 builds/tests were exercised. This container check does not 
 - Technical outcomes come from actual lab checks, not a model's praise.
 - English feedback accepts free phrasing and preserves quoted evidence.
 - Practice completion and independent mastery are separate.
-- Quota exhaustion saves the submitted answer and pauses evaluation; resume never duplicates rewards.
+- Quota exhaustion saves the submitted answer and pauses tutoring; local labs and static hints remain available. Resume never duplicates rewards.
 - Each mission has its own workspace. Switching never overwrites previous work.
 - The local service manages only Rankforge workspaces; existing projects and Docker contexts are preserved.
 - Reading/writing evidence does not claim speaking or listening proficiency.
@@ -119,6 +121,9 @@ Both arm64 and amd64 builds/tests were exercised. This container check does not 
 - [First-run handoff](docs/HANDOFF.md)
 - [Decision log](docs/decisions-2026-10-03.md)
 - [Curriculum](docs/CURRICULUM.md)
+- [Complete course catalog](docs/COURSE-ROADMAP.md)
+- [Skills and reward design](docs/PROGRESSION-DESIGN.md)
+- [Current session handoff](docs/SESSION-2026-10-06.md)
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 Public source, local execution. Each person uses their own account and saves; this repository does not expose a hosted tutor or a shared subscription gateway. Desktop macOS is the first personally exercised target; Linux core-runtime checks are described above. Native Windows desktop integration has not been validated.

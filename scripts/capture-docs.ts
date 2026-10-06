@@ -8,6 +8,7 @@ import { createApp } from '../server/app.js'
 import { root } from '../server/labs.js'
 import { missions } from '../shared/content.js'
 import type { MissionView, Snapshot } from '../shared/types.js'
+import { currentContractVersion } from '../shared/contracts.js'
 
 // Documentation fixtures only. No account, learner files or existing conversation is read.
 const time = '2026-10-03T12:30:00Z'
@@ -17,7 +18,7 @@ const demo: Snapshot = {
     status: index < 2 ? 'completed' : index < 4 ? 'available' : 'locked',
     workspace: index < 2 ? `/demo/workspaces/${mission.id}` : null,
     hintsUsed: index === 0 ? 1 : 0,
-    checks: index === 0 ? { passed: true, supported: true, checkedAt: time, output: '', checks: [
+    checks: index === 0 ? { passed: true, supported: true, contractVersion: currentContractVersion, checkedAt: time, output: '', checks: [
       { name: 'GET /health returns the relay contract', passed: true, detail: 'Demonstration result: HTTP 200 and the expected JSON.' },
       { name: 'Query parameters preserve the route', passed: true, detail: 'Demonstration result: /health?probe=1 remains a health request.' },
       { name: 'Unknown routes return 404', passed: true, detail: 'Demonstration result: an unknown path is not reported as healthy.' },
@@ -52,7 +53,9 @@ const address = reservation.address()
 if (!address || typeof address === 'string') throw new Error('Could not reserve a documentation port.')
 const port = address.port
 await new Promise<void>((resolve) => reservation.close(() => resolve()))
-const { app } = await createApp({ home, port, launchEditor: async () => { throw new Error('Documentation capture must not open an editor.') } })
+const { app, store } = await createApp({ home, port, launchEditor: async () => { throw new Error('Documentation capture must not open an editor.') } })
+for (const id of ['signal', 'vault']) store.saveCheck(id, { contractVersion: currentContractVersion, checkedAt: time, passed: true, supported: true, output: '', checks: [{ name: 'Documentation fixture', passed: true, detail: 'Synthetic illustration, not a live evaluation.' }] })
+demo.progression = store.snapshot(demo.connection).progression
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined
 try {
   const url = await app.listen({ host: '127.0.0.1', port })
@@ -71,19 +74,21 @@ try {
   await page.screenshot({ path: path.join(output, 'outpost.png') })
   await page.getByRole('button', { name: '▦ Cards', exact: true }).click()
   await page.getByLabel('Expedition overview', { exact: true }).screenshot({ path: path.join(output, 'cards.png') })
-  await page.getByLabel('Expedition controls').screenshot({ path: path.join(output, 'controls.png') })
-  await page.locator('.mission-panel').screenshot({ path: path.join(output, 'quest.png') })
+  await page.locator('.topbar').screenshot({ path: path.join(output, 'controls.png') })
+  await page.locator('.mission-panel').screenshot({ path: path.join(output, 'quest.png'), style: '.topbar { visibility: hidden; }' })
   await page.getByRole('button', { name: 'Operator chat', exact: true }).click()
   await expect(page.locator('.conversation table')).toBeVisible()
   await page.screenshot({ path: path.join(output, 'chat.png') })
-  await page.getByRole('button', { name: 'Abilities', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Earned through experience.' })).toBeVisible()
+  await page.getByLabel('Player profile', { exact: true }).click()
+  await page.getByRole('button', { name: 'Skills & rewards', exact: false }).click()
+  await expect(page.getByRole('heading', { name: 'Skills & rewards' })).toBeVisible()
   await page.screenshot({ path: path.join(output, 'abilities.png') })
   await page.getByRole('button', { name: 'Field journal', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Your work leaves a trace.' })).toBeVisible()
   await page.screenshot({ path: path.join(output, 'journal.png') })
   demo.connection.signedIn = false
   await page.reload()
+  await page.getByLabel('Player profile', { exact: true }).click()
   await page.getByRole('button', { name: 'Connection', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Connect ChatGPT', exact: true })).toBeVisible()
   await page.screenshot({ path: path.join(output, 'connection.png') })
