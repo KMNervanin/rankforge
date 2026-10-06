@@ -108,6 +108,7 @@ def vault():
         db = connect()
         candidate.create_schema(db)
         db.execute("INSERT INTO items(id,name) VALUES ('cell','Power cell')")
+        db.commit()
         return db
     def valid():
         with schema() as db:
@@ -117,9 +118,17 @@ def vault():
             candidate.create_schema(db)
             require(db.execute("SELECT quantity FROM movements WHERE id='m'").fetchone() == (2,), "Repeated schema creation lost data")
     check("Valid movement and repeatable schema", valid)
+    def reject_write(db, sql):
+        def write():
+            db.execute(sql)
+            db.commit()
+        try:
+            raises(sqlite3.IntegrityError, write)
+        finally:
+            db.rollback()
     def invalid(sql):
         with schema() as db:
-            raises(sqlite3.IntegrityError, lambda: db.execute(sql))
+            reject_write(db, sql)
     for label, sql in [
         ("Reject unknown item", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','ghost',1)"),
         ("Reject zero quantity", "INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',0)"),
@@ -133,7 +142,8 @@ def vault():
     def duplicate():
         with schema() as db:
             db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',1)")
-            raises(sqlite3.IntegrityError, lambda: db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)"))
+            db.commit()
+            reject_write(db, "INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)")
     check("Movement identity is unique", duplicate)
     def persistent():
         with tempfile.TemporaryDirectory() as directory:
@@ -144,14 +154,18 @@ def vault():
                 db.executemany("INSERT INTO movements(id,item_id,quantity) VALUES (?,?,?)", [("m1", "cell", 2), ("m2", "coolant", 5), ("m3", "cell", 1)])
             with closing(connect(file)) as db, db:
                 candidate.create_schema(db)
+                db.commit()
                 require(db.execute("SELECT id,name FROM items ORDER BY id").fetchall() == [("cell", "Power cell"), ("coolant", "Coolant")], "Items were lost after reconnect/setup")
                 require(db.execute("SELECT id,item_id,quantity FROM movements ORDER BY id").fetchall() == [("m1", "cell", 2), ("m2", "coolant", 5), ("m3", "cell", 1)], "Movements were lost after reconnect/setup")
-                raises(sqlite3.IntegrityError, lambda: db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('bad','ghost',1)"))
+                reject_write(db, "INSERT INTO movements(id,item_id,quantity) VALUES ('bad','ghost',1)")
     check("Schema and data persist after commit, close and reconnect", persistent)
 
 
 INVALID_EVENTS = [
     ("not an object", None), ("list instead of object", []), ("empty object", {}),
+    ("numeric record", 1), ("string record", "event"),
+    ("nonempty list record", [{"id": "x", "item": "cell", "quantity": 1}]),
+    ("tuple record", ("x", "cell", 1)),
     ("missing id", {"item": "cell", "quantity": 1}),
     ("missing item", {"id": "x", "quantity": 1}),
     ("missing quantity", {"id": "x", "item": "cell"}),
@@ -240,6 +254,11 @@ def ledger():
             {"id": "extra", "date": "2026-01-01", "amount": "1.00", "source": "two"},
         ], {"totals": {"2026-01-01": "1.00"}, "rejected": []}),
         ("Reject malformed shape and ambiguous dates", [None, {}, {"id": "q", "date": "2026-1-2", "amount": "1.00"}], {"totals": {}, "rejected": [0, 1, 2]}),
+        ("Reject non-dictionary rows without losing valid rows", [
+            {"id": "before", "date": "2026-01-01", "amount": "1.00"},
+            1, "row", [{"id": "x", "date": "2026-01-01", "amount": "1.00"}], ("x", "2026-01-01", "1.00"),
+            {"id": "after", "date": "2026-01-01", "amount": "2.00"},
+        ], {"totals": {"2026-01-01": "3.00"}, "rejected": [1, 2, 3, 4]}),
         ("Exact cents at the declared amount boundary", [
             {"id": "large", "date": "2026-01-01", "amount": "9999999999999999.99"},
             {"id": "small", "date": "2026-01-01", "amount": "0.01"},

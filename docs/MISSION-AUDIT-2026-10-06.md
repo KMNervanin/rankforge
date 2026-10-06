@@ -87,3 +87,38 @@ No automated implementation verification run failed. Expected red outcomes above
 - SQLite [type affinity](https://www.sqlite.org/datatype3.html) and [PRIMARY KEY caveats](https://www.sqlite.org/quirks.html#primary_keys_can_sometimes_contain_nulls): declared types alone do not provide the stronger invariants a learner might infer. Context7 coverage was supplemented by official documentation.
 - Python 3.14 [Decimal](https://docs.python.org/3.14/library/decimal.html): exact construction does not remove arithmetic context rounding.
 - nginx [proxy_pass](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass): URI replacement and rewritten URI forwarding are both valid; Context7 documentation was followed by the real supplied-image acceptance above.
+
+## Review corrections — findings 1 and 2, 2026-10-06
+
+This follow-up owns only `server/verify.py`, `tests/labs.test.ts` and this appended record. Versioned evidence and UI findings remain with the parent integration task. Learner code, manuals and entry-point contracts are unchanged.
+
+### Vault: accept either constraint timing
+
+The earlier immediate-insert limitation in “Integration handoff and remaining limits” is superseded. The published contract requires SQLite to reject invalid committed data; it does not require an immediate foreign key. The reference schema with only `DEFERRABLE INITIALLY DEFERRED` added previously passed 8/10 checks despite correctly rejecting the invalid transaction at commit.
+
+Every invalid Vault write now checks `INSERT` plus `COMMIT` within the expected `IntegrityError` operation and rolls back in `finally`. Schema creation and valid seed data are committed **outside** that expected exception, including repeated setup after reconnect and the first movement before the duplicate probe. A preparation failure therefore fails the check rather than being mistaken for correct rejection of the test input.
+
+Regression coverage accepts the deferred schema, rejects a missing foreign key at both unknown-item probes, and rejects deferred preparation failures on initial setup and reconnect. The latter fixtures put a pending violation in an auxiliary table so the verifier's event-row assertions cannot accidentally hide the transaction-boundary problem. Existing immediate constraints, NULL checks, reordered columns and persistence checks remain covered.
+
+SQLite 3.53.1 behavior was confirmed against [Deferred Foreign Key Constraints, §4.2](https://www.sqlite.org/foreignkeys.html#fk_deferred): a deferred violation is reported at commit, and a failed commit leaves a transaction that must be rolled back. Context7's response did not cover that timing, so the official documentation supplied the confirmation.
+
+### Record shape: exercise truthy non-dictionaries
+
+Echo and Recovery now also receive a numeric scalar, a nonempty string, a nonempty list and a tuple as records. These must raise `ValueError`, not merely crash with `AttributeError`, and preserve existing events. Recovery supplies each bad record after two valid records and checks the previous rows, schema and unrelated data after reconnect.
+
+Ledger receives the same classes of malformed records between two valid rows. It must report exactly their four indices, keep the valid total, preserve the input and remain deterministic. No additional requirement was introduced: the current contract already requires dictionary records and the stated rejection behavior.
+
+Three regression mutants replace the reference implementations' dictionary type guard with a truthiness check. Previously they passed Echo 22/22, Recovery 24/24 and Ledger 10/10. The new probes reject all three; correct references and the existing insert-first, Decimal and rollback-transaction alternatives remain accepted.
+
+### Fresh scoped verification
+
+Tests used actual Node test runner executions against an isolated temporary copy of the existing-mission runtime at `ab7e277`, overlaid with the current `server/verify.py` and `tests/labs.test.ts`. This excludes the concurrent architect work from the result. Existing dependencies were linked, not installed, and the temporary copies were removed after each run.
+
+| Run | Actual result |
+| --- | --- |
+| Before verifier changes: `node --import tsx --test --test-concurrency=1 --test-name-pattern='deferred\|missing foreign keys\|truthiness-only' tests/labs.test.ts` | **7 tests: 1 passed, 6 failed, 0 skipped; exit 1**. Deferred acceptance, setup-boundary diagnostics and all three truthiness mutants exposed the old behavior. The setup fixtures were subsequently strengthened to use the auxiliary pending violation described above. |
+| Final: `node --import tsx --test --test-concurrency=1 --test-name-pattern='vault\|echo\|ledger\|recovery\|reopening' tests/labs.test.ts` | **27 tests: 27 passed, 0 failed, 0 skipped; exit 0**, 2.326 seconds. Includes the seven new regressions, existing references/alternatives/negative candidates and preservation of edited workspace files and manuals. |
+
+Verified source SHA-256: `server/verify.py` — `4128a6ffc812bf64fd5cdc370d401fa6eae88cd81a4b4ee59bef7c7adb94f5c3`; `tests/labs.test.ts` — `2432bd0a6bd8783abe31e5b6ea99eb3355785912d42c3706213d1fe12dc6d393`.
+
+No full-project suite, build, browser, Docker, authorization or live tutor run was performed for this follow-up. Private saves and learner workspaces were not accessed. No commit or push was made. The earlier verification record remains historical; the expected RED regression run above is part of this correction's evidence.

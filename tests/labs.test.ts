@@ -81,6 +81,32 @@ test('vault accepts reordered columns and table-level constraints', async (t) =>
   assert.equal(result.passed, true, JSON.stringify(result))
 })
 
+test('vault accepts deferred foreign keys at the commit boundary', async (t) => {
+  const source = (await solution('vault')).replace('REFERENCES items(id)', 'REFERENCES items(id) DEFERRABLE INITIALLY DEFERRED')
+  const result = await candidate(t, 'vault', source)
+  assert.equal(result.passed, true, JSON.stringify(result))
+})
+
+test('vault rejects missing foreign keys at both connection boundaries', async (t) => {
+  const source = (await solution('vault')).replace(' REFERENCES items(id)', '')
+  const result = await candidate(t, 'vault', source)
+  rejected(result, 'Reject unknown item')
+  rejected(result, 'persist after commit')
+})
+
+for (const [count, check] of [[0, 'Reject unknown item'], [3, 'persist after commit']] as const) {
+  test(`vault does not count a deferred setup failure as an expected rejection: ${check}`, async (t) => {
+    const source = (await solution('vault')).replace('REFERENCES items(id)', 'REFERENCES items(id) DEFERRABLE INITIALLY DEFERRED') + `
+    if connection.execute("SELECT COUNT(*) FROM movements").fetchone()[0] == ${count}:
+        connection.execute("CREATE TABLE IF NOT EXISTS pending_setup(item_id TEXT REFERENCES items(id) DEFERRABLE INITIALLY DEFERRED)")
+        connection.execute("INSERT INTO pending_setup VALUES ('ghost')")
+`
+    const result = await candidate(t, 'vault', source)
+    rejected(result, check)
+    assert.match(result.checks.find((item) => item.name.includes(check))!.detail, /IntegrityError: FOREIGN KEY constraint failed/)
+  })
+}
+
 test('vault rejects temporary tables that lose committed data across connections', async (t) => {
   rejected(await candidate(t, 'vault', (await solution('vault')).replaceAll('CREATE TABLE', 'CREATE TEMP TABLE')), 'persist after commit')
 })
@@ -98,6 +124,20 @@ for (const id of ['echo', 'recovery']) {
   test(`${id}: reject KeyError instead of ValueError for a missing individual field`, async (t) => {
     const source = (await solution(id)).replaceAll('event.get("quantity")', 'event["quantity"]')
     rejected(await candidate(t, id, source), 'missing quantity')
+  })
+}
+
+for (const id of ['echo', 'recovery', 'ledger']) {
+  test(`${id}: reject truthiness-only record validation for scalars and wrong containers`, async (t) => {
+    const variable = id === 'ledger' ? 'row' : 'event'
+    const source = await solution(id)
+    const mutant = source.replace(`not isinstance(${variable}, dict)`, `not ${variable}`)
+    assert.notEqual(mutant, source)
+    const result = await candidate(t, id, mutant)
+    for (const name of id === 'ledger' ? ['Reject non-dictionary rows'] : ['numeric record', 'string record', 'nonempty list record', 'tuple record']) {
+      rejected(result, name)
+      assert.match(result.checks.find((item) => item.name.includes(name))!.detail, /AttributeError/)
+    }
   })
 }
 
