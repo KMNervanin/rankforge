@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "ticket_id": "outpost-deliveries",
+  "revision": 2,
+  "facts": [
+    {"id": "actor", "value": "dispatch_operator", "unit": "role", "cases": ["authorized", "unauthorized"]},
+    {"id": "operation", "value": "record_delivery", "unit": "operation", "cases": ["success"]},
+    {"id": "payload", "value": ["id", "item", "quantity"], "unit": "fields", "cases": ["success", "missing_field"]},
+    {"id": "quantity_limit", "value": 12, "unit": "items", "cases": ["boundary", "over_limit"]},
+    {"id": "persistence", "value": "survives_restart", "unit": "guarantee", "cases": ["restart"]},
+    {"id": "latency_p95", "value": 150, "unit": "ms", "cases": ["measurement"]}
+  ],
+  "questions": [
+    {"id": "dispatch_mode", "options": [
+      {"id": "manual", "cases": ["operator_confirmation"], "implication": "An operator must confirm dispatch."},
+      {"id": "automatic", "cases": ["automatic_dispatch"], "implication": "A recorded delivery triggers dispatch without confirmation."}
+    ]}
+  ],
+  "exclusions": ["payments", "multi_region"]
+}

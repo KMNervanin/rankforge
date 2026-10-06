@@ -43,8 +43,8 @@ test('real local cycle: prepare, fail, edit, pass, advance and preserve prior wo
   assert.ok(store.progress('signal').workspace)
 })
 
-test('quota pauses after persisting the answer; resume is idempotent and never re-awards', async (t) => {
-  const { post, provider, store, waitForJobs } = await fixture(t)
+test('quota preserves the answer while real labs continue; resume is idempotent and never re-awards', async (t) => {
+  const { post, provider, store, labs, waitForJobs } = await fixture(t)
   provider.fail = true
   const body = { id: 'request-quota', text: 'I inspected the response.', mode: 'debrief' }
   assert.equal((await post('/api/missions/signal/answer', body)).statusCode, 202)
@@ -52,13 +52,21 @@ test('quota pauses after persisting the answer; resume is idempotent and never r
   assert.equal(store.exchange(body.id)?.status, 'paused')
   assert.equal(store.exchange(body.id)?.text, body.text)
   assert.ok(store.get('pause'))
-  assert.equal((await post('/api/missions/signal/start', { openEditor: false })).statusCode, 409)
+  assert.equal((await post('/api/missions/signal/start', { openEditor: false })).statusCode, 200)
+  assert.equal((await post('/api/missions/signal/hint')).statusCode, 200)
+  await copyFile(path.join(root, 'tests/solutions/signal.py'), path.join(labs.workspace('signal'), 'service.py'))
+  assert.equal((await post('/api/missions/signal/check')).json().xp, 120)
+  assert.equal(store.exchange(body.id)?.status, 'paused')
+  assert.equal(provider.calls, 1)
+  assert.equal((await post('/api/missions/vault/start', { openEditor: false })).statusCode, 200)
+  assert.equal((await post('/api/missions/signal/answer', { ...body, id: 'another-paused-message' })).statusCode, 409)
   provider.fail = false
   await post('/api/answers/resume', { id: body.id }); await waitForJobs()
   assert.equal(store.exchange(body.id)?.status, 'completed')
   assert.equal(store.get('pause'), '')
   await post('/api/answers/resume', { id: body.id }); await waitForJobs()
   assert.equal(provider.calls, 2)
+  assert.equal((await post('/api/missions/signal/check')).json().xp, 120)
   assert.equal(store.language().evidenceCount, 1)
 })
 

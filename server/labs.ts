@@ -7,6 +7,7 @@ import { createHash, randomUUID } from 'node:crypto'
 import { missionById } from '../shared/content.js'
 import type { CheckResult, LanguageBand } from '../shared/types.js'
 import { DomainError } from './store.js'
+import { currentContractVersion } from '../shared/contracts.js'
 
 export const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 export type SavedCodeContext = {
@@ -36,7 +37,7 @@ export class Labs {
     const result: SavedCodeContext = { source: 'saved-files-on-disk', workspace: this.workspace(id), capturedAt: new Date().toISOString(), visibility: { unsavedEditorBuffers: false, runningProcessState: false, terminalOutput: false }, files: {}, omittedFiles: [], inventoryLimited: false, limits: { files: 20, charactersPerFile: 12000, totalCharacters: 64000 } }
     if (!existsSync(this.workspace(id))) return result
     const workspace = await this.assertOwned(id)
-    const names: Record<string, string[]> = { signal: ['service.py'], vault: ['store.py'], gateway: ['nginx.conf', 'compose.yaml'], echo: ['ingest.py'], ledger: ['transform.py'], recovery: ['recover.py'] }
+    const names: Record<string, string[]> = { signal: ['service.py'], vault: ['store.py'], gateway: ['nginx.conf', 'compose.yaml'], echo: ['ingest.py'], ledger: ['transform.py'], recovery: ['recover.py'], briefing: ['manifest.py', 'ticket.json'], capacity: ['capacity.py', 'workload.json'], contract: ['probe.py'], 'http-trial': ['service.py'] }
     const preferred = names[id] ?? []
     const candidates = new Set(preferred)
     const textTypes = new Set(['.py', '.sql', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs', '.sh', '.json', '.yaml', '.yml', '.conf', '.toml', '.ini', '.md', '.txt', '.csv', '.html', '.css'])
@@ -117,19 +118,24 @@ export class Labs {
     } finally { await rm(temporaryRoot, { recursive: true, force: true }) }
   }
   async check(id: string): Promise<CheckResult> {
+    return { ...await this.runCheck(id), contractVersion: currentContractVersion }
+  }
+  private async runCheck(id: string): Promise<CheckResult> {
     const checkedAt = new Date().toISOString()
     try {
       const workspace = await this.assertOwned(id)
       if (id === 'gateway') return this.checkGateway(workspace, checkedAt)
-      for (const name of ['service.py', 'store.py', 'ingest.py', 'transform.py', 'recover.py']) {
+      for (const name of ['service.py', 'store.py', 'ingest.py', 'transform.py', 'recover.py', 'manifest.py', 'capacity.py', 'probe.py']) {
         const file = path.join(workspace, name)
         if (existsSync(file) && (await lstat(file)).isSymbolicLink()) throw new DomainError('Lab source must be a regular file inside the workspace.', 409)
       }
-      const result = await run('python3', ['-I', '-B', path.join(root, 'server', 'verify.py'), id, workspace], workspace)
+      const verifier = ['briefing', 'capacity', 'contract'].includes(id) ? 'verify_architect.py' : id === 'http-trial' ? 'verify_http_trial.py' : 'verify.py'
+      const result = await run('python3', ['-I', '-B', path.join(root, 'server', verifier), id, workspace], workspace)
       let parsed: { checks: CheckResult['checks'] }
       try { parsed = JSON.parse(result.stdout.trim().split('\n').at(-1) ?? '') } catch { return { passed: false, supported: true, checkedAt, checks: [{ name: 'Run the lab', passed: false, detail: result.stderr || result.stdout || 'No valid check report was produced.' }], output: result.stderr } }
       if (!Array.isArray(parsed.checks) || !parsed.checks.length) throw new Error('Invalid check report')
-      return { passed: result.code === 0 && parsed.checks.every((item) => item.passed), checks: parsed.checks, checkedAt, supported: true, output: result.stderr.slice(0, 6000) }
+      const supported = !parsed.checks.some((item) => item.name === 'Environment blocked')
+      return { passed: supported && result.code === 0 && parsed.checks.every((item) => item.passed), checks: parsed.checks, checkedAt, supported, output: result.stderr.slice(0, 6000) }
     } catch (error) {
       return { passed: false, supported: false, checkedAt, checks: [], output: error instanceof DomainError ? error.message : 'The workspace could not be checked. Reopen the mission and try again.' }
     }

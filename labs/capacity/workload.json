@@ -1,0 +1,1 @@
+{"contract_version":1,"source_ticket":"outpost-deliveries/revision-1","daily_requests":86400,"peak_multiplier":4,"mean_ms":250,"response_bytes":2000,"written_bytes":500,"retention_days":7,"storage_multiplier":2,"p95_ms":900}

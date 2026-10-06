@@ -6,6 +6,7 @@ import type { MissionView } from '../shared/types.js'
 
 const smallPositions = [[.29, .20], [.74, .24], [.23, .49], [.73, .53], [.32, .79], [.77, .82]]
 const widePositions = [[.18, .29], [.50, .29], [.82, .29], [.18, .74], [.50, .74], [.82, .74]]
+const guildPositions = [[.24, .38], [.65, .28], [.65, .73]]
 const palettes = [
   { main: 0xffbf58, light: 0xffedb0, dark: 0x956039, land: 0x686149 },
   { main: 0x70e2b2, light: 0xd1ffe8, dark: 0x34786d, land: 0x426d61 },
@@ -95,9 +96,10 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
     const draw = () => {
       if (disposed) return
       const width = element.clientWidth; const height = element.clientHeight
-      const positions = width >= 840 ? widePositions : smallPositions
+      const positions = data.current.missions.length <= 3 ? guildPositions : width >= 840 ? widePositions : smallPositions
       app.renderer.resize(width, height)
       app.stage.removeChildren().forEach((child) => child.destroy({ children: true }))
+      pulse = undefined
       particles = []
       const sky = new Graphics()
       for (let n = 0; n < 48; n++) {
@@ -107,7 +109,7 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
         if (n % 11 === 0) sky.moveTo(x - 5, y).lineTo(x + 5, y).moveTo(x, y - 5).lineTo(x, y + 5).stroke({ color: 0xffdbad, alpha: .35, width: 1 })
       }
       app.stage.addChild(sky)
-      const connections = [[0, 1], [0, 2], [1, 3], [3, 4], [2, 5], [4, 5]]
+      const connections = data.current.missions.flatMap((mission, to) => mission.prerequisites.map((id) => [data.current.missions.findIndex((item) => item.id === id), to])).filter(([from]) => from! >= 0)
       const paths = new Graphics()
       for (const [from, to] of connections) {
         const a = positions[from!]!; const b = positions[to!]!
@@ -178,13 +180,13 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
     }).catch(() => { if (!disposed) setFallback(true) })
     return () => { disposed = true; layoutObserver.disconnect(); observer?.disconnect(); redraw.current = null; if (pixi.current === app) { pixi.current = null; app.destroy(true, { children: true }) } }
   }, [])
-  const signature = missions.map((item) => item.status).join(',')
+  const signature = missions.map((item) => `${item.id}:${item.status}`).join(',')
   useEffect(() => { redraw.current?.() }, [signature, selected])
-  const layout = wide ? widePositions : smallPositions
+  const layout = missions.length <= 3 ? guildPositions : wide ? widePositions : smallPositions
   return <div className={`outpost-map ${fallback ? 'fallback-map' : ''}`} aria-label="Interactive outpost map">
     <div ref={host} className="map-canvas" aria-hidden="true" />
-    <span className="map-coordinates">✦ The Northern Reach</span>
-    <span className="map-scale">{missions.filter((item) => item.status === 'completed').length} of 6 places brought to life</span>
+    <span className="map-coordinates">✦ {missions[0]?.chapter === 'guild' ? 'The Guild Quarter' : 'The Northern Reach'}</span>
+    <span className="map-scale">{missions.filter((item) => item.status === 'completed').length} of {missions.length} places brought to life</span>
     {missions.map((mission, index) => <button key={mission.id} className={`map-node sector-${mission.id} ${mission.status} ${selected === mission.id ? 'selected' : ''}`} style={{ left: `${layout[index]![0]! * 100}%`, top: `${layout[index]![1]! * 100}%` }} onClick={() => onSelect(mission.id)} disabled={disabled} aria-label={`View ${mission.title}`}>
       {fallback && <span className="fallback-building">{mission.icon}</span>}
       <span className="node-label"><span className="node-index">{mission.status === 'completed' ? '✓' : mission.order}</span><span>{mission.sector}<small>{mission.status === 'completed' ? 'Restored!' : mission.status === 'locked' ? 'Yet to discover' : 'Your next quest'}</small></span></span>

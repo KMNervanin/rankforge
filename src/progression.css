@@ -1,0 +1,99 @@
+.progression-panel { max-width: 1440px; margin: 0 auto; padding: 32px 28px 48px; min-width: 0; }
+.progression-panel * { min-width: 0; }
+.progression-panel p { color: #dccde5; }
+.progression-heading { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-bottom: 24px; }
+.progression-heading .eyebrow { color: #ffce81; margin-bottom: 12px; }
+.progression-heading h1 { font-size: 36px; }
+.progression-heading p { max-width: 680px; margin-bottom: 0; }
+.progression-total { text-align: center; color: #ffda8d; font-size: 38px; font-weight: 800; flex-shrink: 0; }
+.progression-total small { display: block; color: #d7c0de; font-size: 12px; font-weight: 500; }
+.progression-loop { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; padding: 0; margin: 0 0 28px; list-style: none; border: 1px solid #725772; border-radius: 18px; background: #302237; overflow: hidden; }
+.progression-loop li { display: flex; align-items: center; gap: 12px; padding: 18px; position: relative; }
+.progression-loop li + li { border-left: 1px solid #725772; }
+.progression-loop li > span { color: #ffc87a; font-weight: 800; font-size: 22px; }
+.progression-loop strong, .progression-loop small { display: block; }
+.progression-loop small { margin-top: 5px; color: #ceb9d7; font-size: 12px; }
+.progression-branches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.skill-path { --path: #ffcf85; --path-soft: #513c32; padding: 24px; border: 1px solid #755b79; border-top: 3px solid var(--path); border-radius: 22px; background: linear-gradient(140deg, #39283f, #281e32); }
+.skill-path-integrity { --path: #9be6bd; --path-soft: #284a3f; }
+.skill-path-processing { --path: #92deed; --path-soft: #2b4654; }
+.skill-path-design { --path: #d4b0ff; --path-soft: #49375e; }
+.skill-path > header { display: flex; align-items: flex-start; gap: 12px; }
+.skill-path h2 { font-size: 22px; margin: 0 0 7px; color: var(--path); }
+.skill-path header p { font-size: 13px; line-height: 1.55; margin: 0; }
+.skill-path-icon { display: grid; place-items: center; width: 42px; height: 42px; background: var(--path-soft); border: 1px solid var(--path); color: var(--path); border-radius: 12px; flex-shrink: 0; font-size: 25px; }
+.skill-level { margin-left: auto; white-space: nowrap; color: var(--path); font-weight: 750; }
+.skill-nodes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; margin: 24px 0 20px; padding: 0; }
+.skill-nodes li { display: flex; flex-direction: column; align-items: center; position: relative; text-align: center; padding: 0 5px; }
+.skill-nodes li::before { content: ''; position: absolute; height: 3px; top: 18px; left: -50%; right: 50%; background: #725879; }
+.skill-nodes li:first-child::before { display: none; }
+.skill-nodes li.earned::before { background: var(--path); }
+.skill-node { position: relative; z-index: 1; display: grid; place-items: center; height: 38px; width: 38px; border-radius: 50%; background: #2b2036; border: 2px solid #86698d; color: #cebdd5; margin-bottom: 10px; font-weight: 800; }
+.earned .skill-node { background: var(--path); color: #242231; border-color: var(--path); }
+.next .skill-node { border-color: var(--path); color: var(--path); box-shadow: 0 0 0 4px var(--path-soft); }
+.skill-nodes strong { font-size: 13px; color: #f1e7f5; }
+.skill-nodes small { font-size: 11px; color: #cdb7d7; margin-top: 5px; }
+.skill-nodes .earned small { color: var(--path); }
+.skill-scope { font-size: 14px; min-height: 46px; }
+.skill-mode { font-size: 12px; color: var(--path) !important; }
+.skill-next { border-radius: 14px; padding: 16px; background: #201929; border: 1px solid #594162; }
+.skill-progress-label { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; font-size: 14px; }
+.skill-progress-label small { color: #ceb9d7; }
+.skill-next progress { display: block; width: 100%; height: 8px; border: 0; border-radius: 10px; overflow: hidden; accent-color: var(--path); background: #51405d; margin: 12px 0; }
+.skill-next progress::-webkit-progress-bar { background: #51405d; border-radius: 10px; }
+.skill-next progress::-webkit-progress-value { background: var(--path); border-radius: 10px; }
+.skill-next p { font-size: 13px; margin: 8px 0 12px; }
+.skill-missing { display: flex; flex-wrap: wrap; gap: 8px; }
+.progression-panel button { border-radius: 10px; padding: 10px 13px; border: 1px solid #947194; background: #4c3556; color: #fff0d8; text-align: left; line-height: 1.4; overflow-wrap: anywhere; }
+.progression-panel button:hover:not(:disabled) { background: #62476b; border-color: #f7c581; }
+.progression-panel button:disabled { color: #bca8c7; border-color: #6a516d; background: #382c43; }
+.skill-missing button { font-size: 12px; }
+.skill-reward-preview { display: block; margin-top: 14px; color: var(--path); line-height: 1.6; }
+.progression-panel details { font-size: 13px; color: #d7c3df; margin-top: 16px; }
+.progression-panel summary { cursor: pointer; padding: 6px 0; color: #f0d7ae; }
+.progression-panel details p { margin: 10px 0; }
+.progression-panel details ul { padding-left: 18px; line-height: 1.7; }
+.skill-evidence > div { border-top: 1px solid #5b4265; margin-top: 14px; padding-top: 14px; }
+.skill-evidence li { overflow-wrap: anywhere; }
+.progression-bottom { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 22px; margin-top: 24px; }
+.bonus-trial, .reward-inventory { border: 1px solid #785d7b; background: #302337; border-radius: 22px; padding: 24px; }
+.bonus-trial { background: radial-gradient(ellipse at top right, #74483766, transparent 80%), #302337; }
+.bonus-trial.unlocked { border-color: #d2a26b; }
+.progression-bottom .eyebrow { color: #d8bedb; margin-bottom: 12px; }
+.progression-bottom h2 { font-size: 24px; color: #ffe0a6; }
+.progression-bottom p { font-size: 14px; }
+.bonus-trial button:not(:disabled) { background: #ffce81; color: #342535; font-weight: 750; }
+.charge-reserve { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+.charge-reserve > span { font-size: 45px; color: #ffd685; }
+.charge-reserve strong { display: block; color: #ffda94; font-size: 24px; }
+.charge-reserve small { display: block; margin-top: 4px; color: #d5bfdf; }
+.cosmetic-inventory { margin-top: 18px; }
+.cosmetic-row { display: flex; align-items: center; gap: 12px; border-top: 1px solid #654a6b; padding: 16px 0 0; margin-top: 16px; }
+.cosmetic-row strong, .cosmetic-row small { display: block; }
+.cosmetic-row small { color: #cdb7d7; margin-top: 5px; font-size: 11px; }
+.cosmetic-row button { margin-left: auto; font-size: 12px; flex-shrink: 0; max-width: 130px; }
+.cosmetic-swatch { display: grid; place-items: center; width: 43px; height: 48px; flex-shrink: 0; border: 3px double; border-radius: 12px; font: bold 24px Georgia, serif; }
+.cosmetic-relay-frame { color: #ffcf85; background: #57422e; border-color: #ffd9a0; }
+.cosmetic-archive-frame { color: #a1e9c0; background: #284a3c; border-color: #9be6bd; }
+.progression-scope { margin: 24px 0 0; font-size: 13px; max-width: 1080px; }
+.practice-record { border-top: 1px solid #654b6f; padding-top: 16px; }
+.practice-record > ul { list-style: none; padding: 0 !important; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.practice-record li { display: grid; gap: 5px; padding: 14px; border: 1px solid #644b6e; border-radius: 12px; }
+.practice-record li button { justify-self: start; }
+.practice-record li span, .practice-record li small { font-size: 12px; color: #ceb8d8; }
+@media (max-width: 1100px) {
+  .progression-loop li { padding: 14px 12px; gap: 9px; }
+  .progression-loop li > span { font-size: 18px; }
+  .progression-loop strong { font-size: 13px; }
+  .skill-path { padding: 20px; }
+  .skill-path h2 { font-size: 19px; }
+  .cosmetic-row { flex-wrap: wrap; }
+  .cosmetic-row > div { flex: 1; min-width: 140px; }
+}
+@media (max-width: 850px) {
+  .progression-panel { padding: 24px 18px; }
+  .progression-branches, .progression-bottom, .practice-record > ul { grid-template-columns: minmax(0, 1fr); }
+  .progression-loop { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .progression-loop li:nth-child(3) { border-left: 0; }
+  .progression-loop li:nth-child(n+3) { border-top: 1px solid #725772; }
+}

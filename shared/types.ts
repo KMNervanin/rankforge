@@ -1,7 +1,9 @@
+import type { ProgressionSnapshot } from './progression.js'
+
 export type LanguageBand = 'guided' | 'connected' | 'independent'
 export type MissionStatus = 'locked' | 'available' | 'active' | 'completed'
 export type Check = { name: string; passed: boolean; detail: string }
-export type CheckResult = { passed: boolean; checks: Check[]; output: string; checkedAt: string; supported: boolean }
+export type CheckResult = { passed: boolean; checks: Check[]; output: string; checkedAt: string; supported: boolean; contractVersion?: string }
 export type LanguageGrade = {
   communicativeGoal: 'met' | 'partial' | 'not_met'
   clarity: 'clear' | 'mostly_clear' | 'unclear'
@@ -12,6 +14,8 @@ export type LanguageGrade = {
   practice: string
 }
 export type Mission = {
+  chapter: 'outpost' | 'guild'
+  bonus?: boolean
   id: string; order: number; title: string; subtitle: string; sector: string; icon: string
   skills: string[]; prerequisites: string[]; xp: number; duration: string; kind: 'build' | 'repair' | 'assessment'
   briefs: Record<LanguageBand, string>
@@ -29,6 +33,7 @@ export type Exchange = {
 }
 export type JournalEntry = { id: number; kind: string; missionId: string | null; text: string; createdAt: string }
 export type Snapshot = {
+  progression?: ProgressionSnapshot
   missions: MissionView[]; activeMissionId: string | null; xp: number; rank: string
   language: { band: LanguageBand; evidenceCount: number; distinctMissions: number; due: string[]; coverage: string }
   journal: JournalEntry[]; exchanges: Exchange[]

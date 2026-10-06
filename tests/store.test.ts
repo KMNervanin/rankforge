@@ -53,7 +53,9 @@ test('restart preserves submitted answers and pauses interrupted evaluations', (
     assert.equal(store.exchange('request-01')!.text, 'I fixed the relay.')
     assert.equal(store.exchange('request-01')!.status, 'paused')
     assert.ok(store.get('pause'))
-    assert.throws(() => store.select('signal', '/tmp/anything'), /paused/)
+    store.select('signal', '/tmp/anything')
+    assert.equal(store.get('active'), 'signal')
+    assert.throws(() => store.submit('new-paused-answer', 'signal', 'Another answer', 'coach'), /paused/)
     store.finish('request-01', grade.reply, structuredClone(grade))
     assert.equal(store.get('pause'), '')
   } finally { store.close(); rmSync(home, { recursive: true, force: true }) }

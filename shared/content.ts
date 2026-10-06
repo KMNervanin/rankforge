@@ -1,8 +1,15 @@
 import type { Mission } from './types.js'
+import { architectMissions, architectFollowUps } from './architect.js'
+import { httpTrialMission } from './http-trial.js'
+
+export const chapters = [
+  { id: 'outpost', number: 'I', title: 'The silent outpost', place: 'THE FLOATING OUTPOST', heading: 'A world worth restoring.', description: 'Every system you repair becomes a skill you carry.' },
+  { id: 'guild', number: 'II', title: "The architect’s guild", place: 'THE ARCHITECT’S GUILD', heading: 'Think before you build.', description: 'Trace the promises, estimate the work, then test the boundary.' },
+] as const
 
 export const missions: Mission[] = [
   {
-    id: 'signal', order: 1, title: 'A signal in the dark', subtitle: 'Bring the command relay online', sector: 'Command relay', icon: '◈',
+    id: 'signal', chapter: 'outpost', order: 1, title: 'A signal in the dark', subtitle: 'Bring the command relay online', sector: 'Command relay', icon: '◈',
     skills: ['HTTP contracts', 'Diagnostics', 'Python foundations'], prerequisites: [], xp: 120, duration: '20–35 min', kind: 'repair',
     briefs: {
       guided: 'The outpost cannot hear the relay. Its health check is broken. Fix the HTTP response and test it.',
@@ -18,7 +25,7 @@ export const missions: Mission[] = [
     artifact: 'Relay health probe',
   },
   {
-    id: 'vault', order: 2, title: 'Give memory a structure', subtitle: 'Protect the supply vault', sector: 'Memory vault', icon: '▤',
+    id: 'vault', chapter: 'outpost', order: 2, title: 'Give memory a structure', subtitle: 'Protect the supply vault', sector: 'Memory vault', icon: '▤',
     skills: ['Relational modeling', 'Constraints', 'Transactions'], prerequisites: ['signal'], xp: 160, duration: '30–45 min', kind: 'build',
     briefs: {
       guided: 'The vault loses track of supplies. Create two linked tables. The database must reject invalid records.',
@@ -33,7 +40,7 @@ export const missions: Mission[] = [
     lesson: 'A schema protects data written by different clients. This lab requires persistent tables and repeatable setup, not a particular column order or SQL spelling. SQLite foreign keys must be enabled per connection. Ordinary TEXT PRIMARY KEY permits NULL and INTEGER is an affinity, not strict type validation. NULL identifiers and non-integer quantities are outside this lab’s input scope; stronger constraints are welcome. Use a new scratch filename when changing a schema. Existing workspace documents are preserved; use these current objectives.', artifact: 'Integrity seal',
   },
   {
-    id: 'gateway', order: 3, title: 'Open the right gate', subtitle: 'Route traffic through nginx', sector: 'Transit gate', icon: '⌘',
+    id: 'gateway', chapter: 'outpost', order: 3, title: 'Open the right gate', subtitle: 'Route traffic through nginx', sector: 'Transit gate', icon: '⌘',
     skills: ['Reverse proxy', 'nginx', 'Container networking'], prerequisites: ['signal'], xp: 200, duration: '35–50 min', kind: 'repair',
     briefs: {
       guided: 'Two containers are ready. nginx is the front door. Make /api/health reach the relay. Keep unknown routes closed.',
@@ -48,7 +55,7 @@ export const missions: Mission[] = [
     lesson: 'A reverse proxy forwards requests across separate container network namespaces. Compose names provide internal DNS. Preserve the query while removing the /api/ path prefix; unknown API paths must reach the relay as unknown paths. URI replacement, explicit rewrites and named upstreams can satisfy the same contract. Keep the supplied relay and logging unchanged so Verify can prove forwarding. No particular nginx configuration text is required. Existing workspace documents are preserved; use these current objectives.', artifact: 'Gateway route map',
   },
   {
-    id: 'echo', order: 4, title: 'An echo is not an event', subtitle: 'Make retries safe', sector: 'Event conduit', icon: '⇄',
+    id: 'echo', chapter: 'outpost', order: 4, title: 'An echo is not an event', subtitle: 'Make retries safe', sector: 'Event conduit', icon: '⇄',
     skills: ['Idempotency', 'Transactions', 'Event identity'], prerequisites: ['vault'], xp: 220, duration: '30–45 min', kind: 'repair',
     briefs: {
       guided: 'A sender retries after a timeout. The same delivery is counted twice. Store each event once, but reject a reused ID with different data.',
@@ -62,7 +69,7 @@ export const missions: Mission[] = [
     commands: ['python3 replay.py'], lesson: 'A timeout does not tell a sender whether a write committed. Identity and payload distinguish replays from conflicts; invalid input must not change existing events. SQLite’s positive INTEGER range ends at 9223372036854775807. Names and ids are nonempty strings; this lab does not trim or case-fold them. The caller commits and closes the connection. Choose your validation and insertion strategy; concurrent writers are a later exercise. Existing workspace documents are preserved; use these current objectives.', artifact: 'Replay guardian',
   },
   {
-    id: 'ledger', order: 5, title: 'Numbers that tell the truth', subtitle: 'Rebuild the daily ledger', sector: 'Data observatory', icon: '▥',
+    id: 'ledger', chapter: 'outpost', order: 5, title: 'Numbers that tell the truth', subtitle: 'Rebuild the daily ledger', sector: 'Data observatory', icon: '▥',
     skills: ['ETL', 'Data quality', 'Decimal arithmetic'], prerequisites: ['echo'], xp: 240, duration: '35–50 min', kind: 'repair',
     briefs: {
       guided: 'The daily report is wrong. Read deliveries, remove exact duplicates and add their amounts. Report bad rows instead of hiding them.',
@@ -76,7 +83,7 @@ export const missions: Mission[] = [
     commands: ['python3 preview.py'], lesson: 'A pipeline owns data meaning: valid shape, normalization, identity, exact totals and visible rejected rows. The per-row amount maximum is 9999999999999999.99, but totals may be larger. Decimal precision applies to arithmetic; integer minor units are also valid. Rejected indices need not be sorted, but must be unique and repeatable. Invalid rows do not reserve ids. Existing workspace documents are preserved; these objectives contain the current input contract.', artifact: 'Quality lens',
   },
   {
-    id: 'recovery', order: 6, title: 'After the blackout', subtitle: 'Restore the outpost from evidence', sector: 'Recovery core', icon: '⬡',
+    id: 'recovery', chapter: 'outpost', order: 6, title: 'After the blackout', subtitle: 'Restore the outpost from evidence', sector: 'Recovery core', icon: '⬡',
     skills: ['Recovery', 'Atomicity', 'Transfer of learning'], prerequisites: ['gateway', 'ledger'], xp: 320, duration: '40–60 min', kind: 'assessment',
     briefs: {
       guided: 'The live database is gone. Recover it from the event archive. A failed recovery must keep the last working database safe.',
@@ -89,18 +96,25 @@ export const missions: Mission[] = [
     sources: [{ title: 'SQLite atomic commit', url: 'https://www.sqlite.org/atomiccommit.html' }],
     commands: ['python3 drill.py'], lesson: 'Apply identity, validation and persistence to replacement. A different nonempty archive must remove old events, not merely add or update rows. A late invalid record must leave the last good rows and schema intact. Prevalidation, staging or rollback-based validation can all satisfy the contract; no transaction syntax is prescribed. This exercise checks validation failures, not power loss, disk exhaustion or concurrent recovery. Existing workspace documents are preserved; use these current objectives.', artifact: 'Recovery sentinel',
   },
+  ...architectMissions,
+  httpTrialMission,
 ]
 
 export const futureChapters = [
-  { title: "The architect's guild", topics: 'System design · requirements · capacity estimates · service boundaries · trade-offs · design reviews' },
-  { title: 'Under pressure', topics: 'Query plans · indexes · load measurement · timeouts · caching · backpressure' },
-  { title: 'Reliable operations', topics: 'CI/CD · migrations · Linux permissions · observability · backup and restore · access control' },
+  { title: "The architect's guild · next steps", topics: 'Service boundaries · alternatives · architecture decisions · changing requirements' },
+  { title: 'The service workshop', topics: 'API design · persistence · pagination · concurrent transactions · compatible migrations' },
+  { title: 'Evidence and trust', topics: 'Contract tests · fault injection · authentication · authorization · safe boundaries' },
+  { title: 'Reliable operations', topics: 'CI/CD · Linux processes · observability · rollout · backup and restore' },
+  { title: 'Under pressure', topics: 'Query plans · indexes · load measurement · deadlines · caching · backpressure' },
   { title: 'The event frontier', topics: 'Queues · Kafka topics and partitions · consumer groups · offsets · delivery semantics' },
   { title: 'The data district', topics: 'Incremental pipelines · orchestration · warehouse modeling · lineage · schema evolution' },
   { title: 'The model laboratory', topics: 'Dataset splits · leakage · baselines · basic metrics · simple training · serving' },
+  { title: 'The independent outpost', topics: 'A connected system · failure drill · changed requirement · reproducible handover' },
 ]
 
 export const followUpQuestions: Record<string, string[]> = {
+  ...architectFollowUps,
+  'http-trial': ['Explain why a cursor that is not in the snapshot can still be valid.', 'Two clients request different pages. What should stay unchanged between their requests?'],
   signal: ['A new operator says a running process must be healthy. Explain why this is not enough and suggest a check.', 'Your colleague checked /health but forgot unknown routes. Ask a useful follow-up question and explain why it matters.', 'Tell the next shift what evidence they should collect before changing an HTTP handler.'],
   vault: ['Imagine a second application writes directly to the vault. Explain which rules still protect the data.', 'A colleague wants to duplicate the item name in every movement. Explain one consequence of that design.', 'Ask the operator to clarify whether a quantity of zero represents a real movement. Explain why you need to know.'],
   gateway: ['A teammate used localhost for an upstream in another container. Explain the mistake in simple words.', 'The nginx syntax check passes but the endpoint returns 502. What would you investigate next, and why?', 'Explain the route a request takes without using the words proxy or upstream.'],

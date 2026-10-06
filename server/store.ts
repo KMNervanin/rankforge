@@ -3,6 +3,7 @@ import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 import { missions, missionById, followUpQuestions } from '../shared/content.js'
 import type { CheckResult, Exchange, JournalEntry, LanguageBand, LanguageGrade, MissionView, Snapshot } from '../shared/types.js'
+import { Rewards } from './rewards.js'
 
 type Progress = { id: string; workspace: string | null; hints: number; checks: string | null; completed: string | null; independent: number }
 type ExchangeRow = { id: string; mission_id: string; mode: 'debrief' | 'coach'; text: string; question: string; status: Exchange['status']; reply: string | null; grade: string | null; error: string | null; created: string; supported: number }
@@ -13,6 +14,7 @@ export class DomainError extends Error {
 
 export class Store {
   readonly db: DatabaseSync
+  private readonly rewards: Rewards
   constructor(readonly home: string, private readonly now = () => new Date().toISOString()) {
     mkdirSync(home, { recursive: true, mode: 0o700 })
     this.db = new DatabaseSync(path.join(home, 'progress.sqlite'), { timeout: 3000 })
@@ -27,6 +29,7 @@ export class Store {
     const columns = this.db.prepare('PRAGMA table_info(exchanges)').all() as { name: string }[]
     if (!columns.some((column) => column.name === 'question')) this.db.exec("ALTER TABLE exchanges ADD COLUMN question TEXT NOT NULL DEFAULT ''")
     for (const mission of missions) this.db.prepare('INSERT OR IGNORE INTO progress(id) VALUES (?)').run(mission.id)
+    this.rewards = new Rewards(this.db)
     const interrupted = this.db.prepare("UPDATE exchanges SET status='paused', error='The service restarted. Your answer is saved; resume when ready.' WHERE status IN ('pending','processing')").run()
     if (Number(interrupted.changes)) this.set('pause', 'An evaluation was interrupted. Resume your saved answer.')
   }
@@ -60,8 +63,8 @@ export class Store {
     const active = this.get('active')
     return missions.map((mission) => {
       const progress = this.progress(mission.id)
-      const unlocked = mission.prerequisites.every((id) => this.progress(id).completed !== null)
-      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : active === mission.id ? 'active' : unlocked ? 'available' : 'locked', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent }
+      const unlocked = mission.prerequisites.every((id) => this.progress(id).completed !== null) && this.rewards.isUnlocked(mission.id)
+      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : !unlocked ? 'locked' : active === mission.id ? 'active' : 'available', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent }
     })
   }
   question(id: string) {
@@ -72,16 +75,17 @@ export class Store {
   assertAvailable(id: string) {
     const mission = missionById(id)
     if (mission.prerequisites.some((key) => !this.progress(key).completed)) throw new DomainError('Complete the prerequisite missions first.', 409)
+    if (!this.rewards.isUnlocked(id)) throw new DomainError('Verify Signal and Gateway on the current contract to earn HTTP Applied and unlock this bonus quest.', 409)
   }
-  assertRunning() { if (this.get('pause')) throw new DomainError('Training is paused. Resume the saved evaluation first.', 409) }
+  assertRunning() { if (this.get('pause')) throw new DomainError('The tutor is paused. Resume the saved evaluation first.', 409) }
   select(id: string, workspace: string) {
-    this.assertRunning(); this.assertAvailable(id)
+    this.assertAvailable(id)
     this.db.prepare('UPDATE progress SET workspace=? WHERE id=?').run(workspace, id)
     this.set('active', id)
     this.record('mission', id, `Entered ${missionById(id).sector}. Workspace preserved at ${workspace}.`)
   }
   hint(id: string): string {
-    this.assertRunning(); this.assertAvailable(id)
+    this.assertAvailable(id)
     const mission = missionById(id)
     const count = this.progress(id).hints
     this.db.prepare('UPDATE progress SET hints=? WHERE id=?').run(Math.min(count + 1, mission.hints.length), id)
@@ -93,6 +97,7 @@ export class Store {
     this.db.exec('BEGIN IMMEDIATE')
     try {
       const before = this.progress(id)
+      if (id === 'http-trial') this.assertAvailable(id)
       this.db.prepare('UPDATE progress SET checks=? WHERE id=?').run(JSON.stringify(result), id)
       if (result.passed && result.supported) {
         if (!before.completed) {
@@ -101,8 +106,12 @@ export class Store {
           this.record('victory', id, `${missionById(id).sector} restored. ${missionById(id).artifact} acquired. ${before.hints ? 'Guided practice' : 'Unassisted technical completion'} recorded.`)
         }
       } else this.record('check', id, result.supported ? 'The lab still needs work. Evidence saved in the mission panel.' : 'Check unavailable. No failure or reward recorded.')
+      this.rewards.recordCheck(id, result, before.hints, this.now())
       this.db.exec('COMMIT')
     } catch (error) { this.db.exec('ROLLBACK'); throw error }
+  }
+  equipCosmetic(id: string) {
+    if (!this.rewards.equip(id)) throw new DomainError('Earn this cosmetic before equipping it.', 409)
   }
   submit(id: string, missionId: string, text: string, mode: 'debrief' | 'coach'): Exchange {
     this.assertAvailable(missionId)
@@ -150,6 +159,6 @@ export class Store {
     const xp = Number((this.db.prepare('SELECT COALESCE(SUM(xp),0) AS xp FROM awards').get() as { xp: number }).xp)
     const exchanges = this.db.prepare('SELECT id FROM exchanges ORDER BY created,id').all() as { id: string }[]
     const journal = this.db.prepare('SELECT id,kind,mission_id AS missionId,text,created AS createdAt FROM journal ORDER BY id DESC LIMIT 60').all() as JournalEntry[]
-    return { missions: this.views(), activeMissionId: this.get('active'), xp, rank: xp >= 1000 ? 'D · Pathfinder' : xp >= 400 ? 'E · Operator' : 'E · Initiate', language: this.language(), exchanges: exchanges.map((item) => this.exchange(item.id)!), journal, connection }
+    return { missions: this.views(), activeMissionId: this.get('active'), xp, rank: xp >= 1000 ? 'D · Pathfinder' : xp >= 400 ? 'E · Operator' : 'E · Initiate', language: this.language(), exchanges: exchanges.map((item) => this.exchange(item.id)!), journal, connection, progression: this.rewards.snapshot() }
   }
 }
