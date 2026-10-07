@@ -90,7 +90,8 @@ def signal():
             if expected == 200:
                 require(response.headers.get_content_type() == "application/json", "Expected application/json")
                 data = json.loads(response.read())
-                require(data == {"status": "ok", "service": "relay"}, f"Unexpected health body: {data!r}")
+                required = {"status": "ok", "service": "relay"}
+                require(isinstance(data, dict) and {key: data.get(key) for key in required} == required, f"Unexpected health body: {data!r}")
     try:
         for route, expected in [("/health", 200), ("/health?probe=1&next=/missing", 200),
                                 ("/missing", 404), ("/missing?probe=1", 404),

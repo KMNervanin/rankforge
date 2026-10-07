@@ -51,6 +51,11 @@ test('signal accepts different parsing, JSON order and media-type parameters', a
   assert.equal((await candidate(t, 'signal', source)).passed, true)
 })
 
+test('signal accepts extra JSON fields in the health body', async (t) => {
+  const source = (await solution('signal')).replace('{"status": "ok", "service": "relay"}', '{"status": "ok", "service": "relay", "uptime_s": 12}')
+  assert.equal((await candidate(t, 'signal', source)).passed, true)
+})
+
 test('signal rejects a redirect instead of a direct health response', async (t) => {
   const source = (await solution('signal')).replace('ok = urlsplit(self.path).path == "/health"', `route = urlsplit(self.path).path
         if route == "/health":
