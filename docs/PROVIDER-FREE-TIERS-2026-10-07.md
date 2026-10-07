@@ -99,3 +99,11 @@ Owner clarification, 2026-10-07: Rankforge is planned as an international commer
 - Whether Cohere, Cloudflare, Mistral and Z.ai require a card for free use; Z.ai rate limits.
 - OpenAI complimentary-token article full text and any scheduled end date.
 - Fireworks 10 RPM figure; Hyperbolic signup credit.
+
+## Owner decisions, 2026-10-08
+
+- **Base provider: Google Cloud with Vertex AI, postpaid on Cloud Billing.** One product project for all customers; a bound API key or service account per customer is attribution and revocation only, since Google quotas and spend caps apply per project, not per key.
+- **Money is metered by Rankforge's own gateway.** Cost per request from the provider's usage fields, an allowance per customer in the product database, refusal before the provider call when the allowance is spent, end-customer billing through Stripe. Provider usage and cost APIs are for reconciliation and alerts only.
+- **No second adapter.** OpenRouter was considered for model breadth and per-key dollar caps and rejected: prepaid balance, 5.5% fee, an extra intermediary, no postpaid without Sales.
+- **No free quotas in the product and no customer-supplied keys.** A product-owned free Gemini key is one shared per-project quota that a handful of players would exhaust, and multiplying projects is barred by Google. Keys brought by players were considered and rejected by the owner over user expectations in Europe and elsewhere. Free Gemini stays a development and personal-play tool.
+- **Verdict drift between models is accepted.** If a cheaper model occasionally grades a debrief more generously and pays extra XP, that is tolerable; the calibration bench is still the way to pick the model, not a gate on the star.
