@@ -17,3 +17,9 @@
 **Reason:** The owner chose the vertical tree with a thick colour-segmented trunk and side limbs after rejecting four conceptual sketches.
 **Reversal cost:** Remove the tab; the catalog file stays useful for the roadmap.
 **Location:** `shared/roadmap.ts`, `src/Atlas.tsx`, `src/App.tsx`.
+
+## Language of the Atlas tab
+**Chosen:** Russian mission titles as the primary label in the Atlas, English title as the subtitle in the card; the rest of the game stays English.
+**Reason:** The owner asked for the tree in his language so he can read it; he is the only player today.
+**Reversal cost:** A language toggle or swapping the two fields in one component; the catalog carries both.
+**Location:** `shared/roadmap.ts`, `src/Atlas.tsx`.
