@@ -65,6 +65,10 @@ svg.canvas:active { cursor: grabbing; }
 .hint { position: absolute; left: 14px; bottom: 14px; color: var(--muted); font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
 .counts { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
 .counts b { color: var(--fg); font-variant-numeric: tabular-nums; }
+.controls { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 6px; }
+.controls button { font: 650 13px var(--font-display); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 7px 12px; cursor: pointer; min-width: 38px; }
+.controls button:hover { background: var(--panel-2); }
+@media (max-width: 700px) { .controls { bottom: auto; top: 14px; } }
 @media (max-width: 700px) { .drawer { top: auto; bottom: 14px; max-height: 45%; } .hint { display: none; } }
 </style>
 </head>
@@ -79,6 +83,7 @@ svg.canvas:active { cursor: grabbing; }
   <svg class="canvas" id="canvas" role="img" aria-label="Граф заданий кампании"></svg>
   <aside class="drawer" id="drawer"><span class="eyebrow">Выбери задание</span><h2>Клик по узлу</h2><p class="en">Колесо или щипок — масштаб, перетаскивание — панорама. Подсветятся все задания, которые ведут к выбранному.</p></aside>
   <div class="hint">слева направо — порядок зависимостей · цвет — гильдия · пунктир — по желанию</div>
+  <div class="controls"><button type="button" id="z-me" title="К моему месту в кампании">Где я</button><button type="button" id="z-all" title="Показать всю кампанию">Вся карта</button><button type="button" id="z-in" aria-label="Приблизить">+</button><button type="button" id="z-out" aria-label="Отдалить">−</button></div>
 </main>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
@@ -134,7 +139,8 @@ function render() {
   node.append('rect').attr('width', W).attr('height', H);
   node.append('text').attr('class', 'id').attr('x', 12).attr('y', 16).text(n => n.id + (n.status === 'done' ? '  ✓' : ''));
   node.append('text').attr('class', 't').attr('x', 12).attr('y', 33).text(n => n.ru.length > 27 ? n.ru.slice(0, 26) + '…' : n.ru);
-  if (!render.fitted) { const gr = g.graph(); const box = svg.node().getBoundingClientRect(); const k = Math.min(box.width / gr.width, box.height / gr.height, 1) * 0.96; svg.call(zoom.transform, d3.zoomIdentity.translate((box.width - gr.width * k) / 2, (box.height - gr.height * k) / 2).scale(k)); render.fitted = true; }
+  render.graph = g;
+  if (!render.fitted) { focusMe(); render.fitted = true; }
 }
 
 function show(n) {
@@ -145,8 +151,24 @@ function show(n) {
     <dl><dt>Гильдия</dt><dd><span class="pill" style="--c:${COLOR[n.guild]}">${n.guildName}</span></dd><dt>Статус</dt><dd>${status}</dd><dt>После</dt><dd class="pre">${pre}</dd></dl>`;
   d.querySelectorAll('button[data-id]').forEach(b => b.addEventListener('click', () => { const m = byId.get(b.dataset.id); selected = m.id; render(); show(m); }));
 }
+function box() { return svg.node().getBoundingClientRect(); }
+function focusMe() {
+  const g = render.graph; const b = box();
+  const frontier = NODES.filter(n => n.status === 'playable' && g.node(n.id)).concat(NODES.filter(n => n.status === 'done' && g.node(n.id)));
+  const pts = (frontier.length ? frontier : NODES.filter(n => g.node(n.id))).map(n => g.node(n.id));
+  const cx = d3.mean(pts, p => p.x), cy = d3.mean(pts, p => p.y);
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate(b.width / 2 - cx, b.height / 2 - cy).scale(1));
+}
+function fitAll() {
+  const gr = render.graph.graph(); const b = box(); const k = Math.max(0.25, Math.min(b.width / gr.width, b.height / gr.height) * 0.96);
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity.translate((b.width - gr.width * k) / 2, (b.height - gr.height * k) / 2).scale(k));
+}
+document.getElementById('z-me').addEventListener('click', focusMe);
+document.getElementById('z-all').addEventListener('click', fitAll);
+document.getElementById('z-in').addEventListener('click', () => svg.transition().duration(200).call(zoom.scaleBy, 1.4));
+document.getElementById('z-out').addEventListener('click', () => svg.transition().duration(200).call(zoom.scaleBy, 1 / 1.4));
 render();
-window.addEventListener('resize', () => { render.fitted = false; render(); });
+window.addEventListener('resize', () => render());
 </script>
 </body>
 </html>
