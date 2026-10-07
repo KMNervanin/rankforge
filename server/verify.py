@@ -116,6 +116,7 @@ def vault():
             primary_key(db, "items")
             primary_key(db, "movements")
             db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)")
+            db.commit()
             candidate.create_schema(db)
             require(db.execute("SELECT quantity FROM movements WHERE id='m'").fetchone() == (2,), "Repeated schema creation lost data")
     check("Valid movement and repeatable schema", valid)
