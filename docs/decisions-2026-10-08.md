@@ -23,3 +23,9 @@
 **Reason:** The owner asked for the tree in his language so he can read it; he is the only player today.
 **Reversal cost:** A language toggle or swapping the two fields in one component; the catalog carries both.
 **Location:** `shared/roadmap.ts`, `src/Atlas.tsx`.
+
+## Workspace reset
+**Chosen:** Reset copies the current workspace to a timestamped backup beside it before restoring the starter and regenerating the mission documents; rewards are never revoked and a repeat grants only stars not yet earned.
+**Reason:** The owner wants to redo a mission differently without losing work or progress, and the project rule says preserve the player's work.
+**Reversal cost:** Delete backups by hand; no schema change.
+**Location:** `server/labs.ts`, `server/app.ts`.
