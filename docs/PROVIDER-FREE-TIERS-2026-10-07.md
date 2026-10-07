@@ -115,3 +115,13 @@ Owner clarification, 2026-10-07: Rankforge is planned as an international commer
 
 - **Coach allowance:** a recharging battery of ten charges per day with a nightly reset; reward batteries from completed missions add charges on top, rarely. **Debriefs:** two free per mission, further ones from the battery. Worst case on Gemini 3.8 Flash at the promotional price, 15 requests on every day of a month, is about $4–6 per player; a typical player at one to two dollars. Plan on the announced 2027 price, which doubles those numbers.
 - **Three levers before launch, in this order:** test Gemini Flash-Lite for the coach and the debrief verdict on the calibration cases; enable Gemini context caching for the repeated mission files and instructions, since input is about three quarters of the cost; bound the model's thinking budget per request in the harness. Measure each on the same calibration run and record cost per request alongside verdict agreement.
+
+## Three environments, owner decision 2026-10-08
+
+The product must support three environments with the same code and separate configuration, data and credentials.
+
+- **Personal.** The owner's own play: the current ChatGPT subscription through the local OAuth client, or later a personal free API key; which one is decided later. English training and the other personal features live here. No commercial billing, no customer data. This is what runs today.
+- **Dev.** The commercial build and its test contour: Vertex AI on a non-production Google project, test customers, Stripe in test mode, the gateway ledger and allowances enabled, calibration and E2E runs. Everything that will ship is exercised here first.
+- **Prod.** The same contour as dev with the production differences: the production Google project and billing account, live Stripe, real customers and their data, production secrets, monitoring and alerting on cost and provider failures, backups, and no test fixtures or simulated models.
+
+Environment selection is explicit configuration, never inferred from a hostname or a build flag at runtime; a build cannot reach another environment's credentials or data. The personal environment keeps the current rule that a quota or auth failure pauses the tutor without any paid fallback; dev and prod replace it with the gateway allowance.
