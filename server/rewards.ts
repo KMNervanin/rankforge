@@ -1,5 +1,6 @@
 import type { DatabaseSync } from 'node:sqlite'
 import { currentContractVersion } from '../shared/contracts.js'
+import { requiredPassed } from '../shared/checks.js'
 import { skillBranches, starterChip } from '../shared/progression.js'
 import type { EarnedReward, ProgressionSnapshot, RewardDefinition, SkillEvidence } from '../shared/progression.js'
 import type { CheckResult } from '../shared/types.js'
@@ -37,7 +38,7 @@ export class Rewards {
 
   // The caller owns the completion transaction: evidence, milestones and inventory commit together.
   recordCheck(missionId: string, result: CheckResult, hintsUsed: number, earnedAt: string) {
-    if (!result.passed || !result.supported || result.contractVersion !== currentContractVersion || !result.checks.length || result.checks.some((check) => !check.passed)) return
+    if (!result.passed || !result.supported || result.contractVersion !== currentContractVersion || !requiredPassed(result.checks)) return
     const evidence: SkillEvidence = { missionId, contractVersion: currentContractVersion, checkedAt: result.checkedAt, hintsUsed, mode: hintsUsed ? 'guided' : 'independent', checks: result.checks }
     this.db.prepare('INSERT OR IGNORE INTO skill_evidence VALUES (?,?,?,?)').run(missionId, currentContractVersion, evidence.mode, JSON.stringify(evidence))
     this.grant(starterChip, earnedAt, missionId)

@@ -2,7 +2,8 @@ import type { ProgressionSnapshot } from './progression.js'
 
 export type LanguageBand = 'guided' | 'connected' | 'independent'
 export type MissionStatus = 'locked' | 'available' | 'active' | 'completed'
-export type Check = { name: string; passed: boolean; detail: string }
+// An optional check is a hidden bonus: it can only add to a run and never fails the mission.
+export type Check = { name: string; passed: boolean; detail: string; optional?: boolean }
 export type CheckResult = { passed: boolean; checks: Check[]; output: string; checkedAt: string; supported: boolean; contractVersion?: string }
 export type LanguageGrade = {
   communicativeGoal: 'met' | 'partial' | 'not_met'
@@ -16,6 +17,7 @@ export type LanguageGrade = {
 export type Mission = {
   chapter: 'outpost' | 'guild'
   bonus?: boolean
+  nudge?: string
   id: string; order: number; title: string; subtitle: string; sector: string; icon: string
   skills: string[]; prerequisites: string[]; xp: number; duration: string; kind: 'build' | 'repair' | 'assessment'
   briefs: Record<LanguageBand, string>

@@ -3,6 +3,7 @@ import { mkdtemp, rm, writeFile, readFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { Labs, run, root } from '../server/labs.js'
+import { bonusPassed } from '../shared/checks.js'
 
 const daemon = await run('docker', ['info', '--format', '{{.ServerVersion}}'], root, 15000)
 assert.equal(daemon.code, 0, 'Docker daemon must already be accessible; this check never starts or reconfigures it.')
@@ -21,13 +22,16 @@ try {
   const broken = await labs.check('gateway')
   assert.equal(broken.supported, true, JSON.stringify(broken))
   assert.equal(broken.passed, false, 'The broken gateway must fail')
+  assert.equal(bonusPassed(broken.checks), false, 'The broken gateway must not earn the hidden bonus')
   const port = await run('docker', ['compose', 'port', 'gateway', '8080'], workspace)
   assert.equal(port.code, 0, port.stderr)
   const address = port.stdout.trim()
   assert.match(address, /^127\.0\.0\.1:\d+$/)
   const scenarios = [
-    { name: 'prefix-uri', passed: true, routes: 'location /api/ { proxy_pass http://relay:8000/; }' },
-    { name: 'rewrite-named-upstream', passed: true, upstream: 'upstream backend { server relay:8000; }', routes: 'location /api/ { rewrite ^/api/(.*)$ /$1 break; proxy_pass http://backend; }' },
+    { name: 'prefix-uri', passed: true, bonus: true, routes: 'location /api/ { proxy_pass http://relay:8000/; }' },
+    { name: 'rewrite-named-upstream', passed: true, bonus: true, upstream: 'upstream backend { server relay:8000; }', routes: 'location /api/ { rewrite ^/api/(.*)$ /$1 break; proxy_pass http://backend; }' },
+    // Passes the contract but forwards the bare /api/ unchanged: the hidden bonus stays RED while the mission passes.
+    { name: 'rewrite-nonempty-rest', passed: true, bonus: false, routes: 'location /api/ { rewrite ^/api/(.+)$ /$1 break; proxy_pass http://relay:8000; }' },
     { name: 'lost-query', passed: false, failedCheck: 'queries preserved', routes: 'location /api/ { rewrite ^/api/(.*)$ /$1? break; proxy_pass http://relay:8000; }' },
     { name: 'health-only', passed: false, failedCheck: 'queries preserved', routes: 'location = /api/health { proxy_pass http://relay:8000/health; }' },
     { name: 'redirect', passed: false, failedCheck: 'GET /api/health', routes: 'location /api/ { return 302 /health; }' },
@@ -53,6 +57,7 @@ try {
     assert.equal(result.supported, true, JSON.stringify(result))
     assert.equal(result.passed, scenario.passed, `${scenario.name}: ${JSON.stringify(result)}`)
     if (scenario.failedCheck) assert.ok(result.checks.some((item) => !item.passed && item.name.includes(scenario.failedCheck!)), JSON.stringify(result))
+    if ('bonus' in scenario) assert.equal(bonusPassed(result.checks), scenario.bonus, `${scenario.name} bonus: ${JSON.stringify(result.checks.filter((item) => item.optional))}`)
     results.push({ scenario: scenario.name, expectedPass: scenario.passed, result })
   }
   console.log(JSON.stringify({ mission: 'gateway', broken: { passed: broken.passed, checks: broken.checks }, results, transport: 'real Docker Engine and nginx', workspace }, null, 2))

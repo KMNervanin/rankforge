@@ -8,6 +8,7 @@ import { missionById } from '../shared/content.js'
 import type { CheckResult, LanguageBand } from '../shared/types.js'
 import { DomainError } from './store.js'
 import { currentContractVersion } from '../shared/contracts.js'
+import { requiredPassed } from '../shared/checks.js'
 
 export const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)))
 export type SavedCodeContext = {
@@ -135,7 +136,7 @@ export class Labs {
       try { parsed = JSON.parse(result.stdout.trim().split('\n').at(-1) ?? '') } catch { return { passed: false, supported: true, checkedAt, checks: [{ name: 'Run the lab', passed: false, detail: result.stderr || result.stdout || 'No valid check report was produced.' }], output: result.stderr } }
       if (!Array.isArray(parsed.checks) || !parsed.checks.length) throw new Error('Invalid check report')
       const supported = !parsed.checks.some((item) => item.name === 'Environment blocked')
-      return { passed: supported && result.code === 0 && parsed.checks.every((item) => item.passed), checks: parsed.checks, checkedAt, supported, output: result.stderr.slice(0, 6000) }
+      return { passed: supported && result.code === 0 && requiredPassed(parsed.checks), checks: parsed.checks, checkedAt, supported, output: result.stderr.slice(0, 6000) }
     } catch (error) {
       return { passed: false, supported: false, checkedAt, checks: [], output: error instanceof DomainError ? error.message : 'The workspace could not be checked. Reopen the mission and try again.' }
     }
@@ -164,8 +165,20 @@ export class Labs {
       const hint = ' The nginx configuration test passed. If you edited nginx.conf after starting the project, run: docker compose exec gateway nginx -s reload, then verify again.'
       for (const item of checks) if (!item.passed) item.detail += hint
     }
+    // Hidden bonus: the bare prefix /api/ must reach the relay as / with its query, where the relay answers 404.
+    const bare = `/?probe=${probe}&check=bare`
+    let bareDetail = 'Gateway did not respond within five seconds.'
+    let bareStatus = 0
+    try {
+      const response = await fetch(`http://${address}/api${bare}`, { signal: AbortSignal.timeout(5000), redirect: 'manual' })
+      bareStatus = response.status
+      bareDetail = `HTTP ${response.status}: ${(await response.text()).slice(0, 180)}`
+    } catch { /* The missing response is the evidence. */ }
     const upstream = await run('docker', ['compose', 'logs', '--no-color', '--tail', '100', 'relay'], workspace)
-    checks.push({ name: 'Known and unknown API paths reach the relay with queries preserved', passed: upstream.code === 0 && forwarded.every((route) => `${upstream.stdout}\n${upstream.stderr}`.includes(`GET ${route} `)), detail: upstream.code === 0 ? 'Checked the relay log for both unique requests, with /api/ removed and query parameters intact.' : 'The relay log could not be read.' })
-    return { passed: checks.every((item) => item.passed), checks, checkedAt, supported: true, output: '' }
+    const log = `${upstream.stdout}\n${upstream.stderr}`
+    checks.push({ name: 'Known and unknown API paths reach the relay with queries preserved', passed: upstream.code === 0 && forwarded.every((route) => log.includes(`GET ${route} `)), detail: upstream.code === 0 ? 'Checked the relay log for both unique requests, with /api/ removed and query parameters intact.' : 'The relay log could not be read.' })
+    const bareForwarded = upstream.code === 0 && log.includes(`GET ${bare} `)
+    checks.push({ name: 'bonus: GET /api/ with a query reaches the relay as / and returns its 404', optional: true, passed: bareStatus === 404 && bareForwarded, detail: `${bareDetail} ${bareForwarded ? 'The relay log shows the bare path with its query intact.' : 'The relay log does not show GET / with that query.'}` })
+    return { passed: requiredPassed(checks), checks, checkedAt, supported: true, output: '' }
   }
 }
