@@ -110,6 +110,8 @@ Owner clarification, 2026-10-08: the English assessment is the owner's personal 
 
 **Allowance per mission.** Two debriefs per mission are free. Any further debrief, and every coaching exchange, is paid with an in-game item, chip or battery, which is earned on authored occasions and not for everything. This replaces the monthly dollar cap on the player: the provider cost of a mission is bounded by its two debriefs plus the items the player chose to spend, and the gateway refuses before the provider call when neither a free debrief nor an item is available. The pending message is kept, as today.
 
+**Reference and lesson.** Boot.dev gates its chat mascot Boots behind earned fish items, the same pattern. The owner played it and rarely spent the fish, because the tasks were tedious rather than hard; the item only has value where a player is genuinely stuck. Issue items ahead of authored difficulty, such as the hidden edge case or a first encounter with a new tool, not as a general progress drip. The same observation says that the average provider cost per player will sit well below any cap, because most players use the agent rarely.
+
 **Tutor behavior.** In coach mode the agent keeps the context of the open mission, its saved files and check results, and never gives the real answer, even when asked for it. The current coach instructions allow a complete solution on explicit request; that clause goes away in the product build.
 
 ### Why hidden checks are allowed here but not in the core contract
