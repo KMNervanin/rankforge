@@ -17,23 +17,23 @@ Return exactly one result for each name: `create`, `replay`, `conflict`, `read`,
 
 ## Seven observations
 
-All seven responses require `X-Contract: delivery-v1` and a Content-Type whose media type is **application/json**, case-insensitively, ignoring parameters. `text/plain; note=application/json` is not JSON MIME. Header names are case-insensitive. Parse JSON: whitespace/key order and extra optional fields are harmless. Required strings and integer values must have the stated types (bool is not an integer quantity/effect). Every response must match its required fields below; do not compare JSON source strings.
+All seven responses require `X-Contract: delivery-v1` and a Content-Type whose media type is **application/json**, case-insensitively, ignoring parameters. `text/plain; note=application/json` is not JSON MIME. Header names are case-insensitive. Parse JSON: whitespace/key order and extra optional fields are harmless. Required strings and integer values must have the stated types (bool is not an integer quantity/effect). Every response must contain its required fields below with exactly the stated values; extra fields are tolerated. Do not compare JSON source strings.
 
 | Check | Request | Required status and JSON fields |
 | --- | --- | --- |
-| create | POST /deliveries, scenario delivery | 201; exact delivery fields |
-| replay | POST /deliveries, identical delivery | 200; exact delivery fields |
+| create | POST /deliveries, scenario delivery | 201; the delivery's id, item and quantity with exact values; extra fields tolerated |
+| replay | POST /deliveries, identical delivery | 200; the same required fields with exact values; extra fields tolerated |
 | conflict | POST /deliveries, same id/item, quantity + 1 | 409; `error: "conflict"` |
 | read | GET /deliveries/{id}?view=full | 200; original delivery fields plus `view: "full"` |
 | query | GET /deliveries/{id}?view=summary | 200; original id/quantity plus `view: "summary"` |
 | missing | GET /deliveries/{id}/missing?view=full | 404; `error: "not_found"` |
 | effects | GET /stats | 200; `effects: 1` |
 
-Send the three POSTs in the listed order with JSON Content-Type. After them issue each listed GET once, in any order. Continue checking all seven after an HTTP mismatch; a bad body/header must not hide another observation. The only permitted side effect is one original delivery. Neither replay nor conflict may change it; the read plus stats expose both corruption and duplicate effects. The verifier observes actual requests and fixture state as well as your report, so returning a canned result cannot pass.
+Request targets are byte-exact: `POST /deliveries`, `GET /deliveries/{id}?view=full`, `GET /deliveries/{id}?view=summary`, `GET /deliveries/{id}/missing?view=full` and `GET /stats`, with no trailing slash and no added or reordered query parameters. Send the three POSTs in the listed order; each body is the delivery as JSON encoded in UTF-8 with `Content-Type: application/json` (a charset parameter is fine). After them issue each listed GET once, in any order. Continue checking all seven after an HTTP mismatch; a bad body/header must not hide another observation. The only permitted side effect is one original delivery. Neither replay nor conflict may change it; the read plus stats expose both corruption and duplicate effects. The verifier observes actual requests and fixture state as well as your report, so returning a canned result cannot pass.
 
-Both Content-Length and HTTP/1.1 **chunked request bodies** are accepted, including the chunking that `http.client` automatically uses for an iterable of UTF-8 bytes. They carry the same JSON, with the same 4,096-byte decoded payload limit; do not set both framing headers. Chunk extensions and trailers are ignored, never merged into request headers. Fixture framing metadata is bounded to 4,096 bytes per line and 65,536 bytes total. Invalid/incomplete framing returns 400; excess payload/metadata returns 413 without a delivery effect. This is fixture support, not a request to write an HTTP parser in your probe.
+Advice: send the body as one UTF-8 `bytes` value so the client sets Content-Length; the fixture also accepts chunked bodies, but you do not need them.
 
-Exactly these seven requests per responding fixture, no redirects, polling, additional requests, sleeps, subprocesses or writes to disk. Read at most 8 KiB per response (fixture responses are <=4 KiB); no global proxy configuration. Use only the supplied base URL; never a production or arbitrary endpoint. HTTP clients that follow redirects or apply proxy environment settings need explicit configuration. With urllib, HTTPError carries the HTTP response and must be inspected; it is not a transport outage. With http.client, inspect response.status and read/close each response.
+Exactly these seven requests per responding fixture: Verify observes every request, so redirects, polling and additional requests fail. Use only the supplied base URL; never a production or arbitrary endpoint. Advice, not checked: read at most 8 KiB per response (fixture responses are <=4 KiB), ignore proxy environment settings, and do not sleep, spawn processes or write files. HTTP clients that follow redirects or apply proxy environment settings need explicit configuration. With urllib, HTTPError carries the HTTP response and must be inspected; it is not a transport outage. With http.client, inspect response.status and read/close each response.
 
 ## Terminal rehearsal
 

@@ -57,10 +57,10 @@ export const architectMissions: Mission[] = [
     },
     objectives: [
       'Implement probe(base_url, scenario) in probe.py; LEARN.md publishes the exact seven requests, response schema, headers, effects and result names. Do not implement a service or target an external endpoint.',
-      'Send create, exact replay and conflicting delivery in order, then the four documented GET observations once each. Check status, JSON media type, X-Contract and typed body fields; tolerate extra fields and harmless formatting.',
+      'Send create, exact replay and conflicting delivery in order, then the four documented GET observations once each. Request targets are byte-exact as listed in LEARN.md; POST bodies are UTF-8 JSON with Content-Type application/json. Check status, JSON media type, X-Contract and the required body fields with their exact values; tolerate extra fields and harmless formatting.',
       'Read back the original delivery and effects=1. Check full versus summary query behavior and the unknown child route. HTTP contract mismatches do not skip the remaining observations.',
-      'Return status passed/failed/timeout/unavailable plus seven {name,passed,detail} checks. Stop without retries on transport failure, close connections and preserve scenario. Apply timeout_s and read at most 8 KiB per response.',
-      'Use only the supplied temporary loopback URL and bounded requests: no files, subprocesses, redirects, polling, sleeps or external services. Verify observes requests and state against both conforming styles and named faulty fixtures.',
+      'Return status passed/failed/timeout/unavailable plus seven {name,passed,detail} checks. Stop without retries on transport failure, close connections and preserve scenario. Apply timeout_s to every request.',
+      'Use only the supplied temporary loopback URL and exactly the listed requests: no redirects, polling or extra requests. Verify observes requests and state against both conforming styles and named faulty fixtures. Advice, not checked: read at most 8 KiB per response, ignore proxy settings, and do not sleep, spawn processes or write files.',
     ],
     languageGoal: 'Distinguish a failed assertion from missing evidence and explain a counterexample.',
     prompt: 'Describe one service that looked healthy but violated the contract. How did your probe distinguish it from an unavailable endpoint?',
