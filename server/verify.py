@@ -18,12 +18,13 @@ sys.path.insert(0, WORKSPACE)
 CHECKS = []
 
 
-def check(name, operation):
+def check(name, operation, optional=False):
+    # An optional check is the hidden bonus of a mission: it can only add, it never fails the run.
     try:
         operation()
-        CHECKS.append({"name": name, "passed": True, "detail": "Behavior verified."})
+        CHECKS.append({"name": name, "passed": True, "detail": "Behavior verified.", **({"optional": True} if optional else {})})
     except Exception as error:
-        CHECKS.append({"name": name, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500]})
+        CHECKS.append({"name": name, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500], **({"optional": True} if optional else {})})
 
 
 def require(condition, message):
@@ -92,12 +93,28 @@ def signal():
                 data = json.loads(response.read())
                 required = {"status": "ok", "service": "relay"}
                 require(isinstance(data, dict) and {key: data.get(key) for key in required} == required, f"Unexpected health body: {data!r}")
+    def framed(route, expected):
+        try:
+            response = local_http.open(f"http://127.0.0.1:{server.server_port}{route}", timeout=3)
+        except urllib.error.HTTPError as error:
+            response = error
+        with response:
+            require(response.status == expected, f"GET {route}: expected HTTP {expected}, got {response.status}")
+            body = response.read()
+            declared = response.headers.get("Content-Length")
+            require(declared is not None and declared.strip().isdigit(), f"GET {route}: no Content-Length header; the client cannot tell where the body ends")
+            require(int(declared) == len(body), f"GET {route}: Content-Length {declared} but {len(body)} body bytes arrived")
+            require(isinstance(json.loads(body), dict), f"GET {route}: the framed body is not a complete JSON object")
+    def bonus():
+        framed("/health", 200)
+        framed("/missing?probe=bonus", 404)
     try:
         for route, expected in [("/health", 200), ("/health?probe=1&next=/missing", 200),
                                 ("/missing", 404), ("/missing?probe=1", 404),
                                 ("/healthcheck", 404), ("/health/extra", 404),
                                 ("/health/", 404), ("/missing?next=/health", 404)]:
             check(f"HTTP contract: {route}", lambda r=route, e=expected: request(r, e))
+        check("bonus: Content-Length equals the body bytes on /health and on an unknown path", bonus, optional=True)
     finally:
         server.shutdown()
         server.server_close()
@@ -161,6 +178,22 @@ def vault():
                 require(db.execute("SELECT id,item_id,quantity FROM movements ORDER BY id").fetchall() == [("m1", "cell", 2), ("m2", "coolant", 5), ("m3", "cell", 1)], "Movements were lost after reconnect/setup")
                 reject_write(db, "INSERT INTO movements(id,item_id,quantity) VALUES ('bad','ghost',1)")
     check("Schema and data persist after commit, close and reconnect", persistent)
+    def orphans():
+        # A client that never ran PRAGMA foreign_keys: the schema alone must keep movements attached to items.
+        with closing(sqlite3.connect(":memory:")) as db:
+            candidate.create_schema(db)
+            db.execute("INSERT INTO items(id,name) VALUES ('cell','Power cell')")
+            db.execute("INSERT INTO movements(id,item_id,quantity) VALUES ('m','cell',2)")
+            db.commit()
+            try:
+                db.execute("DELETE FROM items WHERE id='cell'")
+                db.commit()
+            except sqlite3.DatabaseError:
+                db.rollback()
+                require(db.execute("SELECT COUNT(*) FROM items WHERE id='cell'").fetchone() == (1,), "The rejected delete must leave the item in place")
+                return
+            require(db.execute("SELECT COUNT(*) FROM movements WHERE item_id='cell'").fetchone() == (0,), "Deleting a referenced item left orphan movements on a connection without foreign key enforcement; restrict it or cascade")
+    check("bonus: deleting a referenced item leaves no orphan movements, even without PRAGMA foreign_keys", orphans, optional=True)
 
 
 INVALID_EVENTS = [
@@ -226,6 +259,15 @@ def echo():
                 large = {"id": "largest", "item": "cell", "quantity": 9223372036854775807}
                 require(candidate.ingest(db, large) is True, "Largest positive SQLite INTEGER is valid")
     check("Identity persists across connections", persistent)
+    def quoted():
+        with connect() as db:
+            candidate.ingest(db, event)
+            nasty = {"id": "delivery-'); DROP TABLE events; --", "item": "coolant' OR '1'='1", "quantity": 3}
+            require(candidate.ingest(db, copy.deepcopy(nasty)) is True, "An identifier with quotes and SQL text is a valid new event")
+            require(candidate.ingest(db, copy.deepcopy(nasty)) is False, "Replay of the quoted identifier must return exactly False")
+            require(db.execute("SELECT item,quantity FROM events WHERE id=?", (nasty["id"],)).fetchall() == [(nasty["item"], 3)], "The quoted identifier and item were not stored verbatim")
+            require(db.execute("SELECT COUNT(*) FROM events").fetchone() == (2,), "The table must still hold exactly two events")
+    check("bonus: an identifier carrying quotes and SQL text is stored verbatim and replayed as a duplicate", quoted, optional=True)
 
 
 def ledger():
@@ -285,21 +327,23 @@ def ledger():
             {"id": "a", "date": "2026-01-01", "amount": "01.0"},
         ], {"totals": {"2026-01-01": "1.00"}, "rejected": list(range(6))}),
     ]
+    def verify(source, target):
+        original = copy.deepcopy(source)
+        actual = candidate.transform(source)
+        require(isinstance(actual, dict) and set(actual) == {"totals", "rejected"}, "Return totals and rejected")
+        require(actual["totals"] == target["totals"], f"Expected totals {target['totals']!r}, got {actual['totals']!r}")
+        rejected = actual["rejected"]
+        require(isinstance(rejected, list) and all(type(index) is int for index in rejected), "Rejected must be a list of integer row indices")
+        require(len(rejected) == len(set(rejected)) and set(rejected) == set(target["rejected"]), f"Expected rejected indices {target['rejected']!r} in any order, got {rejected!r}")
+        require(list(actual["totals"]) == sorted(actual["totals"]), "Day keys are not sorted")
+        require(source == original, "Input was mutated")
+        previous = copy.deepcopy(actual)
+        require(candidate.transform(source) == previous, "Repeated transformation changed output")
+        require(source == original, "Repeated transformation mutated input")
     for label, rows, expected in cases:
-        def verify(source=rows, target=expected):
-            original = copy.deepcopy(source)
-            actual = candidate.transform(source)
-            require(isinstance(actual, dict) and set(actual) == {"totals", "rejected"}, "Return totals and rejected")
-            require(actual["totals"] == target["totals"], f"Expected totals {target['totals']!r}, got {actual['totals']!r}")
-            rejected = actual["rejected"]
-            require(isinstance(rejected, list) and all(type(index) is int for index in rejected), "Rejected must be a list of integer row indices")
-            require(len(rejected) == len(set(rejected)) and set(rejected) == set(target["rejected"]), f"Expected rejected indices {target['rejected']!r} in any order, got {rejected!r}")
-            require(list(actual["totals"]) == sorted(actual["totals"]), "Day keys are not sorted")
-            require(source == original, "Input was mutated")
-            previous = copy.deepcopy(actual)
-            require(candidate.transform(source) == previous, "Repeated transformation changed output")
-            require(source == original, "Repeated transformation mutated input")
-        check(label, verify)
+        check(label, lambda source=rows, target=expected: verify(source, target))
+    moved = [{"id": "a", "date": "2026-01-01", "amount": "1.00"}, {"id": "a", "date": "2026-01-02", "amount": "1.00"}]
+    check("bonus: the same id and amount on a different day is a conflict, not a replay", lambda: verify(moved, {"totals": {"2026-01-01": "1.00"}, "rejected": [1]}), optional=True)
 
 
 def recovery():
@@ -355,6 +399,14 @@ def recovery():
             with closing(connect(file)) as db:
                 require(db.execute("SELECT id,item,quantity FROM events").fetchall() == [("largest", "cell", 9223372036854775807)], "Restored columns do not match their names")
     check("Existing column order does not change recovery", reordered)
+    def overflow():
+        with tempfile.TemporaryDirectory() as directory:
+            file = os.path.join(directory, "overflow.sqlite")
+            archive = [{"id": "left", "item": "cell", "quantity": 9223372036854775807}, {"id": "right", "item": "coolant", "quantity": 9223372036854775807}]
+            result = candidate.recover(file, archive)
+            require(isinstance(result, dict) and type(result.get("total_quantity")) is int and result == {"event_count": 2, "total_quantity": 18446744073709551614},
+                    f"Two maximal SQLite integers must sum exactly to 18446744073709551614, got {result!r}")
+    check("bonus: two maximal SQLite integers are summed without overflow", overflow, optional=True)
 
 
 try:
@@ -362,4 +414,4 @@ try:
 except Exception as error:
     CHECKS.append({"name": "Load candidate", "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500]})
 print(json.dumps({"checks": CHECKS}))
-sys.exit(0 if CHECKS and all(item["passed"] for item in CHECKS) else 1)
+sys.exit(0 if CHECKS and all(item["passed"] for item in CHECKS if not item.get("optional")) else 1)

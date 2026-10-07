@@ -18,12 +18,14 @@ def require(condition, message):
         raise AssertionError(message)
 
 
-def check(name, operation):
+def check(name, operation, optional=False):
+    # An optional check is the hidden bonus of a mission: it can only add, it never fails the run.
+    flag = {"optional": True} if optional else {}
     try:
         operation()
-        CHECKS.append({"name": name, "passed": True, "detail": "Real HTTP responses and the supplied snapshot verified."})
+        CHECKS.append({"name": name, "passed": True, "detail": "Real HTTP responses and the supplied snapshot verified.", **flag})
     except Exception as error:
-        CHECKS.append({"name": name, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500]})
+        CHECKS.append({"name": name, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500], **flag})
 
 
 class LocalServer(socketserver.ThreadingMixIn, HTTPServer):
@@ -147,10 +149,15 @@ def trial():
         require(first["items"] == again["items"] and first["next_after"] == again["next_after"], "Interleaved clients changed a repeated page")
     check("Read-only snapshot and independent interleaved clients", lambda: exercise(snapshots[0], repeat))
 
+    def lenient(request):
+        # Empty pairs are not parameters, a nameless pair is an unknown one, and leading zeros are still digits.
+        request("/supplies?limit=1&&after=000000000000000000006&=x", after=6, limit=1)
+    check("bonus: empty pairs, a nameless pair and leading zeros on one request", lambda: exercise(snapshots[0], lenient), optional=True)
+
 
 try:
     trial()
 except Exception as error:
     CHECKS.append({"name": "Load HTTP trial", "passed": False, "detail": f"{type(error).__name__}: {error}"[:1500]})
 print(json.dumps({"checks": CHECKS}))
-sys.exit(0 if CHECKS and all(item["passed"] for item in CHECKS) else 1)
+sys.exit(0 if CHECKS and all(item["passed"] for item in CHECKS if not item.get("optional")) else 1)

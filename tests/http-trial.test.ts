@@ -5,6 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { run, root } from '../server/labs.js'
 import type { Check } from '../shared/types.js'
+import { bonusChecks, bonusPassed } from '../shared/checks.js'
 
 async function candidate(t: test.TestContext, source?: string, python = 'python3') {
   const workspace = await mkdtemp(path.join(os.tmpdir(), 'rankforge-http-trial-'))
@@ -28,14 +29,16 @@ test('HTTP trial: starter is RED through actual HTTP, not a source-code assertio
   rejected(result, 'defaults, stable pages')
   rejected(result, 'Invalid query')
   rejected(result, 'Exact route')
+  assert.equal(bonusPassed(result.checks), false, 'The starter must not earn the hidden bonus')
 })
 
 for (const name of ['sorted', 'selection']) {
   test(`HTTP trial: distinct ${name} implementation is GREEN on real loopback fixtures`, async (t) => {
     const result = await candidate(t, await solution(name))
     assert.equal(result.code, 0, JSON.stringify(result))
-    assert.equal(result.checks.length, 7)
+    assert.equal(result.checks.length, 8)
     assert.ok(result.checks.every((item) => item.passed))
+    assert.equal(bonusPassed(result.checks), true)
   })
 }
 
@@ -63,6 +66,17 @@ for (const [name, before, after, check] of mutations) {
     rejected(await candidate(t, source.replaceAll(before, after)), check)
   })
 }
+
+test('HTTP trial: a strict pair parser passes the contract but misses the hidden bonus; the bonus never fails the trial', async (t) => {
+  const source = (await solution()).replace('from urllib.parse import parse_qs, urlsplit', 'from urllib.parse import parse_qs, unquote, urlsplit')
+    .replace('        query = parse_qs(url.query, keep_blank_values=True)\n', '        query = {}\n        for pair in url.query.split("&") if url.query else []:\n            if "=" not in pair:\n                self.reply(400, {"error": "invalid query"})\n                return\n            name, _, value = pair.partition("=")\n            query.setdefault(unquote(name), []).append(unquote(value))\n')
+  assert.notEqual(source, await solution())
+  const result = await candidate(t, source)
+  assert.equal(result.code, 0, JSON.stringify(result))
+  assert.equal(bonusChecks(result.checks).length, 1)
+  assert.ok(bonusChecks(result.checks)[0]!.name.startsWith('bonus:'))
+  assert.equal(bonusPassed(result.checks), false, JSON.stringify(bonusChecks(result.checks)))
+})
 
 test('HTTP trial accepts HTTP/1.1 framing, additional response fields and reordered JSON', async (t) => {
   const source = (await solution('selection')).replace('class Handler(BaseHTTPRequestHandler):', 'class Handler(BaseHTTPRequestHandler):\n    protocol_version = "HTTP/1.1"')

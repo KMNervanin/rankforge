@@ -2,6 +2,7 @@ import type { Mission } from './types.js'
 
 export const httpTrialMission: Mission = {
   id: 'http-trial', chapter: 'outpost', bonus: true, order: 10, title: 'Beyond the health check', subtitle: 'An optional HTTP field trial', sector: 'Supply beacon', icon: '⇌',
+  nudge: 'Rumour says some clients send query strings with empty and nameless pieces between the real ones.',
   skills: ['HTTP transfer', 'Query validation', 'Stable pagination'], prerequisites: ['signal', 'gateway'], xp: 180, duration: 'Self-paced', kind: 'assessment',
   briefs: {
     guided: 'The supply beacon repeats the wrong page. Repair its read-only HTTP endpoint. Use hints if useful; guided transfer earns the same rewards.',

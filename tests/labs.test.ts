@@ -4,6 +4,7 @@ import { mkdtemp, rm, copyFile, readFile, writeFile, symlink, mkdir } from 'node
 import os from 'node:os'
 import path from 'node:path'
 import { Labs, root } from '../server/labs.js'
+import { bonusChecks, bonusPassed } from '../shared/checks.js'
 
 const files: Record<string, string> = { signal: 'service.py', vault: 'store.py', echo: 'ingest.py', ledger: 'transform.py', recovery: 'recover.py' }
 const solution = (id: string) => readFile(path.join(root, 'tests', 'solutions', `${id}.py`), 'utf8')
@@ -32,11 +33,36 @@ for (const [id, file] of Object.entries(files)) {
       assert.equal(broken.supported, true, broken.output)
       assert.equal(broken.passed, false, 'The initial exercise must expose a real problem')
       assert.ok(broken.checks.some((item) => !item.passed))
+      assert.equal(bonusPassed(broken.checks), false, 'The starter must not earn the hidden bonus')
       await copyFile(path.join(root, 'tests', 'solutions', `${id}.py`), path.join(workspace, file))
       const fixed = await labs.check(id)
       assert.equal(fixed.passed, true, JSON.stringify(fixed, null, 2))
       assert.ok(fixed.checks.length >= 4)
     } finally { await rm(home, { recursive: true, force: true }) }
+  })
+}
+
+// Hidden bonus per mission: RED on a minimal passing solution that ignores the edge case, GREEN on a thorough one.
+const bonus: Record<string, { thorough: () => Promise<string>; minimal: () => Promise<string>; helpers?: Record<string, string> }> = {
+  signal: { thorough: () => solution('signal'), minimal: async () => (await solution('signal')).replace('        self.send_header("Content-Length", str(len(body)))\n', '') },
+  vault: { thorough: () => solution('vault-triggers'), minimal: () => solution('vault') },
+  echo: { thorough: () => solution('echo'), minimal: async () => (await solution('echo')).replace('connection.execute("SELECT item,quantity FROM events WHERE id=?", (event["id"],))', `connection.execute(f"SELECT item,quantity FROM events WHERE id='{event['id']}'")`) },
+  ledger: { thorough: () => solution('ledger'), minimal: async () => (await solution('ledger')).replace('if seen[identity] != (day, amount):', 'if seen[identity][1] != amount:') },
+  recovery: { thorough: () => solution('recovery'), minimal: async () => (await solution('recovery')).replace('return {"event_count": len(valid), "total_quantity": sum(value[1] for value in valid.values())}', '    total = connection.execute("SELECT SUM(quantity) FROM events").fetchone()[0] or 0\n    return {"event_count": len(valid), "total_quantity": total}') },
+}
+for (const [id, sources] of Object.entries(bonus)) {
+  test(`${id}: the hidden bonus never fails the mission, is RED on a minimal solution and GREEN on a thorough one`, async (t) => {
+    const [thorough, minimal] = await Promise.all([sources.thorough(), sources.minimal()])
+    assert.notEqual(thorough, minimal)
+    const missed = await candidate(t, id, minimal)
+    assert.equal(missed.passed, true, JSON.stringify(missed))
+    assert.equal(bonusChecks(missed.checks).length, 1)
+    assert.ok(bonusChecks(missed.checks)[0]!.name.startsWith('bonus:'))
+    assert.equal(bonusChecks(missed.checks)[0]!.passed, false, JSON.stringify(missed))
+    assert.equal(bonusPassed(missed.checks), false)
+    const earned = await candidate(t, id, thorough)
+    assert.equal(earned.passed, true, JSON.stringify(earned))
+    assert.equal(bonusPassed(earned.checks), true, JSON.stringify(earned))
   })
 }
 

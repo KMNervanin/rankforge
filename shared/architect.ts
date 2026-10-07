@@ -3,6 +3,7 @@ import type { Mission } from './types.js'
 export const architectMissions: Mission[] = [
   {
     id: 'briefing', chapter: 'guild', order: 7, title: 'Before the blueprint', subtitle: 'Separate promises from assumptions', sector: 'Briefing hall', icon: '◇',
+    nudge: 'Rumour says the next ticket arrives with more than one open question.',
     skills: ['Requirements', 'Traceability', 'Assumptions'], prerequisites: ['recovery'], xp: 220, duration: 'Self-paced', kind: 'build',
     briefs: {
       guided: 'The outpost needs a delivery service. Read the ticket. Keep facts, choices and excluded work separate. Link each requirement to an observation.',
@@ -26,6 +27,7 @@ export const architectMissions: Mission[] = [
   },
   {
     id: 'capacity', chapter: 'guild', order: 8, title: 'Count before choosing', subtitle: 'Give every estimate a unit', sector: 'Capacity desk', icon: '∑',
+    nudge: 'Rumour says the workload sheet carries fields that were never meant to be numbers.',
     skills: ['Capacity estimates', 'Units', 'Quantitative assumptions'], prerequisites: ['briefing'], xp: 240, duration: 'Self-paced', kind: 'repair',
     briefs: {
       guided: 'How much work will deliveries create? Repair the calculator. Convert daily requests to a rate, use mean time, and keep byte units clear.',
@@ -49,6 +51,7 @@ export const architectMissions: Mission[] = [
   },
   {
     id: 'contract', chapter: 'guild', order: 9, title: 'A contract you can execute', subtitle: 'Catch the convincing impostor', sector: 'Contract chamber', icon: '⇌',
+    nudge: 'Rumour says one server counts in decimals where the contract counts in integers.',
     skills: ['Consumer contracts', 'HTTP', 'Observable effects'], prerequisites: ['briefing'], xp: 280, duration: 'Self-paced', kind: 'build',
     briefs: {
       guided: 'A 201 status is not enough. Write a probe that checks the delivery response and the effect of a retry. Tell a timeout apart from a wrong response.',

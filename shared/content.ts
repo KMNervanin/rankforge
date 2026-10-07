@@ -10,6 +10,7 @@ export const chapters = [
 export const missions: Mission[] = [
   {
     id: 'signal', chapter: 'outpost', order: 1, title: 'A signal in the dark', subtitle: 'Bring the command relay online', sector: 'Command relay', icon: '◈',
+    nudge: 'Rumour says a careful client counts every byte the relay promises to send.',
     skills: ['HTTP contracts', 'Diagnostics', 'Python foundations'], prerequisites: [], xp: 120, duration: '20–35 min', kind: 'repair',
     briefs: {
       guided: 'The outpost cannot hear the relay. Its health check is broken. Fix the HTTP response and test it.',
@@ -26,6 +27,7 @@ export const missions: Mission[] = [
   },
   {
     id: 'vault', chapter: 'outpost', order: 2, title: 'Give memory a structure', subtitle: 'Protect the supply vault', sector: 'Memory vault', icon: '▤',
+    nudge: 'Rumour says not every client that opens the vault remembers to switch on foreign keys.',
     skills: ['Relational modeling', 'Constraints', 'Transactions'], prerequisites: ['signal'], xp: 160, duration: '30–45 min', kind: 'build',
     briefs: {
       guided: 'The vault loses track of supplies. Create two linked tables. The database must reject invalid records.',
@@ -41,6 +43,7 @@ export const missions: Mission[] = [
   },
   {
     id: 'gateway', chapter: 'outpost', order: 3, title: 'Open the right gate', subtitle: 'Route traffic through nginx', sector: 'Transit gate', icon: '⌘',
+    nudge: 'Rumour says the gate has a bare doorway that leads straight to the relay\'s front step.',
     skills: ['Reverse proxy', 'nginx', 'Container networking'], prerequisites: ['signal'], xp: 200, duration: '35–50 min', kind: 'repair',
     briefs: {
       guided: 'Two containers are ready. nginx is the front door. Make /api/health reach the relay. Keep unknown routes closed.',
@@ -56,6 +59,7 @@ export const missions: Mission[] = [
   },
   {
     id: 'echo', chapter: 'outpost', order: 4, title: 'An echo is not an event', subtitle: 'Make retries safe', sector: 'Event conduit', icon: '⇄',
+    nudge: 'Rumour says some delivery identifiers arrive with quotes and commands inside them.',
     skills: ['Idempotency', 'Transactions', 'Event identity'], prerequisites: ['vault'], xp: 220, duration: '30–45 min', kind: 'repair',
     briefs: {
       guided: 'A sender retries after a timeout. The same delivery is counted twice. Store each event once, but reject a reused ID with different data.',
@@ -70,6 +74,7 @@ export const missions: Mission[] = [
   },
   {
     id: 'ledger', chapter: 'outpost', order: 5, title: 'Numbers that tell the truth', subtitle: 'Rebuild the daily ledger', sector: 'Data observatory', icon: '▥',
+    nudge: 'Rumour says the same entry was seen twice under two different dates.',
     skills: ['ETL', 'Data quality', 'Decimal arithmetic'], prerequisites: ['echo'], xp: 240, duration: '35–50 min', kind: 'repair',
     briefs: {
       guided: 'The daily report is wrong. Read deliveries, remove exact duplicates and add their amounts. Report bad rows instead of hiding them.',
@@ -84,6 +89,7 @@ export const missions: Mission[] = [
   },
   {
     id: 'recovery', chapter: 'outpost', order: 6, title: 'After the blackout', subtitle: 'Restore the outpost from evidence', sector: 'Recovery core', icon: '⬡',
+    nudge: 'Rumour says the archive\'s two largest quantities are more than the database can add up.',
     skills: ['Recovery', 'Atomicity', 'Transfer of learning'], prerequisites: ['gateway', 'ledger'], xp: 320, duration: '40–60 min', kind: 'assessment',
     briefs: {
       guided: 'The live database is gone. Recover it from the event archive. A failed recovery must keep the last working database safe.',

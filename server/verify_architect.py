@@ -22,13 +22,15 @@ def require(condition, message):
         raise AssertionError(message)
 
 
-def check(name, operation):
+def check(name, operation, optional=False):
+    # An optional check is the hidden bonus of a mission: it can only add, it never fails the run.
+    flag = {"optional": True} if optional else {}
     try:
         detail = operation()
-        CHECKS.append({"name": name, "passed": True, "detail": detail or "Published contract verified."})
+        CHECKS.append({"name": name, "passed": True, "detail": detail or "Published contract verified.", **flag})
     except Exception as error:
         label = "Environment blocked" if getattr(error, "environment_blocked", False) else name
-        CHECKS.append({"name": label, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1800]})
+        CHECKS.append({"name": label, "passed": False, "detail": f"{type(error).__name__}: {error}"[:1800], **flag})
 
 
 def load(file, name):
@@ -146,6 +148,12 @@ def briefing(workspace):
         return f"Ticket {ticket['ticket_id']} revision {ticket['revision']}: fact values, units, references and observation coverage verified; prose not graded."
     for label, ticket in (("original", original), ("changed limits", second), ("changed actor/payload/scope", third), ("fresh facts", fresh), ("original after changes", original)):
         check(f"Manifest: {label}", lambda t=ticket: exercise(t))
+    two_questions = copy.deepcopy(original)
+    two_questions["revision"] = 4
+    two_questions["questions"].append({"id": "retry_policy", "options": [
+        {"id": "none", "cases": ["single_attempt"], "implication": "A failed dispatch is reported once and never retried."},
+        {"id": "bounded", "cases": ["retry_limit", "retry_exhausted"], "implication": "Dispatch retries up to a fixed count, then reports failure."}]})
+    check("bonus: a ticket with a second open question keeps every question answered or open", lambda: exercise(two_questions), optional=True)
 
 
 BOUNDS = {"daily_requests": (0, 10**9), "peak_multiplier": (1, 1000), "mean_ms": (0, 60000),
@@ -220,6 +228,11 @@ def capacity(workspace):
                           ("list", []), ("null workload", None), ("string workload", "workload")):
         check(f"Reject {label}", lambda v=values: invalid(v))
     check("Capacity: sample after rejected inputs", lambda: exercise(sample))
+    junk = {**sample, "p95_ms": "unknown", "owner": {"team": "ops"}, "tags": ["peak", 3, None], "budget_usd": float("inf"), "comment": ""}
+    def ignored_fields():
+        exercise(junk)
+        require(candidate.estimate(copy.deepcopy(junk)) == candidate.estimate(copy.deepcopy(sample)), "Junk in fields outside the seven inputs changed the outputs")
+    check("bonus: junk in ignored fields leaves the seven outputs unchanged", ignored_fields, optional=True)
 
 
 PROBE_NAMES = {"create", "replay", "conflict", "read", "query", "missing", "effects"}
@@ -309,6 +322,9 @@ def contract(workspace):
         return probe_report(result, kind, PROBE_NAMES)
     for kind in ("timeout", "unavailable"):
         check(f"HTTP probe distinguishes {kind}", lambda k=kind: transport(k))
+    fractional = scenario()
+    fractional["delivery"]["quantity"] = 1
+    check("bonus: a create reply carrying quantity 1.0 fails create only; 1.0 is not the integer 1", lambda: responding("direct", "quantity_float", {"create"}, fractional), optional=True)
 
     def budget_case(target, expires):
         values = scenario()
@@ -364,7 +380,7 @@ def main():
     finally:
         signal.setitimer(signal.ITIMER_REAL, 0)
     print(json.dumps({"checks": CHECKS}))
-    return 0 if CHECKS and all(item["passed"] for item in CHECKS) else 1
+    return 0 if CHECKS and all(item["passed"] for item in CHECKS if not item.get("optional")) else 1
 
 
 if __name__ == "__main__":

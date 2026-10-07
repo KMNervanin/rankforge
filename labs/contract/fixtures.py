@@ -162,6 +162,8 @@ class WireHandler(BaseHTTPRequestHandler):
             body = {**body, "quantity": str(body["quantity"])}
         if fault == "boolean" and first:
             body = {**body, "quantity": True}
+        if fault == "quantity_float" and first:
+            body = {**body, "quantity": float(body["quantity"])}
         if fault == "path" and path.endswith("/missing"):
             status = 200
         if fault == "error_body" and path.endswith("/missing"):

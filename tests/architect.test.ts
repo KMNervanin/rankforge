@@ -5,6 +5,7 @@ import path from 'node:path'
 import os from 'node:os'
 import { root, run } from '../server/labs.js'
 import { architectMissions, architectFollowUps } from '../shared/architect.js'
+import { bonusChecks, bonusPassed, requiredPassed } from '../shared/checks.js'
 
 type Report = { checks: { name: string; passed: boolean; detail: string }[] }
 const python = process.env.RANKFORGE_TEST_PYTHON ?? 'python3'
@@ -42,7 +43,7 @@ async function verify(directory: string, mission: Mission, profile = false) {
     assert.equal(typeof check.passed, 'boolean')
     assert.equal(typeof check.detail, 'string')
   }
-  assert.equal(result.code === 0, report.checks.every(check => check.passed), JSON.stringify(report))
+  assert.equal(result.code === 0, requiredPassed(report.checks), JSON.stringify(report))
   return { ...report, code: result.code, stderr: result.stderr }
 }
 async function candidate(t: test.TestContext, mission: Mission, source: string, helpers: Record<string, string> = {}) {
@@ -63,7 +64,30 @@ test('guild metadata exposes three bounded missions and independent D02/D03 prer
 
 for (const mission of Object.keys(entries) as Mission[]) {
   test(`${mission}: the shipped starter has a real RED verdict and preserves learner files`, async t => {
-    rejected(await verify(await workspace(t, mission), mission), mission === 'briefing' ? 'Manifest' : mission === 'capacity' ? 'Capacity' : 'HTTP probe')
+    const result = await verify(await workspace(t, mission), mission)
+    rejected(result, mission === 'briefing' ? 'Manifest' : mission === 'capacity' ? 'Capacity' : 'HTTP probe')
+    assert.equal(bonusPassed(result.checks), false, 'The starter must not earn the hidden bonus')
+  })
+}
+
+// Hidden bonus per mission: a minimal passing solution that ignores the edge case stays accepted but misses the bonus; the references earn it.
+const bonusMutants: Record<Mission, [string, string, string]> = {
+  briefing: ['briefing-separated', 'for question in ticket["questions"]:', 'for question in ticket["questions"][:1]:'],
+  capacity: ['capacity-float', '    if workload["retention_days"] % 1:', '    if "p95_ms" in workload and (not isinstance(workload["p95_ms"], (int, float)) or isinstance(workload["p95_ms"], bool) or not math.isfinite(workload["p95_ms"])):\n        raise ValueError("p95_ms")\n    if workload["retention_days"] % 1:'],
+  contract: ['contract-http', 'type(parsed.get(key)) is type(value) and parsed[key] == value', 'isinstance(parsed.get(key), bool) is isinstance(value, bool) and parsed.get(key) == value'],
+}
+for (const [mission, [name, search, replacement]] of Object.entries(bonusMutants) as [Mission, [string, string, string]][]) {
+  test(`${mission}: the hidden bonus never fails the mission, is RED on a minimal solution and GREEN on the references`, async t => {
+    const source = await solution(name)
+    assert.ok(source.includes(search))
+    const missed = await candidate(t, mission, source.replace(search, replacement))
+    accepted(missed)
+    assert.equal(bonusChecks(missed.checks).length, 1, JSON.stringify(missed))
+    assert.ok(bonusChecks(missed.checks)[0]!.name.startsWith('bonus:'))
+    assert.equal(bonusPassed(missed.checks), false, JSON.stringify(bonusChecks(missed.checks)))
+    const earned = await candidate(t, mission, source)
+    accepted(earned)
+    assert.equal(bonusPassed(earned.checks), true, JSON.stringify(bonusChecks(earned.checks)))
   })
 }
 
