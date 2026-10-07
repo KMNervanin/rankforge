@@ -10,7 +10,7 @@ Each container has its own localhost. In the gateway, `127.0.0.1:8000` means por
 
 Run `docker compose up -d`. Look at `docker compose ps` and `docker compose logs gateway`. Send a request with curl before editing. A 502 response tells you nginx received the request but could not obtain a valid upstream response.
 
-Edit `nginx.conf` in VS Code. Run `docker compose exec gateway nginx -t` to check syntax, then `docker compose exec gateway nginx -s reload` to apply a valid change. Successful syntax validation does not prove routing is correct: repeat the HTTP request.
+Edit `nginx.conf` in VS Code. Run `docker compose exec gateway nginx -t` to check syntax, then `docker compose exec gateway nginx -s reload` to apply a valid change. Successful syntax validation does not prove routing is correct: repeat the HTTP request. Verify runs the same syntax check; when it passes but the HTTP checks fail, the check detail reminds you to reload.
 
 Use `docker compose down` after the exercise. The supplied project has a unique name. These commands operate on this lab, not on all Docker containers. Do not use a global prune or stop command.
 
@@ -18,7 +18,7 @@ Use `docker compose down` after the exercise. The supplied project has a unique 
 
 `location` chooses a request path. A `proxy_pass` URL with a URI suffix can replace the matched prefix. The trailing slash is significant. Use the nginx reference to work out how `/api/health` should become `/health` upstream.
 
-Preserve query parameters while removing only the `/api/` prefix. `/api/health?probe=1&shift=night` must reach the relay as `/health?probe=1&shift=night`. Unknown API paths must also be forwarded as unknown paths and return 404; unknown paths outside `/api/` return 404 too. Successful health responses must be direct 200 with the relay JSON and `application/json` (optional media-type parameters are fine).
+Only paths under `/api/` are forwarded. Remove the `/api/` prefix and pass the rest of the path and the query through unchanged, byte for byte. `/api/health?probe=1&shift=night` must reach the relay as `/health?probe=1&shift=night`. Unknown API paths must also be forwarded as unknown paths and return 404; unknown paths outside `/api/` return 404 too. Successful health responses must be direct 200 with the relay JSON and `application/json` (optional media-type parameters are fine).
 
 URI replacement and an explicit rewrite followed by proxying are both valid; a named upstream is also fine. Verify checks real HTTP responses and the unchanged relay's log for unique known/unknown requests, not your nginx syntax choices. A health-only special case is not general prefix routing.
 

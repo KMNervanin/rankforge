@@ -160,6 +160,10 @@ export class Labs {
         checks.push({ name: `GET ${route}`, passed: healthy ? response.status === 200 && valid && mediaType === 'application/json' : response.status === 404, detail: `HTTP ${response.status}: ${body.slice(0, 180)}` })
       } catch { checks.push({ name: `GET ${route}`, passed: false, detail: 'Gateway did not respond within five seconds.' }) }
     }
+    if (config.code === 0 && checks.some((item) => !item.passed)) {
+      const hint = ' The nginx configuration test passed. If you edited nginx.conf after starting the project, run: docker compose exec gateway nginx -s reload, then verify again.'
+      for (const item of checks) if (!item.passed) item.detail += hint
+    }
     const upstream = await run('docker', ['compose', 'logs', '--no-color', '--tail', '100', 'relay'], workspace)
     checks.push({ name: 'Known and unknown API paths reach the relay with queries preserved', passed: upstream.code === 0 && forwarded.every((route) => `${upstream.stdout}\n${upstream.stderr}`.includes(`GET ${route} `)), detail: upstream.code === 0 ? 'Checked the relay log for both unique requests, with /api/ removed and query parameters intact.' : 'The relay log could not be read.' })
     return { passed: checks.every((item) => item.passed), checks, checkedAt, supported: true, output: '' }
