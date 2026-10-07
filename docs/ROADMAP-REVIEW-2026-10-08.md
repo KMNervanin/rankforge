@@ -62,12 +62,12 @@ Written independently before reading Review A; full text in [ROADMAP-REVIEW-B-KI
 - Kafka: merge A03 and A04 into one bounded lab. Accepted; the slot is reused.
 - API versioning: a variant on B08 and T02, no new mission.
 
-**Open difference, put to Review B in the channel.** Review A's largest gap, integrations with unreliable third parties (external API client, inbound and outbound webhooks, retries, circuit breaker, HTTP caching), does not appear in Review B. Nothing in the extraction makes the player the client of someone else's broken service, so Review A keeps the recommendation of a five-mission block unless Review B shows where the roadmap already covers it. Likewise the optional platform branch (local Kubernetes, infrastructure as code) for the DevOps archetype.
+**Closed in the channel.** Review B accepted the integrations gap: L05 covers only the slow dependency and S04 the outbound boundary, while garbage responses, 429 with Retry-After, a client-side circuit breaker, signed inbound webhooks and ETag/304 are checked nowhere. Review B argued against a five-mission block as a distortion of the "majority" claim and proposed two core missions instead: a client of a broken external API against a fixture server (timeouts, backoff with jitter, bounded retries, malformed and truncated replies, breaker), placed next to L05; and webhooks both ways, inbound with signature and idempotency key as a strong revisit of I04 and A05, outbound with a delivery schedule, placed in the event frontier. HTTP caching becomes a variant of L04 and time zones a variant of W03 and O05. Accepted. The platform branch is accepted as optional next to the model laboratory, never core, and parked until the core is built and piloted; the asymmetry is fair since data engineers already have a branch.
 
 **Recommendation to the owner.**
 
-- Ten core blocks: trunk I; D; B; T and S; O; L; the new integrations block; A with seven missions after the merge; core W with four; the capstone. About 66 core missions. The coverage claim is attached to the subset of about 55 that both reviews name, with the rest of the core as depth, and the full catalog as specialization on top.
-- Optional branches: foundations 12, data 6, model laboratory 6, platform 3–4.
+- Nine core blocks plus the capstone, as today, with two additions and two removals: the external-API client mission joins VI, the webhooks mission joins VII, A03 and A04 merge, and W03 with W06–W10 leave for the optional data branch. About 63 core missions. The coverage claim is attached to the subset of about 55 that both reviews name, with the rest of the core as depth and the full catalog as specialization on top.
+- Optional branches: foundations 12, data 6, model laboratory 6, platform 3–4 (parked until the core is piloted).
 - Repetition: the hidden bonus check on every mission, now implemented, plus about twenty authored variants, two per core block, including the code review, API versioning and time zone variants named above.
 - The one-trunk, three-guild device in `PROGRESSION-DESIGN.md` carries this structure into the game.
 
