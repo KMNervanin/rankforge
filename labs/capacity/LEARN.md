@@ -16,7 +16,7 @@ Implement `estimate(workload)` in `capacity.py`. Input is a dictionary with thes
 | retention_days | Whole days retained | integer-valued 0..3,650 (7.0 is allowed) |
 | storage_multiplier | Combined replication, indexes and overhead allowance | 1..100 |
 
-Fractional averages are allowed except fractional retention. This includes **response_bytes and written_bytes**: an average of 0.5 bytes/request is valid (for example, only some requests write data). Do not truncate either average to an integer. Verify varies them independently, including values below 1. Extra fields are ignored, including optional `p95_ms`. A percentile is not a mean and must never substitute for `mean_ms`. Missing fields, non-dictionaries, strings, booleans, negative/out-of-range values, NaN and infinities raise **ValueError**. Error wording is free. Validate even when traffic is zero. Preserve input on both success and failure; return the same results across calls, regardless of call order.
+Fractional averages are allowed except fractional retention. This includes **response_bytes and written_bytes**: an average of 0.5 bytes/request is valid (for example, only some requests write data). Do not truncate either average to an integer. Verify varies them independently, including values below 1. Extra fields are ignored, including optional `p95_ms`. A percentile is not a mean and must never substitute for `mean_ms`. Missing fields, non-dictionaries, strings, booleans, negative/out-of-range values, NaN and infinities raise **ValueError**. An integer too large for a finite float, such as `10**400`, is out of range too: raise ValueError yourself instead of letting `float()` raise OverflowError. Error wording is free. Validate even when traffic is zero. Preserve input on both success and failure; return the same results across calls, regardless of call order.
 
 ## Public equations and output
 
@@ -45,6 +45,6 @@ python3 -B demo.py
 python3 -B demo.py workload.json
 ```
 
-The starter mistakes a daily count for a rate and returns placeholder zeros. Save your calculator and use **Verify lab**. The demo prints numbers (Decimal/Fraction render as strings there only); it does not award a pass or write files. If units are unfamiliar, first calculate 43,200 requests/day by hand: that is 0.5 requests/s. Then change just the peak multiplier. F10 is optional future units practice; these explanations supply the units needed now.
+The starter mistakes a daily count for a rate and returns placeholder zeros. Save your calculator and use **Verify lab**. The demo prints numbers (Decimal/Fraction render as strings there only); it does not award a pass or write files. If units are unfamiliar, first calculate 43,200 requests/day by hand: that is 0.5 requests/s. Then change just the peak multiplier. These explanations supply the units needed now; no other lesson is required first.
 
 Python stdlib >=3.10, no server, network or downloads. The independent checker changes peak factors, retention, fractional quantities, zero/max bounds and p95 values, and tests rejected inputs. Correct arithmetic proves an estimate under stated assumptions, not throughput, latency, resource sizing or architecture quality. A load measurement comes later. An explanation/debrief is optional and review-only.

@@ -18,11 +18,11 @@ open_questions: [ticket question IDs not yet decided]
 exclusions: [every excluded scope ID from the ticket]
 ```
 
-Each fact must occur exactly once across requirements, with its value and unit intact. Group related facts into one requirement or separate them. Each required fact's `cases` kinds must be linked to the requirement containing that fact. For example, a quantity-limit requirement needs both `boundary` and `over_limit`: the first describes acceptance at the inclusive limit; the second describes rejection above it. `missing_field` observes input rejection, `unauthorized` denied access, `restart` retained acknowledged data, and `measurement` compares an observed p95 against the target. A case is a *planned observation*, not a claim that you executed a service.
+Each fact must occur exactly once across requirements, with its value and unit intact: the value keeps its exact type, so `25` is not `25.0`. Every requirement lists at least one fact. Group related facts into one requirement or separate them. Each required fact's `cases` kinds must be linked to the requirement containing that fact. For example, a quantity-limit requirement needs both `boundary` and `over_limit`: the first describes acceptance at the inclusive limit; the second describes rejection above it. `missing_field` observes input rejection, `unauthorized` denied access, `restart` retained acknowledged data, and `measurement` compares an observed p95 against the target. A case is a *planned observation*, not a claim that you executed a service.
 
 For each question, either declare exactly one allowed assumption or put its ID in `open_questions`. An assumption also needs cases for its chosen option's published kinds, linked via `assumptions`. `operator_confirmation` observes waiting for approval; `automatic_dispatch` observes dispatch without approval. A case may cover multiple requirements/assumptions; lists have no duplicates and every reference must exist. A case must have at least one reference, and its kind must belong to every referenced requirement (union of its facts' kinds) or chosen assumption. Case and requirement IDs are separate namespaces. All required collections must be present, even when empty. Exclusions are unique and exactly match the ticket; they cannot be promoted into requirements. Unknown fact IDs and claimed `source: "fact"` assumptions fail.
 
-Ordering and extra descriptive fields (such as `description` or `rationale`) are free. Their wording is never graded. No particular English phrase or case decomposition is required. Preserve the input and return the same manifest on repeat calls; do not read a fixed ticket from disk inside the function. Input tickets are valid v1 dictionaries in this published shape; malformed-ticket handling is outside the lab.
+Ordering and extra descriptive fields (such as `description` or `rationale`) are free. Their wording is never graded. No particular English phrase or case decomposition is required. Preserve the input and return the same manifest on repeat calls; do not read a fixed ticket from disk inside the function. Never change a manifest after returning it: Verify keeps every returned manifest and compares it again after later tickets, so build fresh lists and dictionaries for each call. Input tickets are valid v1 dictionaries in this published shape; malformed-ticket handling is outside the lab.
 
 ## Changes are part of the ticket
 
@@ -39,9 +39,9 @@ python3 -B demo.py ticket-v2.json
 python3 -B demo.py ticket-v3.json
 ```
 
-The starter intentionally prints empty requirements and cases. It is not a completed design. The demo prints your artifact; use **Verify lab** for the independent contract checks. Neither command overwrites files. D02 and D03 include equivalent v1 briefing context; they do not silently copy or modify this workspace.
+The starter intentionally prints empty requirements and cases. It is not a completed design. The demo prints your artifact; use **Verify lab** for the independent contract checks. Neither command overwrites files. The later guild missions carry their own copy of this briefing context; they do not silently copy or modify this workspace.
 
-If Python collections are unfamiliar: a dictionary names a value (`ticket["revision"]`), a list holds several values, and `for fact in ticket["facts"]:` visits them. Build new lists/dictionaries instead of deleting from the input. A function returns data; printing alone is not a return value. F04/F05 in the roadmap describe further file/test practice; those foundations are not a prerequisite installation or a shipped lesson you must find.
+If Python collections are unfamiliar: a dictionary names a value (`ticket["revision"]`), a list holds several values, and `for fact in ticket["facts"]:` visits them. Build new lists/dictionaries instead of deleting from the input. A function returns data; printing alone is not a return value. No other lesson or installation is required before this mission.
 
 ## Boundary
 
