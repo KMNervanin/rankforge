@@ -10,7 +10,7 @@ Run `python3 -B service.py` for your own terminal investigation. The demo reads 
 
 ## Complete public contract
 
-Only `GET` is assessed. Request query strings are at most 512 characters, use `&` separators and standard URL encoding. There are no authentication, write, concurrency, load or changing-snapshot requirements in this trial.
+Only `GET` is assessed. Request query strings are at most 512 characters, use `&` separators and standard URL encoding. Verify's server is threaded: it may handle two requests at the same time, so keep per-request state (parsed query, selected page) inside the handler, not in module globals. There are no authentication, write, load or changing-snapshot requirements in this trial.
 
 | Request | Required behavior |
 | --- | --- |
@@ -22,7 +22,7 @@ Every response uses `application/json`; casing and parameters such as `charset=u
 
 Every response body, including optional fields, is at most **16384 bytes (16 KiB)**. HTTP framing must be complete: if you send Content-Length it must match the actual byte count; valid chunked or connection-close framing are also accepted. The bounded supplied records fit this budget. Whitespace after a number is not an ASCII digit: `?limit=2%0A` and `?after=0%0A` both return 400.
 
-The two known query parameters are `after` and `limit`. Each may occur at most once. Unknown parameters are ignored, even if repeated or blank. Decode percent escapes and `+` before validating values.
+The two known query parameters are `after` and `limit`, matched case-sensitively: `Limit` or `AFTER` is an unknown parameter. Each known parameter may occur at most once. Unknown parameters are ignored, even if repeated or blank. Decode percent escapes and `+` before validating values.
 
 | Parameter | Default when absent | Valid decoded value |
 | --- | --- | --- |
