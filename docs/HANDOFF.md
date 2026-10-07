@@ -44,6 +44,7 @@ Detailed distinctions and versions: [ACCEPTANCE.md](ACCEPTANCE.md). Decisions an
 
 - The owner reported successful account connection and opening VS Code. Real tutor-response quality, editor focus alongside work windows, and save/cancel behavior still need the corresponding checks above.
 - The implemented language modality is writing. Listening/speaking and voice integration need a separate iteration.
+- Owner proposal of 2026-10-07: three completion stars per mission (verify, debrief, hidden edge case) with star-aware skill checkpoints; design in [PROGRESSION-DESIGN.md](PROGRESSION-DESIGN.md), not implemented. Provider free-tier and billing research is in [PROVIDER-FREE-TIERS-2026-10-07.md](PROVIDER-FREE-TIERS-2026-10-07.md).
 - Chapter I, the first three guild quests and an optional HTTP trial are executable. Remaining catalog entries are in [CURRICULUM.md](CURRICULUM.md) and [COURSE-ROADMAP.md](COURSE-ROADMAP.md). Next design work is D04–D06; optional foundations and deeper branches remain planned. ML is not a core prerequisite.
 - Game ranks and language thresholds are provisional learning mechanics, not professional or CEFR certification. “Unassisted” reflects recorded in-game assistance, not a proctored exam or knowledge of external help.
 - No lab/service process or newly tagged QA image is intentionally left running. Existing user projects, Docker contexts, VPN and work windows were preserved. Public image/build caches may remain in Docker's normal cache.
