@@ -22,7 +22,7 @@ Order: C1 and C2 run now in parallel; C3a follows C2 because the bonus checks re
 ## Status, 2026-10-08 02:30
 
 - C2 done: eight commits `64f40cb`..`926d302`, contract version `2026-10-08.1`; Node 154/154, E2E 9/9, real nginx acceptance green. Follow-ups: workspace text is frozen at first open, so corrected texts reach only new workspaces; Recovery does not state that `recover` creates the table on a new file; the Capacity retention wording could say "non-integral".
-- C3a done: three commits `22bac9f`, `ff66344`, `5e74b14`, contract version `2026-10-08.2`. Every mission has one optional hidden check, RED on the starter and on a minimal passing solution, GREEN on a thorough one; the card and panel show a one-line rumour; the check report lists the bonus separately and reveals it only when the mission currently passes. Re-run by the coordinator: Node 165/165, E2E 9/9. Weaker discriminators: the Gateway and HTTP-trial bonuses, which both reference solutions already pass.
+- C3a done: three commits `22bac9f`, `ff66344`, `5e74b14`, contract version `2026-10-08.2`. Every mission has one optional hidden check, RED on the starter and on a minimal passing solution, GREEN on a thorough one; the card and panel show a one-line rumour; the check report lists the bonus separately and reveals it only when the mission currently passes. Re-run by the coordinator: Node 165/165, E2E 9/9. The Gateway and HTTP-trial bonuses are earned by a careful first solution, which the owner confirmed is the intent: a minimal passing solution still misses them, and a solution that covers both at once shows the player thought it through rather than patching twice.
 - C1: Review A written; Kimi's Review B in progress in the `rankforge` channel.
 - C3b and C4 not started.
 
