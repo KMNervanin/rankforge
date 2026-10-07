@@ -121,6 +121,11 @@ test('echo accepts insert-first collision handling and reordered columns', async
   assert.equal(result.passed, true, JSON.stringify(result))
 })
 
+test('echo rejects an integral float quantity such as 7.0', async (t) => {
+  const source = (await solution('echo')).replace('type(event.get("quantity")) is not int', 'not isinstance(event.get("quantity"), (int, float)) or event["quantity"] != int(event["quantity"])')
+  rejected(await candidate(t, 'echo', source), 'integral float quantity')
+})
+
 for (const id of ['echo', 'recovery']) {
   test(`${id}: reject missing primary key even when application deduplication works`, async (t) => {
     const result = await candidate(t, id, (await solution(id)).replaceAll('id TEXT PRIMARY KEY', 'id TEXT'))

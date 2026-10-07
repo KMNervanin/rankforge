@@ -182,6 +182,7 @@ INVALID_EVENTS = [
     ("zero quantity", {"id": "x", "item": "cell", "quantity": 0}),
     ("negative quantity", {"id": "x", "item": "cell", "quantity": -1}),
     ("fractional quantity", {"id": "x", "item": "cell", "quantity": 1.2}),
+    ("integral float quantity", {"id": "x", "item": "cell", "quantity": 7.0}),
     ("boolean quantity", {"id": "x", "item": "cell", "quantity": True}),
     ("quantity exceeds SQLite INTEGER", {"id": "x", "item": "cell", "quantity": 9223372036854775808}),
 ]
