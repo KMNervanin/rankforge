@@ -1,0 +1,20 @@
+# Content plan — 2026-10-08
+
+Owner request of 2026-10-08: assess the course roadmap with two independent opinions, audit missions for ambiguity, add a hidden bonus objective to every mission, and say how many blocks and missions cover the vast majority of real backend, DevOps and architecture work, with repetition in changed form counted as good practice.
+
+## Lineage
+
+- 2026-10-06, autonomous run: `docs/COURSE-ROADMAP.md` with 86 missions (68 core, 12 foundations, 6 ML), `docs/CURRICULUM.md`, and `docs/MISSION-AUDIT-2026-10-06.md` which reviewed the first six missions and replaced source-string grading with behavioral contracts (commits `8c528df`, `82c07d1`, `7af7df3`, `e1d9a9e`, `1188a50`). Nine catalog missions plus the optional HTTP trial are runnable today.
+- 2026-10-07/08, this session: three-star proposal, provider and cost decisions, three environments. The hidden bonus objective is the third star of that proposal.
+
+## Subtasks
+
+| ID | Subtask | Done when | Output |
+| --- | --- | --- | --- |
+| C1 | Roadmap coverage review, two opinions: this session and the Kimi agent in the `rankforge` team channel. Compare blocks against real backend, SRE/platform and architect work; answer the archetype question; name gaps and redundant entries. | Both reviews written, disagreements listed, a single recommendation on the number of blocks and missions with the repetition policy. | `docs/ROADMAP-REVIEW-2026-10-08.md` |
+| C2 | Ambiguity audit of the 10 runtime missions: dangling facts in briefs, lessons, LEARN.md and READMEs that no check requires; hidden requirements; two-reading objectives; unspecified bounds. The owner's example: the first mission's LEARN.md described a 503 with no way to handle it and no requirement to. | Every finding fixed in text or check, one commit per mission; a changed check bumps the contract version; `npm test` and `npm run test:e2e` green. | Text and verifier changes, audit appendix in the review doc |
+| C3a | Hidden bonus check per mission in the verifiers: `Check.optional`, never failing the mission; `Mission.nudge` for the card hint; the check report shows the bonus line separately. | For each mission: starter RED on the bonus, a correct edge-case solution GREEN, mission still PASSES when the bonus fails; Node tests cover the three states. | `server/verify*.py`, `server/labs.ts`, `shared/types.ts`, `shared/content.ts`, `src/App.tsx`, tests |
+| C3b | Third star record: `mission_stars` table and backfill from the three-star proposal, limited to ★ and ★★★; XP rows per star. | Idempotent across replayed results; existing XP rows map to ★; UI shows star slots. | `server/store.ts`, `server/rewards.ts`, `src/App.tsx`, tests |
+| C4 | Apply the C1 recommendation to `COURSE-ROADMAP.md` and `CURRICULUM.md`: block count, mission count, repetition entries, archetype wording. | Roadmap edited; dependency graph still acyclic; implemented IDs preserved. | `docs/COURSE-ROADMAP.md`, `docs/CURRICULUM.md` |
+
+Order: C1 and C2 run now in parallel; C3a follows C2 because the bonus checks reuse the clarified contracts; C3b after C3a; C4 after the owner accepts C1.
