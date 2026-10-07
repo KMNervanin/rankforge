@@ -90,53 +90,53 @@ Awards need an atomic, idempotent ledger operation keyed by player + stable mile
 
 A tutor chip is **reserve charge**. The future harness will bound model context, output and cost; do not assume long answers, assign token prices, promise a fixed number of questions or implement spending now. In the first candidate, earn and inspect the item only. Before any later activation, design spend/refund/retry and quota behavior against the actual harness contract. Basic learning support remains available without the item. Quota/auth failures retain pending messages and do not trigger pay-as-you-go fallback. No new provider adapter belongs in this slice.
 
-## Owner proposal, 2026-10-07 — three stars per mission
+## Owner proposal, 2026-10-07 — three stars per mission, XP-driven skills
 
-The owner wants every mission to have several levels of completion instead of one pass/fail outcome. Today a first passing Verify grants the whole XP value at once, records skill evidence and advances a skill checkpoint; the debrief adds nothing beyond the language band, and nothing rewards looking for an edge case. The result is that a learner who barely passes and a learner who tried hard look identical to the game. The proposal below is written against the current code and the fairness rules above; it is a design candidate, not shipped behavior.
+The owner wants every mission to have several levels of completion instead of one pass/fail outcome, and wants skill growth to come from XP: the more stars a mission earns, the more XP it pays, and different missions pay different XP. Today a first passing Verify grants the whole XP value at once, the debrief adds nothing beyond the language band, and nothing rewards looking for an edge case, so a learner who barely passes and a learner who tried hard look identical to the game. The owner clarified the model on 2026-10-07; this section records it as a design candidate against the current code, not shipped behavior.
 
 ### The three stars
 
 | Star | Name | Earned when | What the player sees before earning it |
 | --- | --- | --- | --- |
 | ★ | Restored | The current-contract Verify passes, with or without hints. Same as today's completion. | The objectives list, as now. |
-| ★★ | Reported | A debrief for this mission is graded by the tutor with the communicative goal **met or partial**. `not_met` is not a loss: the tutor's reply says what is missing and the player can send another debrief at any time. | "Write a debrief to the guild" with the mission's debrief question. |
-| ★★★ | Thorough | A passing Verify run also passes the mission's **optional hidden checks**: one or two deterministic edge cases that the public objectives do not spell out. | A short authored nudge on the card, such as "Rumour says the ledger misbehaves right at a boundary" or "What if the same event arrives twice?" The exact check is revealed after the star is earned, or on request after ★ is earned. |
+| ★★ | Reported | The tutor model grades a debrief for this mission and reports that the communicative goal is met or partly met. See "How the model grades a debrief" below. | "Write a debrief to the guild" with the mission's debrief question. |
+| ★★★ | Thorough | A passing Verify run also passes the mission's **optional hidden checks**: one or two deterministic edge cases that the public objectives do not spell out. | A short authored nudge on the card, such as "Rumour says the ledger misbehaves right at a boundary" or "What if the same event arrives twice?" The exact check is revealed after the star is earned, or on request after ★. |
 
-Stars are independent and can be earned in any order, except that ★★★ requires a run that also passes. A mission's stars never decrease: a later failing Verify, a contract version bump or a weaker debrief leaves earned stars in place. ★★ is about communication, not technical mastery, and stays separately observed as the fairness rules require; it never gates ★ or ★★★.
+Stars are independent and can be earned in any order, except that ★★★ requires a run that also passes. A mission's stars never decrease: a later failing Verify, a contract version bump or a weaker debrief leaves earned stars in place.
+
+### How the model grades a debrief
+
+The debrief assessor already exists (`gradingInstructions` in `server/app.ts`, `LanguageGrade` in `shared/types.ts`). For every debrief the model returns a small JSON with three verdicts: `communicativeGoal` is **met** when the text actually answers the mission's debrief question, **partial** when it answers only part of it or leaves the meaning unclear in places, and **not_met** when it is off topic, empty of content or unreadable; `clarity` rates the English; `independence` says whether a coach exchange in the previous 24 hours supported the answer. The model also quotes the learner's own words as evidence and offers at most two corrections. The star uses only the first verdict: **met or partial earns ★★, not_met does not.** A fluent but irrelevant answer is not_met by the assessor's own rules, and a one-word answer cannot carry the required evidence quotation, so neither earns the star. The tutor's reply explains what is missing and another debrief can be sent at any time; nothing is lost. Clarity and independence keep feeding the language band and do not affect the star.
 
 ### Why hidden checks are allowed here but not in the core contract
 
 The mission audit chose published behavioral bounds and rejected surprise failures. Hidden checks respect that: they can **only add** a star and can never fail a mission or block a reward that ★ already grants. Each hidden check must be a reasonable consequence of the brief, written next to the public checks in the same verifier and marked `optional`, so the player can audit it afterwards. The card nudge exists so that the star is discoverable without reading the verifier.
 
-### Effect on XP, skills and rewards
+### XP and skills
 
-- **XP.** ★ keeps the current mission XP. ★★ and ★★★ each add half of that XP once. XP stays a game counter and still unlocks nothing by itself.
-- **Skill checkpoints.** A checkpoint that is not yet earned additionally requires ★★★ on at least one of its missions. Clearing every mission with the bare minimum reaches ★ everywhere, but the skill ladder waits until the learner has handled at least one edge case in that branch. Already earned checkpoints and chips are preserved by the idempotent ledger and are not re-evaluated.
-- **Chips.** Chip charge from a checkpoint scales with the total stars across its missions instead of a flat `level × 5`; exact numbers wait for the charge-spending design, which is still deferred.
-- **Cosmetics.** Three stars on every mission of a checkpoint unlocks a gilded variant of that checkpoint's frame. Purely visual.
-- **Nothing new is subtracted.** Hints, coach use, failed runs and `not_met` debriefs still cost nothing, in line with "no hint penalties".
+- **Stars scale XP.** ★ pays the mission's base XP, as today. ★★ and ★★★ each add a further share of that base, so a three-star mission pays more than a one-star one, and a hard mission pays more than an easy one at the same star count. The shares are a tuning constant, initial proposal 50% each, so three stars pay double.
+- **Skills grow from XP.** Every mission lists the skills it exercises (`Mission.skills`). The XP a mission pays is credited to each of those skills, and skill levels are XP thresholds per skill. A one-star pass therefore still moves the skill, but slowly; full growth needs the debrief and the edge case. This replaces, for the live game, the rule above that only authored evidence may advance a skill: evidence (contract version, hints, independence) is still recorded and shown per mission, but the gate is XP. Rank stays a function of total XP as now.
+- **Chips and cosmetics.** Checkpoint rewards keep their current trigger. Chip charge scales with the stars collected on the checkpoint's missions; three stars on every mission of a checkpoint unlocks a gilded variant of its frame. Exact charge numbers wait for the charge-spending design.
+- **Nothing new is subtracted.** Hints, coach use, failed runs and not_met debriefs still cost nothing, in line with "no hint penalties".
 
 ### Data and migration
 
 - New table `mission_stars(mission_id, star, earned_at, source_ref)` with a primary key on `(mission_id, star)`, written inside the same transaction as `saveCheck` or the debrief `finish`, so retries, reloads and concurrent tabs converge on one row. `source_ref` points at the check result or exchange id.
+- `awards` becomes star-aware: one XP row per `(mission_id, star)` instead of one per mission, summed for total XP and per skill. Existing rows map to ★.
 - `Check` gains `optional?: boolean`; `passed` continues to mean "all required checks passed". The verifiers return hidden checks alongside the public ones.
 - `Mission` gains `nudge?: string` for the card hint. Missions without hidden checks have no ★★★ and show two star slots.
-- One-time backfill on startup: ★ for every mission with `progress.completed`; ★★ for every mission that already has a completed debrief exchange with a `met`/`partial` grade; no retroactive ★★★, because old runs did not execute hidden checks and the current rule says historical results are not fresh evidence.
-
-### Open question for the owner
-
-The one judgement call is the bar for ★★. The table uses "goal met or partial" so that a one-word debrief does not count; the alternative is "any graded debrief", which removes the model from the decision entirely but makes the star trivial. The recommendation is met/partial, because the star is granted once per mission and cannot be farmed, so the catalog's concern about farmable model-approved charge does not apply.
+- One-time backfill on startup: ★ for every mission with `progress.completed`; ★★ for every mission that already has a completed debrief with a met or partial grade; no retroactive ★★★, because old runs did not execute hidden checks.
 
 ### Checks before calling it done
 
-Node tests: a hidden check failing never fails the mission; ★★★ requires a passing run; stars are idempotent across replayed results and duplicate debriefs; backfill matches existing completions and graded debriefs; a checkpoint without ★★★ stays pending while an already earned one is untouched. Headless browser: the card shows star slots and the nudge, the detail panel explains how each star is earned, and reload keeps the stars. Run `npm run build`, `npm test`, `npm run test:e2e` after integration.
+Node tests: a hidden check failing never fails the mission; ★★★ requires a passing run; stars and their XP rows are idempotent across replayed results and duplicate debriefs; backfill matches existing completions and graded debriefs; skill XP equals the sum over the mission's listed skills; a not_met debrief grants nothing and leaves the pending retry path intact. Headless browser: the card shows star slots and the nudge, the detail panel explains how each star is earned, skills show XP progress, and reload keeps the stars. Run `npm run build`, `npm test`, `npm run test:e2e` after integration.
 
 ## Roadmap and release checks
 
 1. **This deliverable:** standalone Russian explanation, step/skill/family interactions, diagram, bonus-support distinction, demo inventory/cosmetic. Confirm local/file operation, keyboard paths, reduced motion, readable 1024–1600 layouts and zero network requests. This is a design preview, not implementation acceptance.
 2. **Parent UI/state slice:** evidence presentation, milestone predicate/ledger, chip inventory and equip persistence. Make source versions and support visible; preserve saves. Use meaningful Node tests for concurrent/replayed grants, old evidence compatibility and equip/reload. Verify the actual browser flow headlessly. Run repository build/test/E2E in the parent's integration workstream.
 3. **Optional mission authoring:** freeze Foreign route's brief, starter, checker, failure model and resource ownership together. Demonstrate starter RED, distinct valid approaches GREEN, negative cases RED, fresh inputs, state preservation and help-independent technical scoring before exposing a runnable route.
-4. **Three-star completion (owner proposal, 2026-10-07):** optional checks in the verifiers, star ledger, backfill, card nudges and the star-aware checkpoint rule from the section above. Decide the ★★ bar first; preserve every earned checkpoint and chip.
+4. **Three-star completion (owner proposal, 2026-10-07):** optional checks in the verifiers, star ledger and star-aware XP rows, per-skill XP from mission skills, backfill, card nudges. Preserve every earned checkpoint, chip and XP row.
 5. **Small real-use pilot:** does a player notice the midchapter branch, understand HTTP II's limits, and use the reward? Observe confusion and effort rather than inventing timings or learning-effectiveness metrics. Then consider R2/R5 and one facility. Harness economics and social features stay separate.
 
 ## Standalone behavior and verification
