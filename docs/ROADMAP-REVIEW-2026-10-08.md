@@ -57,4 +57,27 @@ Pending both reviews.
 
 ## Appendix — ambiguity audit of the ten runtime missions (subtask C2)
 
-Pending.
+Read-only audit by a subagent on 2026-10-08 of briefs, lessons, generated LEARN.md, starters and verifiers. Findings not already in `MISSION-AUDIT-2026-10-06.md`, with the fix chosen for each. File references point at the state before the fixes.
+
+**Cross-cutting**
+
+- Lesson text introduces a concept no check requires in all ten missions. Six are disclaimed since 10-06. Undisclaimed: Echo's SQL interpolation warning (no quoted id is ever sent), Ledger's Decimal precision warning (largest total fits the default context), Contract's 8 KiB, no-proxy and no-sleep rules (unobservable), and roadmap codes D02, D03, F04, F05, F10 in Briefing and Capacity lessons that exist nowhere in the game. Fix: turn Echo and Ledger warnings into bonus checks, label Contract's rules as advice, remove roadmap codes.
+- Unannounced strictness on return shapes: exact dict keys in Ledger and Recovery, `is True` / `is False` in Echo, type-strict comparison in Briefing. Fix: say it in the objectives.
+- "Raise ValueError, not the natural exception" in Capacity for `10**400`, where `float()` raises OverflowError. Fix: name it in the lesson.
+- Inter-mission inconsistency: extra JSON fields fail Signal but pass Gateway and the HTTP trial. Fix: Signal accepts extra fields, matching the others; contract version bump.
+- Setup hooks invoked inside an open transaction (Vault) and `ingest` expected to create its own table on a fresh connection (Echo). Fix: the Vault verifier commits before calling setup; Echo's objective says ingest creates the table.
+- Workspace text is frozen at first open (`server/labs.ts`, prepare returns early when the workspace exists), so every text correction reaches only new workspaces. The owner's Signal workspace still carries the old 503 wording. Follow-up, not fixed here: an explicit, backed-up document-refresh action, deferred in the 10-06 decisions.
+- The check contract has no `optional` flag; a mission passes only when every check passes (`server/labs.ts`, `server/rewards.ts`). Precondition for subtask C3a.
+
+**Per mission: hidden strictness or ambiguity → fix; proposed ★★★ bonus check**
+
+1. Signal. Extra health fields rejected, `/health/` with trailing slash must be 404, 3 s timeout. Fix: accept extras, name the trailing slash and timeout in the objectives. Bonus: `Content-Length` equals the bytes written on both `/health` and the 404.
+2. Vault. Setup called mid-transaction; `id` must be the sole primary key; `sqlite3.IntegrityError` specifically. Fix: verifier commits first; objectives name the sole key and the exception. Bonus: deleting a referenced item leaves no orphan movements, by restriction or cascade.
+3. Gateway. Request line must be forwarded byte-identical; valid but unreloaded nginx config fails without a reload hint; `/api` without slash and bare `/api/` unspecified. Fix: objective states that only paths under `/api/` forward and the prefix is removed; check detail hints at reload when the config test passes but HTTP fails. Bonus: `/api/?probe=` lands on the relay as `/?probe=` and returns 404.
+4. Echo. Bool identity, `ingest` creates its table, integral floats untested. Fix: objectives say "return exactly True or False" and "ingest creates the table if missing"; `7.0` added as a rejected quantity. Bonus: an id containing a quote and SQL is stored, replayed as duplicate, table intact.
+5. Ledger. Exact two keys, int indices; same id and amount on a different date never tested. Fix: objective says "exactly these two keys"; lesson's precision warning softened. Bonus: the moved-day replay is rejected as a conflict.
+6. Recovery. Full `sqlite_master` comparison fails on leftover helper tables; conflict wording reads as "versus existing rows". Fix: objective says "no new tables or indexes remain"; lesson says conflicts are within the archive. Bonus: two maximal quantities sum without SQLite integer overflow.
+7. Briefing. Every requirement must cite a fact; a case kind must belong to every referenced requirement; returned manifests must not be mutated later; lesson cites roadmap codes. Fix: objectives name the three rules; codes removed. Bonus: a ticket with two questions, needs a new fixture.
+8. Capacity. `10**400` must raise ValueError; roadmap code F10 in lesson. Fix: lesson names non-finite conversion as out of range; code removed. Bonus: junk values in ignored fields leave the seven outputs unchanged.
+9. Contract. "Exact delivery fields" contradicts "tolerate extra fields"; byte-exact request targets and media type; UTF-8 body. Fix: wording "required fields with exact values, extra fields tolerated"; targets, media type and UTF-8 named; chunked and 413 paragraph trimmed. Bonus: a create body with `"quantity": 1.0` must fail create only, needs a fixture fault branch.
+10. HTTP trial. Threaded server, Arabic-Indic digits, empty and nameless query pairs and parameter case unspecified. Fix: lesson names concurrency and that parameter names are case-sensitive. Bonus: empty pairs, a nameless pair and leading zeros handled on one request.
