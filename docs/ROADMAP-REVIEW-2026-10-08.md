@@ -49,11 +49,27 @@ Hours and pacing remain unmeasured, as the roadmap says. Coverage is judged agai
 
 ## Review B — Kimi agent
 
-Pending in the `rankforge` channel.
+Written independently before reading Review A; full text in [ROADMAP-REVIEW-B-KIMI-2026-10-08.md](ROADMAP-REVIEW-B-KIMI-2026-10-08.md) (Russian). Summary: the everyday work of the three archetypes is covered by nine blocks and about 55 missions (range 52–58): I, D, B, T, S, O in full, L01–L08, A01/A02/A05/A07, W01/W02/W04/W05 and the capstone. W06–W10 and M are specialization. The archetypes are connected, and the roadmap proves it constructively through the dependency graph rather than by declaration; the capstone certifies a full-lifecycle owner of a bounded system, which should be named as a choice. Main gap: reading and reviewing someone else's code, which appears once at beginner level and then only as a side effect of the repair format. Minor gaps: HTTP API versioning, time zones earlier than W01, cost as a constraint, "the skill of not building". Redundancy: A03 and A04 can merge into one Kafka lab; W09 is the first candidate for optional. The repetition spiral on idempotency and recovery is a strength, not duplication. Methodological caveat: the coverage claim is structural, against competency maps, not a measured share of real tickets.
 
 ## Reconciliation
 
-Pending both reviews.
+**Agreed by both reviews.** The data district is a fourth archetype; its specialist half leaves the core. The model laboratory stays optional. The archetypes share one foundation and the roadmap already expresses it through dependencies; the game should say plainly that it trains someone who holds a small system end to end, with depth in any one role growing on the job. The idempotency and recovery spiral stays. Time zones and cost need explicit attention. Hours remain unmeasured and the coverage claim is structural, not a market measurement.
+
+**Resolved differences.**
+
+- Data district split: Review B keeps W04 and W05 in the core, since reporting and ETL shape are everyday backend work. Accepted. Core W is W01, W02, W04, W05; W03 and W06–W10 form the optional data branch.
+- Code review: Review A listed it as minor, Review B as the main gap. Review B's argument stands, because reading unfamiliar code takes more than half of a working engineer's time. Add one mission "review a change with a hidden regression" and two variants at the B and O levels, for example "find the defect in an unfamiliar service from a symptom and its telemetry" as a revisit of O04 and O08.
+- Kafka: merge A03 and A04 into one bounded lab. Accepted; the slot is reused.
+- API versioning: a variant on B08 and T02, no new mission.
+
+**Open difference, put to Review B in the channel.** Review A's largest gap, integrations with unreliable third parties (external API client, inbound and outbound webhooks, retries, circuit breaker, HTTP caching), does not appear in Review B. Nothing in the extraction makes the player the client of someone else's broken service, so Review A keeps the recommendation of a five-mission block unless Review B shows where the roadmap already covers it. Likewise the optional platform branch (local Kubernetes, infrastructure as code) for the DevOps archetype.
+
+**Recommendation to the owner.**
+
+- Ten core blocks: trunk I; D; B; T and S; O; L; the new integrations block; A with seven missions after the merge; core W with four; the capstone. About 66 core missions. The coverage claim is attached to the subset of about 55 that both reviews name, with the rest of the core as depth, and the full catalog as specialization on top.
+- Optional branches: foundations 12, data 6, model laboratory 6, platform 3–4.
+- Repetition: the hidden bonus check on every mission, now implemented, plus about twenty authored variants, two per core block, including the code review, API versioning and time zone variants named above.
+- The one-trunk, three-guild device in `PROGRESSION-DESIGN.md` carries this structure into the game.
 
 ## Appendix — ambiguity audit of the ten runtime missions (subtask C2)
 
