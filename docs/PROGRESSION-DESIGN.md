@@ -137,6 +137,21 @@ The mission audit chose published behavioral bounds and rejected surprise failur
 
 Node tests: a hidden check failing never fails the mission; ★★★ requires a passing run; stars and their XP rows are idempotent across replayed results and duplicate debriefs; backfill matches existing completions and graded debriefs; skill XP equals the sum over the mission's listed skills; a not_met debrief grants nothing and leaves the pending retry path intact. Headless browser: the card shows star slots and the nudge, the detail panel explains how each star is earned, skills show XP progress, and reload keeps the stars. Run `npm run build`, `npm test`, `npm run test:e2e` after integration.
 
+## One trunk, three guilds — the branching device, 2026-10-08
+
+The owner wants the roadmap played as one trunk of shared skills that branches, because backend, operations and architecture share a foundation and differ in depth. The game already has the pieces: an outpost, guilds, ranks and a map.
+
+- **Roots** are the optional foundations. Visible on the tree, entered only by players who need them; a challenge can satisfy them.
+- **Trunk** is the outpost, chapters I to III: one broken relay that every player repairs the same way. No specialization exists here, only shared capabilities.
+- **Guilds** branch at rank D and work in the same city on the same services. The **Forge** builds services, the backend path. The **Watch** keeps them alive, the SRE and platform path. The **Chart** decides what to build and why, the architecture path. Working names, English in the game.
+- **Interwoven branches.** A guild contract requires skill nodes from neighboring guilds, so the branches cross rather than run parallel: observability belongs to the Watch and the Forge, data migration to the Forge and the Chart, capacity to the Chart and the Watch. Such a node is drawn in two colors on the map.
+- **Rank comes from the crown, not from one branch.** Rank C requires at least one node in every guild, and every higher rank requires more nodes from the other two guilds. The owner's claim that the three archetypes' skills are connected becomes a rule the player can see, not a sentence in a guide.
+- **Focus, not class.** A player may choose a guild focus: a reversible badge that reorders the offered contracts and changes the outpost's look. It locks nothing; the catalog already rules out a class lock.
+- **Echoes** are the repetition device: a contract returns from another guild in a changed form, for example an incident first handled in the Watch later reappears in the Chart as a question of why the design allowed it. The hidden third star is the **trace** that only a careful player notices.
+- **Side shoots.** The optional data and model branches grow off the trunk to the side, marked plainly as not leading to rank.
+
+This maps onto the roadmap review's recommendation of about ten core blocks: trunk I–III, then guild blocks with the Forge taking III, VI and the integrations block, the Watch taking V and the platform branch, the Chart taking II, IV's design parts and the capstone, with VII and VIII shared.
+
 ## Roadmap and release checks
 
 1. **This deliverable:** standalone Russian explanation, step/skill/family interactions, diagram, bonus-support distinction, demo inventory/cosmetic. Confirm local/file operation, keyboard paths, reduced motion, readable 1024–1600 layouts and zero network requests. This is a design preview, not implementation acceptance.
