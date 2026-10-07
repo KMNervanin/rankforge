@@ -18,3 +18,11 @@ Owner request of 2026-10-08: assess the course roadmap with two independent opin
 | C4 | Apply the C1 recommendation to `COURSE-ROADMAP.md` and `CURRICULUM.md`: block count, mission count, repetition entries, archetype wording. | Roadmap edited; dependency graph still acyclic; implemented IDs preserved. | `docs/COURSE-ROADMAP.md`, `docs/CURRICULUM.md` |
 
 Order: C1 and C2 run now in parallel; C3a follows C2 because the bonus checks reuse the clarified contracts; C3b after C3a; C4 after the owner accepts C1.
+
+## Status, 2026-10-08 02:30
+
+- C2 done: eight commits `64f40cb`..`926d302`, contract version `2026-10-08.1`; Node 154/154, E2E 9/9, real nginx acceptance green. Follow-ups: workspace text is frozen at first open, so corrected texts reach only new workspaces; Recovery does not state that `recover` creates the table on a new file; the Capacity retention wording could say "non-integral".
+- C3a done: three commits `22bac9f`, `ff66344`, `5e74b14`, contract version `2026-10-08.2`. Every mission has one optional hidden check, RED on the starter and on a minimal passing solution, GREEN on a thorough one; the card and panel show a one-line rumour; the check report lists the bonus separately and reveals it only when the mission currently passes. Re-run by the coordinator: Node 165/165, E2E 9/9. Weaker discriminators: the Gateway and HTTP-trial bonuses, which both reference solutions already pass.
+- C1: Review A written; Kimi's Review B in progress in the `rankforge` channel.
+- C3b and C4 not started.
+
