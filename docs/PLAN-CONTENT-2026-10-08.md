@@ -28,3 +28,7 @@ Order: C1 and C2 ran in parallel; C3a after C2; then C3b, C6 and C5 in sequence 
 - C1: Review A written; Kimi's Review B in progress in the `rankforge` channel.
 - C3b and C4 not started.
 
+
+## Status, 2026-10-08 — C3b
+
+- C3b done: star ledger `mission_stars` + `star_awards` with startup backfill (legacy `awards` → ★1, completed → ★1, met/partial debrief → ★2, stored current-contract bonus run → ★3), XP per star (★ base, ★★/★★★ half each), skill XP with five threshold levels in `shared/progression.ts`, star slots on cards, a Stars block in the briefing and a Skills section on the skills page. Grants are once-only: a repeated passing run, a replayed result or a duplicate debrief changes neither the ledger nor the XP. Node 171/171, E2E 9/9. A thorough Signal solution now pays 180 XP (★1 + ★3) instead of 120; the owner's existing save (Signal completed on the legacy contract, no debrief) migrates to ★1 and 120 XP.
