@@ -22,6 +22,8 @@ export function App() {
   const [error, setError] = useState('')
   const [rewardNotice, setRewardNotice] = useState('')
   const [hint, setHint] = useState('')
+  const [resetConfirm, setResetConfirm] = useState(false)
+  const [resetNotice, setResetNotice] = useState('')
   const [loginUrl, setLoginUrl] = useState('')
   const [mode, setMode] = useState<'coach' | 'debrief'>(() => savedChat.current.mode === 'coach' ? 'coach' : 'debrief')
   const [drafts, setDrafts] = useState<Record<string, string>>(() => { try { return JSON.parse(localStorage.getItem('rankforge.drafts') ?? '{}') } catch { return {} } })
@@ -84,11 +86,12 @@ export function App() {
   function navigate(next: Tab) {
     navigationEpoch.current++
     setRewardNotice('')
+    setResetConfirm(false)
     if (profileMenu.current) profileMenu.current.open = false
     setTab(next)
   }
   function showMission(id: string) {
-    if (id !== selected) setHint('')
+    if (id !== selected) { setHint(''); setResetNotice('') }
     setChapterId(state?.missions.find((item) => item.id === id)?.chapter ?? 'outpost')
     setSelected(id); navigate('outpost')
     requestAnimationFrame(() => {
@@ -110,6 +113,11 @@ export function App() {
         if (gained || cosmetics.length) setRewardNotice(`Checkpoint rewards: +${gained} banked game charge${cosmetics.length ? ` · ${cosmetics.map((item) => item.name).join(', ')}` : ''}.`)
       }
     })
+  }
+  async function resetMission(id: string) {
+    const data = await action<{ backup: string; note: string | null }>(`/api/missions/${id}/reset`)
+    setResetConfirm(false)
+    if (data) setResetNotice(`Starter restored. Your previous files are kept at ${data.backup}${data.note ? `. ${data.note}` : '.'}`)
   }
   function draft(value: string) {
     setDrafts((previous) => ({ ...previous, [`${selected}:${mode}`]: value }))
@@ -178,10 +186,15 @@ export function App() {
           <h3>Workshop & verification</h3><p className="muted">Save your files before checking. Verification runs against saved code, not the editor buffer or your terminal session.</p>
           {mission.status === 'locked' && <p className="locked-requirements">{mission.bonus ? 'Earn HTTP Applied by verifying Signal and Gateway on the current contract. Previous completions and XP stay yours.' : `First restore: ${mission.prerequisites.map((id) => state.missions.find((item) => item.id === id)?.title ?? id).join(' + ')}.`}</p>}
           <div className="button-stack"><button className="primary" disabled={busy || mission.status === 'locked'} onClick={() => void enter(mission.id)}>↗ {mission.workspace ? 'Open workshop' : 'Accept mission & open VS Code'}</button><button className="secondary" disabled={busy || mission.status === 'locked'} onClick={() => void (mission.workspace ? verifyMission(mission.id) : enter(mission.id, false))}>{busy ? 'Working…' : mission.workspace ? 'Verify lab' : 'Prepare workspace only'}</button></div>
-          {mission.workspace && <details className="workspace-info"><summary>Workspace details</summary><span className="micro">{state.connection.editorConnected ? 'EDITOR CONNECTED' : 'EDITOR NOT CONNECTED'}</span><code>{mission.workspace}</code><p>Your code and notes are preserved. The contract above is current; existing workspace manuals are kept as you left them.</p></details>}
+          {mission.workspace && <details className="workspace-info"><summary>Workspace details</summary><span className="micro">{state.connection.editorConnected ? 'EDITOR CONNECTED' : 'EDITOR NOT CONNECTED'}</span><code>{mission.workspace}</code><p>Your code and notes are preserved. The contract above is current; existing workspace manuals are kept as you left them until you reset to the starter.</p></details>}
           {mission.checks ? <CheckReport mission={mission} /> : <div className="verification-empty"><span>◎</span><p>No checks yet. Prepare your workspace, investigate the starter, then verify your saved changes.</p></div>}
           <button className="hint-button" disabled={busy || mission.status === 'locked'} onClick={async () => { const data = await action<{ hint: string }>(`/api/missions/${mission.id}/hint`); if (data) setHint(data.hint) }}>◇ Request a hint <small>{mission.hintsUsed ? `${mission.hintsUsed} used · guided practice` : 'marks this as guided practice'}</small></button>
           {hint && <div className="hint-box">{hint}</div>}
+          {mission.workspace && <div className="reset-area">
+            {!resetConfirm && <button type="button" className="secondary small reset-button" disabled={busy} onClick={() => { setResetNotice(''); setResetConfirm(true) }}>↺ Reset to starter</button>}
+            {resetConfirm && <div className="reset-confirm" role="group" aria-label="Reset to starter"><strong>Start this quest over from the starter?</strong><ul><li>Your current files move to a backup folder beside the workspace. Nothing is deleted.</li><li>The starter code, MISSION.md and LEARN.md come back with the current wording.</li><li>Earned stars and XP stay. A repeat pass earns nothing new, except stars you have not earned yet.</li>{mission.id === 'gateway' && <li>If the lab containers are running, stop them first: <code>docker compose down</code> in the workspace. Rankforge does not touch Docker during a reset.</li>}</ul><div className="button-row"><button type="button" className="primary" disabled={busy} onClick={() => void resetMission(mission.id)}>{busy ? 'Working…' : 'Reset and keep a backup'}</button><button type="button" className="secondary" disabled={busy} onClick={() => setResetConfirm(false)}>Keep my files</button></div></div>}
+            {resetNotice && <div className="reset-notice" role="status"><span>↺</span><p>{resetNotice}</p><button type="button" aria-label="Dismiss reset notice" onClick={() => setResetNotice('')}>×</button></div>}
+          </div>}
           <section className="chat-preview"><span className="eyebrow">✦ YOUR OPERATOR</span><h3>A place to think out loud.</h3><p>{conversationMessages ? `${conversationMessages} messages saved with this quest. Continue in your conversation workspace.` : 'Ask for guidance or share what you learned. Your conversation has its own space.'}</p><button type="button" className="secondary" onClick={() => navigate('chat')}>Open conversation ↗</button></section>
           </div></div>
         </section>

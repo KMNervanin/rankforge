@@ -272,6 +272,20 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.7 ui-monospac
 .hint-button small { display: block; margin-top: 6px; color: #e5c3cd; font-size: 12px; font-weight: 400; }
 .hint-button:disabled { background: #38303d; border-color: #66536c; color: #cbbece; }
 .hint-box { font-size: 15px; line-height: 1.7; color: #ffe2da; border-left: 4px solid #ffb5af; background: #503848; border-radius: 4px 12px 12px 4px; padding: 16px; margin-top: 12px; }
+.reset-area { margin-top: 14px; }
+.reset-area .reset-button { width: 100%; min-height: 42px; padding: 10px 14px; font-size: 14px; background: #3f3348; border-color: #7f6a8e; box-shadow: 0 3px 0 #2a1f33; }
+.reset-area .reset-button:hover:not(:disabled) { background: #52425d; }
+.reset-confirm { padding: 18px; border: 1px solid #b68dcf; border-radius: 14px; background: #2f2438; color: #f1e4fb; font-size: 14px; line-height: 1.65; }
+.reset-confirm strong { display: block; font-size: 15px; margin-bottom: 8px; }
+.reset-confirm ul { margin: 0; padding-left: 20px; }
+.reset-confirm li { margin: 4px 0; }
+.reset-confirm code { font: 13px ui-monospace, SFMono-Regular, monospace; color: #ffd2ce; }
+.reset-confirm .button-row { margin-top: 16px; flex-wrap: wrap; }
+.reset-confirm .button-row button { flex: 1; min-height: 44px; padding: 10px 14px; font-size: 14px; }
+.reset-notice { display: flex; gap: 12px; align-items: start; margin-top: 12px; padding: 14px 16px; border-left: 4px solid #b68dcf; border-radius: 4px 12px 12px 4px; background: #35293f; color: #f1e4fb; font-size: 14px; line-height: 1.65; }
+.reset-notice > span { font-size: 22px; line-height: 1; }
+.reset-notice p { flex: 1; margin: 0; overflow-wrap: anywhere; }
+.reset-notice button { background: none; border: 0; color: inherit; font-size: 24px; line-height: 1; padding: 0; }
 .tutor-section { border-top: 2px solid #7b5e8f; margin-top: 28px; padding-top: 25px; }
 .tutor-section h3 { font-size: 18px; color: #f6e6ff; }
 .tutor-section .section-heading > span { font-size: 10px; color: #c8f1d8; }
