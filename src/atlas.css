@@ -47,7 +47,6 @@
 .atlas-card-close:hover { color: #fff8ee; }
 .atlas-card .eyebrow { font-size: 11px; letter-spacing: .7px; padding-right: 28px; }
 .atlas-card h2 { font-size: 20px; line-height: 1.2; margin: 4px 0 2px; text-wrap: balance; }
-.atlas-card .atlas-en { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
 .atlas-card p { margin: 0 0 10px; font-size: 15px; line-height: 1.5; }
 .atlas-card dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin: 0; font-size: 14px; }
 .atlas-card dt { color: var(--muted); }

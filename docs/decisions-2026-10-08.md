@@ -19,10 +19,9 @@
 **Location:** `shared/roadmap.ts`, `src/Atlas.tsx`, `src/App.tsx`.
 
 ## Language of the Atlas tab
-**Chosen:** Russian mission titles as the primary label in the Atlas, English title as the subtitle in the card; the rest of the game stays English.
-**Reason:** The owner asked for the tree in his language so he can read it; he is the only player today.
-**Reversal cost:** A language toggle or swapping the two fields in one component; the catalog carries both.
-**Location:** `shared/roadmap.ts`, `src/Atlas.tsx`.
+**Chosen overnight:** Russian mission titles as the primary label in the Atlas, English title as the subtitle in the card.
+**Reversed by the owner on 08.10 (morning):** the Russian titles were ad-hoc translations nobody had checked, so the Atlas now shows the roadmap's own English titles, objectives and section names, and its controls are English like the rest of the game. The catalog carries one `title` field; the Russian strings were dropped rather than kept as dead data.
+**Location:** `shared/roadmap.ts`, `src/Atlas.tsx`, `tests/atlas.test.ts`, `tests/e2e/atlas.spec.ts`.
 
 ## Workspace reset
 **Chosen:** Reset copies the current workspace to a timestamped backup beside it before restoring the starter and regenerating the mission documents; rewards are never revoked and a repeat grants only stars not yet earned.

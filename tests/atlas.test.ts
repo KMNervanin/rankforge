@@ -46,7 +46,7 @@ test('the prerequisite graph is a DAG', () => {
 })
 
 test('the oak layout places every node, keeps the trunk centred and leaves limb nodes apart', () => {
-  const leaves = Object.keys(roadmapRuntime).map((id) => ({ id: `${id}★`, pre: [id], color: '#ffe1a3', block: 'Третья звезда', branch: '', leaf: true }))
+  const leaves = Object.keys(roadmapRuntime).map((id) => ({ id: `${id}★`, pre: [id], color: '#ffe1a3', block: 'Third star', branch: '', leaf: true }))
   const nodes = [...roadmapEntries, roadmapTrial, ...leaves]
   const layout = layoutAtlas(nodes, roadmapSpine)
   for (const node of nodes) assert.ok(layout.pos.has(node.id), `${node.id} has no position`)
@@ -61,5 +61,5 @@ test('the oak layout places every node, keeps the trunk centred and leaves limb 
     assert.ok(Math.abs(a.x - b.x) >= NODE_W + 12 || Math.abs(a.y - b.y) >= NODE_H + 10, `limb nodes overlap at ${a.x},${a.y}`)
   }
   assert.equal(layout.pos.get('HT')!.parent, 'I03', 'the HTTP trial hangs off Gateway, its deepest prerequisite')
-  assert.deepEqual(layout.segments.map((segment) => segment.block), ['I · Тихий аванпост', 'II · Гильдия архитекторов', 'III · Мастерская сервисов', 'IV · Тесты', 'IV · Безопасность', 'V · Эксплуатация', 'VI · Под нагрузкой', 'VII · События', 'VIII · Данные', 'IX · Капстоун'])
+  assert.deepEqual(layout.segments.map((segment) => segment.block), ['I · The silent outpost', "II · The architect's guild", 'III · The service workshop', 'IV · Testing', 'IV · Security', 'V · Reliable operations', 'VI · Under pressure', 'VII · The event frontier', 'VIII · The data district', 'IX · The independent outpost'])
 })

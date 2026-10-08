@@ -5,15 +5,14 @@ import { stars } from '../shared/progression.js'
 import { NODE_H, NODE_W, STEP, TRUNK, ancestors, layoutAtlas, type Layout } from './atlas-layout.js'
 import './atlas.css'
 
-// The Atlas speaks Russian on purpose (decision "Language of the Atlas tab"); the rest of the game stays English.
+// The Atlas shows the roadmap's own English titles; nothing here is translated.
 type Status = 'completed' | 'available' | 'locked' | 'ahead'
 type AtlasEntry = RoadmapEntry & { leaf?: boolean; proposal?: boolean; trial?: boolean; mission?: MissionView; status: Status }
 type Transform = { k: number; x: number; y: number }
 
 const MIN_K = 0.08, MAX_K = 2.5, LEAF_COLOR = '#ffe1a3'
-const statusLabel: Record<Status, string> = { completed: 'пройдено', available: 'доступно', locked: 'заперто', ahead: 'впереди' }
-const cardStatus: Record<Status, string> = { completed: 'пройдено', available: 'можно играть сейчас', locked: 'заперто: сначала пройди задания из списка «После»', ahead: 'впереди, ещё не авторское' }
-const plural = (n: number) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'задание' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'задания' : 'заданий'}`
+const statusLabel: Record<Status, string> = { completed: 'completed', available: 'available', locked: 'locked', ahead: 'ahead' }
+const cardStatus: Record<Status, string> = { completed: 'completed', available: 'playable now', locked: 'locked: finish the missions listed under “After” first', ahead: 'ahead, not authored yet' }
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value))
 const reducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -34,7 +33,7 @@ export function Atlas({ missions, onOpenMission }: { missions: MissionView[]; on
     })
     // One hidden-bonus leaf per runtime mission that carries a rumour; it is earned with that mission's third star.
     const leaves: AtlasEntry[] = catalog.filter((entry) => entry.mission?.nudge).map((entry) => ({
-      id: `${entry.id}★`, ru: 'Скрытый бонус', en: 'Hidden bonus check', goal: entry.mission!.nudge!, pre: [entry.id], block: 'Третья звезда', color: LEAF_COLOR,
+      id: `${entry.id}★`, title: 'Hidden bonus check', goal: entry.mission!.nudge!, pre: [entry.id], block: 'Third star', color: LEAF_COLOR,
       spine: false, branch: '', leaf: true, mission: entry.mission, status: entry.mission!.stars[3] ? 'completed' : entry.status === 'completed' ? 'available' : entry.status,
     }))
     return [...catalog, ...leaves]
@@ -150,36 +149,35 @@ export function Atlas({ missions, onOpenMission }: { missions: MissionView[]; on
     proposed: entries.filter((entry) => entry.proposal).length,
   }
 
-  return <main className="atlas-view" aria-label="Атлас кампании">
+  return <main className="atlas-view" aria-label="Campaign atlas">
     <header className="atlas-head">
-      <div><h1>Дуб кампании</h1><p>Ствол — {roadmapSpine.length} заданий основной линии снизу вверх · ветки — специализации · листья — скрытые бонусы · корни — основы для входа</p></div>
-      <div className="atlas-counts" role="status"><span>пройдено <b>{counts.done}</b></span><span>доступно <b>{counts.play}</b></span><span>впереди <b>{counts.ahead}</b></span><span>предложено <b>{counts.proposed}</b></span></div>
+      <div><h1>The campaign oak</h1><p>Trunk: the {roadmapSpine.length} core missions, bottom to top · limbs: specialisations · leaves: hidden bonuses · roots: the entry workshop</p></div>
+      <div className="atlas-counts" role="status"><span>completed <b>{counts.done}</b></span><span>available <b>{counts.play}</b></span><span>ahead <b>{counts.ahead}</b></span><span>proposed <b>{counts.proposed}</b></span></div>
     </header>
     <div className="atlas-stage">
-      <svg ref={svgRef} className="atlas-tree" role="group" aria-label="Дерево кампании" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
+      <svg ref={svgRef} className="atlas-tree" role="group" aria-label="Campaign tree" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
         <g transform={`translate(${transform.x},${transform.y}) scale(${transform.k})`}>
           <TreeBody entries={entries} layout={layout} selected={selected} chain={chain} onPick={pick} />
         </g>
       </svg>
-      <p className="atlas-hint">колесо или щипок — масштаб · перетаскивание — двигать · клик — карточка</p>
+      <p className="atlas-hint">wheel or pinch to zoom · drag to pan · click a node for its card</p>
       <div className="atlas-controls">
-        <button type="button" onClick={() => { const t = centreOn(whereAmI().id, 1); if (t) animateTo(t) }}>Где я</button>
-        <button type="button" onClick={() => animateTo(fitAll())}>Всё дерево</button>
-        <button type="button" aria-label="Приблизить" onClick={() => zoomBy(1.4)}>+</button>
-        <button type="button" aria-label="Отдалить" onClick={() => zoomBy(1 / 1.4)}>−</button>
+        <button type="button" onClick={() => { const t = centreOn(whereAmI().id, 1); if (t) animateTo(t) }}>Where am I</button>
+        <button type="button" onClick={() => animateTo(fitAll())}>Whole tree</button>
+        <button type="button" aria-label="Zoom in" onClick={() => zoomBy(1.4)}>+</button>
+        <button type="button" aria-label="Zoom out" onClick={() => zoomBy(1 / 1.4)}>−</button>
       </div>
-      {current && <aside className="atlas-card" role="dialog" aria-label="Карточка задания" style={{ '--c': current.color } as CSSProperties}>
-        <button type="button" className="atlas-card-close" aria-label="Закрыть карточку" onClick={() => setSelected(null)}>×</button>
-        <span className="eyebrow">{current.block}{current.leaf ? ` · задание ${current.pre[0]}` : current.branch ? ` · ${current.branch}` : ' · ствол'}</span>
-        <h2>{current.leaf ? '★' : current.id} · {current.ru}</h2>
-        <p className="atlas-en">{current.en}</p>
+      {current && <aside className="atlas-card" role="dialog" aria-label="Mission card" style={{ '--c': current.color } as CSSProperties}>
+        <button type="button" className="atlas-card-close" aria-label="Close the card" onClick={() => setSelected(null)}>×</button>
+        <span className="eyebrow">{current.block}{current.leaf ? ` · mission ${current.pre[0]}` : current.branch ? ` · ${current.branch}` : ' · trunk'}</span>
+        <h2>{current.leaf ? '★' : current.id} · {current.title}</h2>
         <p>{current.goal}{current.goal.endsWith('.') ? '' : '.'}</p>
         <dl>
-          <dt>Статус</dt><dd><span className="atlas-pill">{current.proposal ? 'предложено ревью 08.10, ещё не в дорожной карте' : current.leaf ? (current.status === 'completed' ? 'третья звезда получена' : 'скрытый бонус: ищи его в самом задании') : cardStatus[current.status]}</span></dd>
-          {current.mission && !current.leaf && <><dt>Звёзды</dt><dd><Stars mission={current.mission} /> <small>{stars.filter((star) => current.mission!.stars[star]).length} из 3</small></dd></>}
-          <dt>После</dt><dd className="atlas-pre">{current.pre.length ? current.pre.map((id) => { const pre = byId.get(id); return pre && <button type="button" key={id} onClick={() => jumpTo(id)}>{id} · {pre.ru}</button> }) : <span>нет, стартовая точка</span>}</dd>
+          <dt>Status</dt><dd><span className="atlas-pill">{current.proposal ? 'proposed by the 08.10 review, not in the roadmap yet' : current.leaf ? (current.status === 'completed' ? 'third star earned' : 'hidden bonus: look for it inside the mission') : cardStatus[current.status]}</span></dd>
+          {current.mission && !current.leaf && <><dt>Stars</dt><dd><Stars mission={current.mission} /> <small>{stars.filter((star) => current.mission!.stars[star]).length} of 3</small></dd></>}
+          <dt>After</dt><dd className="atlas-pre">{current.pre.length ? current.pre.map((id) => { const pre = byId.get(id); return pre && <button type="button" key={id} onClick={() => jumpTo(id)}>{id} · {pre.title}</button> }) : <span>nothing, this is a starting point</span>}</dd>
         </dl>
-        {current.mission && <button type="button" className="atlas-open" onClick={() => onOpenMission(current.mission!.id)}>Открыть задание <span aria-hidden="true">↘</span></button>}
+        {current.mission && <button type="button" className="atlas-open" onClick={() => onOpenMission(current.mission!.id)}>Open mission <span aria-hidden="true">↘</span></button>}
       </aside>}
     </div>
   </main>
@@ -201,7 +199,7 @@ const TreeBody = memo(function TreeBody({ entries, layout, selected, chain, onPi
       return <g key={segment.block}>
         <rect className="atlas-seg" x={cx - TRUNK / 2 + 6} y={y1} width={TRUNK - 12} height={y2 - y1} fill={segment.color} rx={18} />
         <text className="atlas-seg-label" x={cx - TRUNK / 2 - 18} y={(y1 + y2) / 2} textAnchor="end">{segment.block}</text>
-        <text className="atlas-seg-sub" x={cx - TRUNK / 2 - 18} y={(y1 + y2) / 2 + 16} textAnchor="end">{plural(segment.to - segment.from + 1)}</text>
+        <text className="atlas-seg-sub" x={cx - TRUNK / 2 - 18} y={(y1 + y2) / 2 + 16} textAnchor="end">{segment.to - segment.from + 1} {segment.to - segment.from === 0 ? 'mission' : 'missions'}</text>
       </g>
     })}
     {limbs.map((entry) => {
@@ -222,14 +220,14 @@ const TreeBody = memo(function TreeBody({ entries, layout, selected, chain, onPi
     })}
     {entries.map((entry) => {
       const p = pos.get(entry.id)!
-      const tag = entry.leaf ? (entry.status === 'completed' ? '✦ получен' : '· скрытый') : entry.proposal ? '· предложено' : entry.status === 'completed' ? '✓ пройдено' : entry.status === 'available' ? '· доступно' : entry.status === 'locked' ? '· 🔒 заперто' : ''
+      const tag = entry.leaf ? (entry.status === 'completed' ? '✦ earned' : '· hidden') : entry.proposal ? '· proposed' : entry.status === 'completed' ? '✓ completed' : entry.status === 'available' ? '· available' : entry.status === 'locked' ? '· 🔒 locked' : ''
       const className = ['atlas-node', entry.status, entry.leaf ? 'leaf' : entry.trial ? 'trial' : 'catalog', entry.proposal ? 'proposal' : '', selected === entry.id ? 'sel' : selected && !chain?.has(entry.id) ? 'dim' : ''].filter(Boolean).join(' ')
-      return <g key={entry.id} className={className} role="button" tabIndex={0} aria-pressed={selected === entry.id} aria-label={`${entry.leaf ? 'Скрытый бонус' : `${entry.id} · ${entry.ru}`} · ${entry.proposal ? 'предложено' : statusLabel[entry.status]}`}
+      return <g key={entry.id} className={className} role="button" tabIndex={0} aria-pressed={selected === entry.id} aria-label={`${entry.leaf ? 'Hidden bonus' : `${entry.id} · ${entry.title}`} · ${entry.proposal ? 'proposed' : statusLabel[entry.status]}`}
         data-id={entry.id} data-status={entry.proposal ? 'proposed' : entry.status} data-runtime={entry.leaf ? undefined : entry.mission?.id} transform={`translate(${p.x - NODE_W / 2},${p.y - NODE_H / 2})`} style={{ '--c': entry.color } as CSSProperties}
         onClick={() => onPick(entry.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onPick(entry.id) } }}>
         <rect width={NODE_W} height={NODE_H} />
         <text className="atlas-id" x={12} y={17}>{entry.leaf ? '★' : entry.id}{tag ? `  ${tag}` : ''}</text>
-        <text className="atlas-title" x={12} y={35}>{entry.ru.length > 28 ? `${entry.ru.slice(0, 27)}…` : entry.ru}</text>
+        <text className="atlas-title" x={12} y={35}>{entry.title.length > 28 ? `${entry.title.slice(0, 27)}…` : entry.title}</text>
         {entry.mission && !entry.leaf && stars.map((star, index) => <text key={star} className={entry.mission!.stars[star] ? 'atlas-star earned' : 'atlas-star'} x={NODE_W - 16 - index * 13} y={17} textAnchor="middle">★</text>)}
       </g>
     })}
@@ -237,5 +235,5 @@ const TreeBody = memo(function TreeBody({ entries, layout, selected, chain, onPi
 })
 
 function Stars({ mission }: { mission: MissionView }) {
-  return <span className="atlas-stars" role="img" aria-label={`${stars.filter((star) => mission.stars[star]).length} из 3 звёзд`}>{stars.map((star) => <i key={star} className={mission.stars[star] ? 'earned' : ''} aria-hidden="true">★</i>)}</span>
+  return <span className="atlas-stars" role="img" aria-label={`${stars.filter((star) => mission.stars[star]).length} of 3 stars`}>{stars.map((star) => <i key={star} className={mission.stars[star] ? 'earned' : ''} aria-hidden="true">★</i>)}</span>
 }
