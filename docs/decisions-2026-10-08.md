@@ -47,3 +47,27 @@
 **Reason:** Two live sources of XP would drift; keeping the old table costs nothing and keeps a downgrade readable.
 **Reversal cost:** Re-add the one `INSERT OR IGNORE INTO awards` line.
 **Location:** `server/store.ts`.
+
+## C6: the HTTP trial is a separate export, not a 93rd catalog row
+**Chosen:** `shared/roadmap.ts` keeps the 92 roadmap rows as `roadmapEntries` and exports the HTTP field trial as `roadmapTrial` (pre I01 + I03, runtimeId `http-trial`); the Atlas merges both.
+**Reason:** The roadmap table has no HT row, so the catalog stays a faithful mirror of `COURSE-ROADMAP.md` and the "92 entries" count stays meaningful in tests.
+**Reversal cost:** Push the one object into the array and update the count assertion.
+**Location:** `shared/roadmap.ts`, `tests/atlas.test.ts`.
+
+## C6: hidden-bonus leaves come from the live snapshot, not from catalog rows
+**Chosen:** The Atlas creates one leaf per runtime mission whose `MissionView.nudge` is set; the leaf is earned when `stars[3]` is set, glows while its mission is available and inherits its lock otherwise.
+**Reason:** The rumour text and the third star already live in the mission views the map uses; a second copy in the catalog would drift from `shared/content.ts`.
+**Reversal cost:** Add `leaf` rows to the catalog and drop the derivation in `Atlas.tsx`.
+**Location:** `src/Atlas.tsx`.
+
+## C6: minimum zoom 0.08 instead of the prototype's 0.15
+**Chosen:** "Всё дерево" may zoom out to 0.08 so the whole oak (about 6800 px tall with the model-lab chain above the capstone and the roots below Signal) fits a 1000 px window.
+**Reason:** At 0.15 the fitted tree was cut off at both ends, which the prototype also did; the layout math itself is ported unchanged.
+**Reversal cost:** One constant in `Atlas.tsx`.
+**Location:** `src/Atlas.tsx` (`MIN_K`).
+
+## C6: the layout is a pure module beside the component
+**Chosen:** `src/atlas-layout.ts` holds the trunk/limb/collision math ported from the prototype as a pure function; `Atlas.tsx` renders it and keeps the zoom transform in React state with a memoised tree body.
+**Reason:** The layout can be asserted in a Node test (every node placed, no limb overlaps, trial hangs off Gateway) without a browser, and the SVG does not re-diff 100 nodes on every pan frame.
+**Reversal cost:** Inline the function back into the component.
+**Location:** `src/atlas-layout.ts`, `tests/atlas.test.ts`.
