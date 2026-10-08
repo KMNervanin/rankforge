@@ -1,17 +1,18 @@
 import { chargeDescription, evidenceDescription } from '../shared/progression'
-import type { ProgressionSnapshot } from '../shared/progression'
+import type { ProgressionSnapshot, SkillSnapshot } from '../shared/progression'
 import type { MissionView } from '../shared/types'
 import './progression.css'
 
 export type ProgressionPanelProps = {
   progression: ProgressionSnapshot | undefined
+  skills: SkillSnapshot[]
   missions: MissionView[]
   busy: boolean
   onEquip: (id: string) => void
   onMission: (id: string) => void
 }
 
-export function ProgressionPanel({ progression, missions, busy, onEquip, onMission }: ProgressionPanelProps) {
+export function ProgressionPanel({ progression, skills, missions, busy, onEquip, onMission }: ProgressionPanelProps) {
   if (!progression) return <section className="progression-panel" aria-labelledby="skills-title">
     <h1 id="skills-title">Skills &amp; rewards</h1>
     <p>Restart the local Rankforge service to load skills and rewards. Your existing mission progress stays saved.</p>
@@ -30,6 +31,16 @@ export function ProgressionPanel({ progression, missions, busy, onEquip, onMissi
         <p>One working endpoint is a beginning. Build evidence across tasks, then try a different problem.</p></div>
       <span className="progression-total">{progression.branches.reduce((sum, branch) => sum + branch.level, 0)}<small>checkpoints earned</small></span>
     </header>
+
+    <section className="skill-bars" aria-labelledby="skill-bars-title">
+      <div className="skill-bars-heading"><h2 id="skill-bars-title">Skills</h2><p>Every star pays XP to the skills its mission lists. ★ pays the base XP; ★★ and ★★★ add half each.</p></div>
+      {skills.some((skill) => skill.xp > 0) ? <ul>{skills.filter((skill) => skill.xp > 0).map((skill) => <li key={skill.name}>
+        <div className="skill-bar-label"><strong>{skill.name}</strong><span className="skill-level-name">{skill.levelName}</span><small>{skill.xp}{skill.nextThreshold ? ` / ${skill.nextThreshold}` : ''} XP</small></div>
+        <progress value={skill.xp} max={skill.nextThreshold ?? skill.xp} aria-label={`${skill.name}: ${skill.levelName}, ${skill.xp} XP`} />
+        <div className="skill-bar-missions">{skill.missions.map((id) => <button key={id} disabled={busy || !canOpen(id)} onClick={() => onMission(id)}>{title(id)}</button>)}</div>
+      </li>)}</ul> : <p className="muted">No skill XP yet. The first star of any quest starts its skills.</p>}
+      {skills.some((skill) => skill.xp === 0) && <p className="skill-bars-rest"><span>Not practiced yet:</span> {skills.filter((skill) => skill.xp === 0).map((skill) => skill.name).join(' · ')}</p>}
+    </section>
 
     <ol className="progression-loop" aria-label="How progression works">
       <li><span aria-hidden="true">01</span><div><strong>Do real work</strong><small>A saved lab passes its current checks.</small></div></li>

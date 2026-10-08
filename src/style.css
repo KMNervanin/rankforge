@@ -509,3 +509,34 @@ pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.7 ui-monospac
   .conversation-content .operator-message { padding: 15px 17px; max-width: 100%; }
   .conversation-content .learner-message { max-width: 95%; }
 }
+
+/* Three-star completion: card slots, detail-panel block and skill XP bars. */
+.stars { display: inline-flex; gap: 3px; margin: -4px 0 10px; font-size: 16px; line-height: 1; }
+.stars .star { font-style: normal; color: #5e4d6b; }
+.stars .star.earned { color: #ffcf80; text-shadow: 0 0 6px #ffcf8066; }
+.star-block { margin: 0 0 23px; padding: 14px 15px; border: 1px solid #63516e; border-radius: 13px; background: #332a3f; }
+.star-block h3 { margin: 0 0 10px; font-size: 15px; color: #fff6e7; }
+.star-block ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+.star-block li { display: flex; align-items: start; gap: 11px; font-size: 14px; line-height: 1.55; color: #d5c4df; }
+.star-block li.earned { color: #fff8f0; }
+.star-block .star-mark { flex-shrink: 0; min-width: 44px; letter-spacing: 1px; color: #5e4d6b; font-size: 13px; padding-top: 2px; }
+.star-block li.earned .star-mark { color: #ffcf80; }
+.star-block strong { color: #ffe4ae; }
+.star-block small { color: #cdb9d7; }
+.star-block p { margin: 2px 0 0; }
+.skill-bars { margin: 0 0 28px; padding: 22px 24px; border: 1px solid #755b79; border-radius: 22px; background: linear-gradient(140deg, #39283f, #281e32); }
+.skill-bars-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 16px; }
+.skill-bars-heading h2 { font-size: 22px; margin: 0; color: #ffcf85; }
+.skill-bars-heading p { margin: 0; font-size: 13px; color: #ceb9d7; }
+.skill-bars ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 22px; }
+.skill-bar-label { display: flex; align-items: baseline; gap: 10px; font-size: 14px; }
+.skill-bar-label strong { color: #fff6e7; }
+.skill-level-name { color: #ffcf85; font-size: 12px; letter-spacing: .4px; text-transform: uppercase; }
+.skill-bar-label small { margin-left: auto; color: #ceb9d7; }
+.skill-bars progress { display: block; width: 100%; height: 8px; border: 0; border-radius: 10px; overflow: hidden; accent-color: #ffcf85; background: #51405d; margin: 8px 0; }
+.skill-bars progress::-webkit-progress-bar { background: #51405d; border-radius: 10px; }
+.skill-bars progress::-webkit-progress-value { background: #ffcf85; border-radius: 10px; }
+.skill-bar-missions { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-bar-missions button { border: 1px solid #795e86; background: #4a3658; color: #fff3e5; border-radius: 9px; padding: 4px 9px; font-size: 12px; }
+.skill-bars-rest { margin: 14px 0 0; font-size: 12px; color: #cdb9d7; line-height: 1.6; }
+.skill-bars-rest span { color: #ceb9d7; text-transform: uppercase; letter-spacing: .4px; }
