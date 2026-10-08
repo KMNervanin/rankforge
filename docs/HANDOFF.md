@@ -29,6 +29,7 @@ On October3, the owner reported that the game started, GPT connected and VS Code
 3. Read `MISSION.md` and `LEARN.md`. Explore the broken service, repair it, save, then **Verify lab**. Use **Prepare workspace only** if you prefer to inspect files before opening the editor.
 4. Submit a debrief in your own English. Judge whether the response is accurate, appropriate for your level and useful. Automated transport/parser tests do not establish tutor quality.
 5. Switch to another available mission, cancel a switch with unsaved work once, and return. Confirm the workshop window and previous files are preserved. The extension retains a cancelled command until a deliberate retry or successful new-host acknowledgment.
+6. To redo a quest from scratch, use **Reset to starter** under the hint button and confirm in the panel. The whole workspace folder is moved, not deleted, to `<service home>/workspaces/.backups/<mission>-<timestamp>/` (the home is `~/.local/share/rankforge` unless `RANKFORGE_HOME` is set); the starter code, `MISSION.md` and `LEARN.md` are restored with the current wording and the editor connection file is rewritten. Stars, XP, chips, frames, hints, the last check result and the journal stay as they were, so a repeat pass earns nothing new except stars not yet earned. For Gateway, stop the lab containers first with `docker compose down`; the reset never touches Docker.
 
 ## Verified evidence
 

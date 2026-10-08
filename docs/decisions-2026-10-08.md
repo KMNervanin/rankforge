@@ -71,3 +71,21 @@
 **Reason:** The layout can be asserted in a Node test (every node placed, no limb overlaps, trial hangs off Gateway) without a browser, and the SVG does not re-diff 100 nodes on every pan frame.
 **Reversal cost:** Inline the function back into the component.
 **Location:** `src/atlas-layout.ts`, `tests/atlas.test.ts`.
+
+## C5: the backup is a rename into workspaces/.backups, not a copy
+**Chosen:** Reset renames the whole workspace to `<home>/workspaces/.backups/<id>-<ISO timestamp, colons replaced by dashes>/` and then prepares the starter at the original path; a failed prepare renames the backup back and answers 500. Nothing is ever deleted.
+**Reason:** A rename inside one filesystem is atomic and leaves no half-copied state, while the plan's "copy beside the workspace" would have to be followed by a delete, which the project rule forbids.
+**Reversal cost:** Replace the two renames with `cp` plus the mission-side cleanup the owner chooses; the endpoint and UI are unchanged.
+**Location:** `server/labs.ts` (`Labs.reset`).
+
+## C5: reset is refused without a workspace and while a check runs
+**Chosen:** Missing workspace answers 409 "There is no workspace to reset yet"; a mission whose Verify is in flight answers 409 too. Mission availability is not re-checked: an existing owned workspace is the only precondition.
+**Reason:** Both refusals are cheaper than racing a verifier against a rename, and a workspace can only exist for a mission that was available when it was prepared.
+**Reversal cost:** Drop the two guards in the route; no data changes.
+**Location:** `server/app.ts` (`/api/missions/:id/reset`).
+
+## C5: the Docker note travels in the response as `note`
+**Chosen:** The reset response is `{ backup, workspace, note }`, where `note` is null except for Gateway, which explains that the Compose project name follows the folder path and asks the player to run `docker compose down` if the lab is up. The UI shows the same advice in the confirmation and appends the note to the notice.
+**Reason:** The server must not touch Docker during a reset, so the player is the one who stops containers, and the text has to reach both the API caller and the panel.
+**Reversal cost:** Remove the field and the gateway bullet in the confirmation.
+**Location:** `server/app.ts`, `src/App.tsx`.
