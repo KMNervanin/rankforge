@@ -3,6 +3,10 @@ import { mkdirSync } from 'node:fs'
 import path from 'node:path'
 import { missions, missionById, followUpQuestions } from '../shared/content.js'
 import type { CheckResult, Exchange, JournalEntry, LanguageBand, LanguageGrade, MissionView, Snapshot } from '../shared/types.js'
+import { bonusPassed } from '../shared/checks.js'
+import { currentContractVersion } from '../shared/contracts.js'
+import { skillSnapshots, starXp, stars } from '../shared/progression.js'
+import type { MissionStars, Star, StarAward } from '../shared/progression.js'
 import { Rewards } from './rewards.js'
 
 type Progress = { id: string; workspace: string | null; hints: number; checks: string | null; completed: string | null; independent: number }
@@ -25,13 +29,51 @@ export class Store {
       CREATE TABLE IF NOT EXISTS journal (id INTEGER PRIMARY KEY, kind TEXT NOT NULL, mission_id TEXT, text TEXT NOT NULL, created TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS exchanges (id TEXT PRIMARY KEY, mission_id TEXT NOT NULL REFERENCES progress(id), mode TEXT NOT NULL, text TEXT NOT NULL, question TEXT NOT NULL DEFAULT '', status TEXT NOT NULL, reply TEXT, grade TEXT, error TEXT, created TEXT NOT NULL, supported INTEGER NOT NULL DEFAULT 0);
       CREATE TABLE IF NOT EXISTS editor_command (id INTEGER PRIMARY KEY, workspace TEXT NOT NULL, acknowledged INTEGER NOT NULL DEFAULT 0);
+      CREATE TABLE IF NOT EXISTS mission_stars (mission_id TEXT NOT NULL, star INTEGER NOT NULL, earned_at TEXT NOT NULL, source_ref TEXT, PRIMARY KEY (mission_id, star));
+      CREATE TABLE IF NOT EXISTS star_awards (mission_id TEXT NOT NULL, star INTEGER NOT NULL, xp INTEGER NOT NULL, PRIMARY KEY (mission_id, star));
     `)
     const columns = this.db.prepare('PRAGMA table_info(exchanges)').all() as { name: string }[]
     if (!columns.some((column) => column.name === 'question')) this.db.exec("ALTER TABLE exchanges ADD COLUMN question TEXT NOT NULL DEFAULT ''")
     for (const mission of missions) this.db.prepare('INSERT OR IGNORE INTO progress(id) VALUES (?)').run(mission.id)
     this.rewards = new Rewards(this.db)
+    this.backfillStars()
     const interrupted = this.db.prepare("UPDATE exchanges SET status='paused', error='The service restarted. Your answer is saved; resume when ready.' WHERE status IN ('pending','processing')").run()
     if (Number(interrupted.changes)) this.set('pause', 'An evaluation was interrupted. Resume your saved answer.')
+  }
+  // Stars never decrease: every grant is INSERT OR IGNORE and the caller owns the transaction.
+  private grantStar(missionId: string, star: Star, earnedAt: string, sourceRef: string) {
+    const inserted = this.db.prepare('INSERT OR IGNORE INTO mission_stars VALUES (?,?,?,?)').run(missionId, star, earnedAt, sourceRef)
+    this.db.prepare('INSERT OR IGNORE INTO star_awards VALUES (?,?,?)').run(missionId, star, starXp(missionById(missionId).xp, star))
+    return Number(inserted.changes) > 0
+  }
+  private debriefStar(missionId: string, grade: LanguageGrade | null, earnedAt: string, exchangeId: string) {
+    if (grade && (grade.communicativeGoal === 'met' || grade.communicativeGoal === 'partial')) return this.grantStar(missionId, 2, earnedAt, exchangeId)
+    return false
+  }
+  // One-time, idempotent: legacy awards map to ★1; completed missions, graded debriefs and current bonus runs become stars.
+  private backfillStars() {
+    this.db.exec('BEGIN IMMEDIATE')
+    try {
+      this.db.prepare('INSERT OR IGNORE INTO star_awards SELECT mission_id,1,xp FROM awards').run()
+      const known = new Set(missions.map((mission) => mission.id))
+      const rows = this.db.prepare('SELECT id,checks,completed FROM progress').all() as { id: string; checks: string | null; completed: string | null }[]
+      for (const row of rows) {
+        if (!known.has(row.id)) continue
+        if (row.completed) this.grantStar(row.id, 1, row.completed, 'backfill:progress')
+        const result = row.checks ? JSON.parse(row.checks) as CheckResult : null
+        if (result?.passed && result.supported && result.contractVersion === currentContractVersion && bonusPassed(result.checks)) this.grantStar(row.id, 3, result.checkedAt, `check:${result.checkedAt}`)
+      }
+      const debriefs = this.db.prepare("SELECT id,mission_id,grade,created FROM exchanges WHERE mode='debrief' AND status='completed' AND grade IS NOT NULL ORDER BY created,id").all() as { id: string; mission_id: string; grade: string; created: string }[]
+      for (const row of debriefs) if (known.has(row.mission_id)) this.debriefStar(row.mission_id, JSON.parse(row.grade) as LanguageGrade, row.created, row.id)
+      this.db.exec('COMMIT')
+    } catch (error) { this.db.exec('ROLLBACK'); throw error }
+  }
+  stars(id: string): MissionStars {
+    const rows = this.db.prepare('SELECT star,earned_at FROM mission_stars WHERE mission_id=?').all(id) as { star: Star; earned_at: string }[]
+    return Object.fromEntries(stars.map((star) => [star, rows.find((row) => row.star === star)?.earned_at ?? null])) as MissionStars
+  }
+  starAwards(): StarAward[] {
+    return (this.db.prepare('SELECT mission_id,star,xp FROM star_awards ORDER BY mission_id,star').all() as { mission_id: string; star: Star; xp: number }[]).map((row) => ({ missionId: row.mission_id, star: row.star, xp: Number(row.xp) }))
   }
   close() { this.db.close() }
   get(key: string): string | null { return (this.db.prepare('SELECT value FROM settings WHERE key=?').get(key) as { value: string } | undefined)?.value ?? null }
@@ -64,7 +106,7 @@ export class Store {
     return missions.map((mission) => {
       const progress = this.progress(mission.id)
       const unlocked = mission.prerequisites.every((id) => this.progress(id).completed !== null) && this.rewards.isUnlocked(mission.id)
-      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : !unlocked ? 'locked' : active === mission.id ? 'active' : 'available', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent }
+      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : !unlocked ? 'locked' : active === mission.id ? 'active' : 'available', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent, stars: this.stars(mission.id) }
     })
   }
   question(id: string) {
@@ -102,8 +144,12 @@ export class Store {
       if (result.passed && result.supported) {
         if (!before.completed) {
           this.db.prepare('UPDATE progress SET completed=?,independent=? WHERE id=?').run(this.now(), before.hints === 0 ? 1 : 0, id)
-          this.db.prepare('INSERT OR IGNORE INTO awards VALUES (?,?)').run(id, missionById(id).xp)
           this.record('victory', id, `${missionById(id).sector} restored. ${missionById(id).artifact} acquired. ${before.hints ? 'Guided practice' : 'Unassisted technical completion'} recorded.`)
+        }
+        this.grantStar(id, 1, this.now(), `check:${result.checkedAt}`)
+        if (bonusPassed(result.checks)) {
+          const thorough = this.grantStar(id, 3, this.now(), `check:${result.checkedAt}`)
+          if (thorough) this.record('victory', id, `Thorough: the hidden bonus check passed. Third star earned.`)
         }
       } else this.record('check', id, result.supported ? 'The lab still needs work. Evidence saved in the mission panel.' : 'Check unavailable. No failure or reward recorded.')
       this.rewards.recordCheck(id, result, before.hints, this.now())
@@ -133,16 +179,21 @@ export class Store {
   }
   processing(id: string) { this.db.prepare("UPDATE exchanges SET status='processing',error=NULL WHERE id=?").run(id) }
   finish(id: string, reply: string, grade: LanguageGrade | null) {
-    const row = this.exchangeRow(id)!
-    if (row.status === 'completed') return
-    if (row.mode === 'coach') {
-      this.db.prepare('UPDATE progress SET hints=MAX(hints,1) WHERE id=?').run(row.mission_id)
-      this.set(`language-support:${row.mission_id}`, this.now())
-    }
-    if (grade && row.supported) grade.independence = 'supported'
-    this.db.prepare("UPDATE exchanges SET status='completed',reply=?,grade=?,error=NULL WHERE id=?").run(reply, grade ? JSON.stringify(grade) : null, id)
-    this.record('language', row.mission_id, grade ? `Debrief: ${grade.communicativeGoal.replaceAll('_', ' ')}. ${grade.practice}` : 'Operator conversation recorded. No proficiency points awarded for coaching.')
-    this.set('pause', '')
+    this.db.exec('BEGIN IMMEDIATE')
+    try {
+      const row = this.exchangeRow(id)!
+      if (row.status === 'completed') { this.db.exec('COMMIT'); return }
+      if (row.mode === 'coach') {
+        this.db.prepare('UPDATE progress SET hints=MAX(hints,1) WHERE id=?').run(row.mission_id)
+        this.set(`language-support:${row.mission_id}`, this.now())
+      }
+      if (grade && row.supported) grade.independence = 'supported'
+      this.db.prepare("UPDATE exchanges SET status='completed',reply=?,grade=?,error=NULL WHERE id=?").run(reply, grade ? JSON.stringify(grade) : null, id)
+      this.record('language', row.mission_id, grade ? `Debrief: ${grade.communicativeGoal.replaceAll('_', ' ')}. ${grade.practice}` : 'Operator conversation recorded. No proficiency points awarded for coaching.')
+      if (row.mode === 'debrief' && this.debriefStar(row.mission_id, grade, this.now(), id)) this.record('victory', row.mission_id, 'Reported: the debrief agreed with the recorded results. Second star earned.')
+      this.set('pause', '')
+      this.db.exec('COMMIT')
+    } catch (error) { this.db.exec('ROLLBACK'); throw error }
   }
   fail(id: string, reason: string, pause: boolean) {
     this.db.prepare('UPDATE exchanges SET status=?,error=? WHERE id=?').run(pause ? 'paused' : 'failed', reason, id)
@@ -156,9 +207,10 @@ export class Store {
   editorCommand() { return this.db.prepare('SELECT id,workspace FROM editor_command WHERE acknowledged=0 ORDER BY id DESC LIMIT 1').get() as { id: number; workspace: string } | undefined }
   acknowledgeEditor(id: number) { this.db.prepare('UPDATE editor_command SET acknowledged=1 WHERE id=?').run(id) }
   snapshot(connection: Snapshot['connection']): Snapshot {
-    const xp = Number((this.db.prepare('SELECT COALESCE(SUM(xp),0) AS xp FROM awards').get() as { xp: number }).xp)
+    const awards = this.starAwards()
+    const xp = awards.reduce((sum, award) => sum + award.xp, 0)
     const exchanges = this.db.prepare('SELECT id FROM exchanges ORDER BY created,id').all() as { id: string }[]
     const journal = this.db.prepare('SELECT id,kind,mission_id AS missionId,text,created AS createdAt FROM journal ORDER BY id DESC LIMIT 60').all() as JournalEntry[]
-    return { missions: this.views(), activeMissionId: this.get('active'), xp, rank: xp >= 1000 ? 'D · Pathfinder' : xp >= 400 ? 'E · Operator' : 'E · Initiate', language: this.language(), exchanges: exchanges.map((item) => this.exchange(item.id)!), journal, connection, progression: this.rewards.snapshot() }
+    return { missions: this.views(), activeMissionId: this.get('active'), xp, rank: xp >= 1000 ? 'D · Pathfinder' : xp >= 400 ? 'E · Operator' : 'E · Initiate', language: this.language(), exchanges: exchanges.map((item) => this.exchange(item.id)!), journal, connection, progression: this.rewards.snapshot(), skills: skillSnapshots(missions, awards) }
   }
 }

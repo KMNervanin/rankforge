@@ -11,8 +11,8 @@ function exchange(index: number, reply: string, missionId = 'signal'): Exchange 
 
 function snapshot(exchanges: Exchange[]): Snapshot {
   return {
-    missions: missions.map((mission) => ({ ...mission, status: mission.id === 'signal' || mission.id === 'vault' ? 'available' : 'locked', workspace: null, hintsUsed: 0, checks: null, completedAt: null, independent: false })),
-    activeMissionId: 'signal', xp: 0, rank: 'E · Initiate',
+    missions: missions.map((mission) => ({ ...mission, status: mission.id === 'signal' || mission.id === 'vault' ? 'available' : 'locked', workspace: null, hintsUsed: 0, checks: null, completedAt: null, independent: false, stars: { 1: null, 2: null, 3: null } })),
+    activeMissionId: 'signal', xp: 0, rank: 'E · Initiate', skills: [],
     language: { band: 'guided', evidenceCount: 0, distinctMissions: 0, due: [], coverage: 'Written interaction only.' },
     journal: [], exchanges,
     connection: { signedIn: true, model: 'test-only', paused: false, reason: null, editorConnected: false },

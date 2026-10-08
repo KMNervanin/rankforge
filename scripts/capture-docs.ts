@@ -25,8 +25,9 @@ const demo: Snapshot = {
     ] } : null,
     completedAt: index < 2 ? time : null,
     independent: index === 1,
+    stars: { 1: index < 2 ? time : null, 2: null, 3: null },
   })),
-  activeMissionId: 'signal', xp: 280, rank: 'E · Initiate',
+  activeMissionId: 'signal', xp: 280, rank: 'E · Initiate', skills: [],
   language: { band: 'guided', evidenceCount: 0, distinctMissions: 0, due: [], coverage: 'Written interaction only. No speaking/listening level or CEFR certification is inferred.' },
   connection: { signedIn: true, model: 'gpt-6-astra', paused: false, reason: null, editorConnected: true },
   exchanges: [{

@@ -67,3 +67,36 @@ export const skillBranches: BranchDefinition[] = [
     checkpoint('design', 3, 'Executable boundary', 'The consumer probe distinguishes compatible responses, wrong effects and unavailable transport.', ['briefing', 'capacity', 'contract']),
   ] },
 ]
+
+// Three stars per mission. ★1 pays the mission's base XP; ★2 and ★3 each pay half of it.
+export type Star = 1 | 2 | 3
+export const stars: Star[] = [1, 2, 3]
+export const starNames: Record<Star, string> = { 1: 'Restored', 2: 'Reported', 3: 'Thorough' }
+export const starXp = (baseXp: number, star: Star) => star === 1 ? baseXp : Math.round(baseXp / 2)
+export type MissionStars = Record<Star, string | null>
+export type StarAward = { missionId: string; star: Star; xp: number }
+
+// Skill levels are thresholds over the XP of every star award whose mission lists the skill.
+export const skillLevels = [
+  { level: 1, name: 'Novice', threshold: 0 },
+  { level: 2, name: 'Apprentice', threshold: 150 },
+  { level: 3, name: 'Practitioner', threshold: 400 },
+  { level: 4, name: 'Adept', threshold: 800 },
+  { level: 5, name: 'Expert', threshold: 1400 },
+] as const
+export type SkillSnapshot = { name: string; xp: number; level: number; levelName: string; nextThreshold: number | null; missions: string[] }
+
+export function skillLevel(xp: number) {
+  const current = [...skillLevels].reverse().find((item) => xp >= item.threshold) ?? skillLevels[0]
+  const next = skillLevels.find((item) => item.threshold > xp)
+  return { level: current.level, levelName: current.name, nextThreshold: next?.threshold ?? null }
+}
+
+export function skillSnapshots(catalog: { id: string; skills: string[] }[], awards: StarAward[]): SkillSnapshot[] {
+  const names = [...new Set(catalog.flatMap((mission) => mission.skills))]
+  return names.map((name) => {
+    const missions = catalog.filter((mission) => mission.skills.includes(name)).map((mission) => mission.id)
+    const xp = awards.filter((award) => missions.includes(award.missionId)).reduce((sum, award) => sum + award.xp, 0)
+    return { name, xp, ...skillLevel(xp), missions: missions.filter((id) => awards.some((award) => award.missionId === id)) }
+  }).sort((a, b) => b.xp - a.xp || a.name.localeCompare(b.name))
+}

@@ -41,5 +41,6 @@ test('a failing hidden check never fails the mission and never blocks completion
   const earned: CheckResult = { ...result, checks: [required, bonusEarned], checkedAt: '2026-10-08T00:01:00Z' }
   store.saveCheck('signal', earned)
   assert.equal(bonusPassed(store.snapshot(connection).missions.find((item) => item.id === 'signal')!.checks!.checks), true)
-  assert.equal(store.snapshot(connection).xp, 120, 'the bonus adds no XP before the star ledger exists')
+  assert.equal(store.snapshot(connection).xp, 180, 'the later bonus run earns ★3 and half the base XP on top of ★1')
+  assert.ok(store.stars('signal')[3])
 })

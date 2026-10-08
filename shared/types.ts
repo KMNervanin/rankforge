@@ -1,4 +1,4 @@
-import type { ProgressionSnapshot } from './progression.js'
+import type { MissionStars, ProgressionSnapshot, SkillSnapshot } from './progression.js'
 
 export type LanguageBand = 'guided' | 'connected' | 'independent'
 export type MissionStatus = 'locked' | 'available' | 'active' | 'completed'
@@ -26,7 +26,7 @@ export type Mission = {
 }
 export type MissionView = Mission & {
   status: MissionStatus; workspace: string | null; hintsUsed: number; checks: CheckResult | null
-  completedAt: string | null; independent: boolean
+  completedAt: string | null; independent: boolean; stars: MissionStars
 }
 export type Exchange = {
   id: string; missionId: string; mode: 'debrief' | 'coach'; text: string; question: string
@@ -36,6 +36,7 @@ export type Exchange = {
 export type JournalEntry = { id: number; kind: string; missionId: string | null; text: string; createdAt: string }
 export type Snapshot = {
   progression?: ProgressionSnapshot
+  skills: SkillSnapshot[]
   missions: MissionView[]; activeMissionId: string | null; xp: number; rank: string
   language: { band: LanguageBand; evidenceCount: number; distinctMissions: number; due: string[]; coverage: string }
   journal: JournalEntry[]; exchanges: Exchange[]
