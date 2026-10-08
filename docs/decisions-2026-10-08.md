@@ -89,3 +89,9 @@
 **Reason:** The server must not touch Docker during a reset, so the player is the one who stops containers, and the text has to reach both the API caller and the panel.
 **Reversal cost:** Remove the field and the gateway bullet in the confirmation.
 **Location:** `server/app.ts`, `src/App.tsx`.
+
+## Restarting the owner's preview server overnight
+**Chosen:** Stop the `tsx server/main.ts` process started on 2026-10-06 and start it again with `npm start`, logging to `~/.local/share/rankforge/preview-2026-10-08.log`, after all three night tasks landed.
+**Reason:** The server serves `dist/`, which the test runs rebuilt with the new UI, while the old process still lacked the stars, skills, Atlas and reset routes; the owner asked to see the result on the site in the morning. The startup migration only adds tables and backfills; nothing is deleted.
+**Reversal cost:** `git checkout` an earlier commit and restart; the legacy `awards` table is kept, so the old server still runs on the migrated save.
+**Location:** process on 127.0.0.1:4173, this log.
