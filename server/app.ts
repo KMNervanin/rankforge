@@ -2,6 +2,7 @@ import Fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import { createHash, randomBytes } from 'node:crypto'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { execFile } from 'node:child_process'
 import { Store, DomainError } from './store.js'
@@ -97,6 +98,8 @@ Use one discriminating diagnostic step at a time. Do not repeat an already unsuc
     execFile('code', ['--new-window', '--extensionDevelopmentPath', path.join(root, 'extension'), workspace], { timeout: 15000 }, (error) => error ? reject(new DomainError('VS Code could not open. Check that code is on PATH. The workspace is ready and can be opened manually.', 503)) : resolve())
   }))
 
+  const connectWorkspace = (workspace: string) => writeFile(path.join(workspace, '.rankforge-connection.json'), JSON.stringify({ bridgeFile: path.join(options.home, 'bridge.json') }))
+
   app.get('/api/bootstrap', async () => ({ token: browserToken, snapshot: snapshot() }))
   app.get('/api/state', async () => snapshot())
   app.post<{ Body: { id: string } }>('/api/profile/equip', { schema: { body: { type: 'object', required: ['id'], additionalProperties: false, properties: { id: { type: 'string', pattern: '^[a-z0-9-]{1,80}$' } } } } }, async (request) => {
@@ -106,7 +109,7 @@ Use one discriminating diagnostic step at a time. Do not repeat an already unsuc
   app.post<{ Params: { id: string }; Body: { openEditor?: boolean } }>('/api/missions/:id/start', { schema: { params: missionParams, body: { type: 'object', additionalProperties: false, properties: { openEditor: { type: 'boolean' } } } } }, async (request) => {
     store.assertAvailable(request.params.id)
     const workspace = await labs.prepare(request.params.id, store.language().band)
-    await import('node:fs/promises').then(({ writeFile }) => writeFile(path.join(workspace, '.rankforge-connection.json'), JSON.stringify({ bridgeFile: path.join(options.home, 'bridge.json') })))
+    await connectWorkspace(workspace)
     store.select(request.params.id, workspace)
     if (request.body.openEditor) {
       store.queueEditor(workspace)
@@ -116,6 +119,14 @@ Use one discriminating diagnostic step at a time. Do not repeat an already unsuc
       }
     }
     return snapshot()
+  })
+  app.post<{ Params: { id: string } }>('/api/missions/:id/reset', { schema: { params: missionParams } }, async (request) => {
+    const id = request.params.id
+    if (runningChecks.has(id)) throw new DomainError('Wait for the running check to finish before resetting.', 409)
+    const { backup, workspace } = await labs.reset(id, store.language().band)
+    await connectWorkspace(workspace)
+    store.recordReset(id, workspace, backup)
+    return { backup, workspace, note: id === 'gateway' ? 'The Compose project keeps its name, so the containers still match this folder. If they were running, stop them with docker compose down and start them again from the restored files.' : null }
   })
   app.post<{ Params: { id: string } }>('/api/missions/:id/hint', { schema: { params: missionParams } }, async (request) => ({ hint: store.hint(request.params.id), snapshot: snapshot() }))
   app.post<{ Params: { id: string } }>('/api/missions/:id/check', { schema: { params: missionParams } }, async (request) => {

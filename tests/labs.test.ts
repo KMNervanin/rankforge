@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, rm, copyFile, readFile, writeFile, symlink, mkdir } from 'node:fs/promises'
+import { mkdtemp, rm, copyFile, readFile, writeFile, symlink, mkdir, readdir } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { Labs, root } from '../server/labs.js'
@@ -299,4 +300,23 @@ test('large saved-file context is bounded and tells the coach about omissions an
     assert.ok(Object.values(context.files).some((file) => file.truncated))
     assert.ok(context.omittedFiles.length > 0)
   } finally { await rm(home, { recursive: true, force: true }) }
+})
+
+test('reset restores the backup when the starter cannot be prepared, and never deletes the learner files', async (t) => {
+  const home = await mkdtemp(path.join(os.tmpdir(), 'rankforge-reset-'))
+  t.after(() => rm(home, { recursive: true, force: true }))
+  class Failing extends Labs { override async prepare(id: string, band: 'guided' | 'connected' | 'independent') { if (existsSync(path.join(this.home, 'fail'))) throw new Error('disk full in test'); return super.prepare(id, band) } }
+  const labs = new Failing(home)
+  const workspace = await labs.prepare('signal', 'guided')
+  await writeFile(path.join(workspace, 'notes.txt'), 'keep me')
+  await writeFile(path.join(home, 'fail'), '')
+  await assert.rejects(labs.reset('signal', 'guided'), (error: Error & { statusCode?: number }) => error.statusCode === 500 && error.message.includes('disk full in test') && error.message.includes('moved back'))
+  assert.equal(await readFile(path.join(workspace, 'notes.txt'), 'utf8'), 'keep me')
+  assert.deepEqual(JSON.parse(await readFile(path.join(workspace, '.rankforge-mission.json'), 'utf8')), { mission: 'signal', version: 1 })
+  assert.deepEqual(await readdir(path.join(home, 'workspaces', '.backups')), [], 'The failed attempt left no stray backup')
+  await rm(path.join(home, 'fail'))
+  const { backup } = await labs.reset('signal', 'guided')
+  assert.equal(await readFile(path.join(backup, 'notes.txt'), 'utf8'), 'keep me')
+  assert.equal(existsSync(path.join(workspace, 'notes.txt')), false)
+  await assert.rejects(new Labs(home).reset('vault', 'guided'), (error: Error & { statusCode?: number }) => error.statusCode === 409)
 })

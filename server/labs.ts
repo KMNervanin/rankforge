@@ -118,6 +118,25 @@ export class Labs {
       return workspace
     } finally { await rm(temporaryRoot, { recursive: true, force: true }) }
   }
+  // Reset never deletes: the whole workspace is renamed into .backups first, then the starter is prepared again at the same path.
+  async reset(id: string, band: LanguageBand): Promise<{ backup: string; workspace: string }> {
+    const workspace = this.workspace(id)
+    if (!existsSync(workspace)) throw new DomainError('There is no workspace to reset yet. Prepare the workspace first.', 409)
+    await this.assertOwned(id)
+    const backups = path.join(this.home, 'workspaces', '.backups')
+    await mkdir(backups, { recursive: true })
+    let backup = path.join(backups, `${id}-${new Date().toISOString().replace(/:/g, '-')}`)
+    for (let attempt = 1; existsSync(backup); attempt++) backup = `${backup}-${attempt}`
+    await rename(workspace, backup)
+    try { await this.prepare(id, band) }
+    catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      try { await rename(backup, workspace) }
+      catch { throw new DomainError(`The starter could not be restored (${message}) and your files could not be moved back. They are intact at ${backup}.`, 500) }
+      throw new DomainError(`The starter could not be restored (${message}). Your files were moved back unchanged.`, 500)
+    }
+    return { backup, workspace }
+  }
   async check(id: string): Promise<CheckResult> {
     return { ...await this.runCheck(id), contractVersion: currentContractVersion }
   }

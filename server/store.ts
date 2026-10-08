@@ -126,6 +126,11 @@ export class Store {
     this.set('active', id)
     this.record('mission', id, `Entered ${missionById(id).sector}. Workspace preserved at ${workspace}.`)
   }
+  // A reset touches files only: stars, XP, hints, the last check result and the journal history stay as they are.
+  recordReset(id: string, workspace: string, backup: string) {
+    this.db.prepare('UPDATE progress SET workspace=? WHERE id=?').run(workspace, id)
+    this.record('reset', id, `Workspace reset to the starter. Your previous files are kept at ${backup}.`)
+  }
   hint(id: string): string {
     this.assertAvailable(id)
     const mission = missionById(id)
