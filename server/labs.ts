@@ -38,7 +38,7 @@ export class Labs {
     const result: SavedCodeContext = { source: 'saved-files-on-disk', workspace: this.workspace(id), capturedAt: new Date().toISOString(), visibility: { unsavedEditorBuffers: false, runningProcessState: false, terminalOutput: false }, files: {}, omittedFiles: [], inventoryLimited: false, limits: { files: 20, charactersPerFile: 12000, totalCharacters: 64000 } }
     if (!existsSync(this.workspace(id))) return result
     const workspace = await this.assertOwned(id)
-    const names: Record<string, string[]> = { signal: ['service.py'], vault: ['store.py'], gateway: ['nginx.conf', 'compose.yaml'], echo: ['ingest.py'], ledger: ['transform.py'], recovery: ['recover.py'], briefing: ['manifest.py', 'ticket.json'], capacity: ['capacity.py', 'workload.json'], contract: ['probe.py'], 'http-trial': ['service.py'] }
+    const names: Record<string, string[]> = { signal: ['service.py'], vault: ['store.py'], gateway: ['nginx.conf', 'compose.yaml'], echo: ['ingest.py'], ledger: ['transform.py'], recovery: ['recover.py'], briefing: ['manifest.py', 'ticket.json'], capacity: ['capacity.py', 'workload.json'], contract: ['probe.py'], 'http-trial': ['service.py'], price: ['client.py', 'llm.json'] }
     const preferred = names[id] ?? []
     const candidates = new Set(preferred)
     const textTypes = new Set(['.py', '.sql', '.js', '.ts', '.tsx', '.jsx', '.go', '.rs', '.sh', '.json', '.yaml', '.yml', '.conf', '.toml', '.ini', '.md', '.txt', '.csv', '.html', '.css'])
@@ -145,11 +145,11 @@ export class Labs {
     try {
       const workspace = await this.assertOwned(id)
       if (id === 'gateway') return this.checkGateway(workspace, checkedAt)
-      for (const name of ['service.py', 'store.py', 'ingest.py', 'transform.py', 'recover.py', 'manifest.py', 'capacity.py', 'probe.py']) {
+      for (const name of ['service.py', 'store.py', 'ingest.py', 'transform.py', 'recover.py', 'manifest.py', 'capacity.py', 'probe.py', 'client.py']) {
         const file = path.join(workspace, name)
         if (existsSync(file) && (await lstat(file)).isSymbolicLink()) throw new DomainError('Lab source must be a regular file inside the workspace.', 409)
       }
-      const verifier = ['briefing', 'capacity', 'contract'].includes(id) ? 'verify_architect.py' : id === 'http-trial' ? 'verify_http_trial.py' : 'verify.py'
+      const verifier = ['briefing', 'capacity', 'contract'].includes(id) ? 'verify_architect.py' : id === 'http-trial' ? 'verify_http_trial.py' : id === 'price' ? 'verify_price.py' : 'verify.py'
       const result = await run('python3', ['-I', '-B', path.join(root, 'server', verifier), id, workspace], workspace)
       let parsed: { checks: CheckResult['checks'] }
       try { parsed = JSON.parse(result.stdout.trim().split('\n').at(-1) ?? '') } catch { return { passed: false, supported: true, checkedAt, checks: [{ name: 'Run the lab', passed: false, detail: result.stderr || result.stdout || 'No valid check report was produced.' }], output: result.stderr } }

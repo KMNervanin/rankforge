@@ -42,6 +42,11 @@ test('guild quests and skill trial run real checks through the browser, preserve
       await expect(page.getByRole('heading', { name: 'System restored' })).toBeVisible()
       await expect(page.getByLabel('Lab verification')).toBeFocused()
     }
+    await page.getByLabel('Explore', { exact: true }).selectOption('voice')
+    await expect(page.getByRole('heading', { name: 'Measure before you trust.' })).toBeVisible()
+    await expect(page.locator('.map-node')).toHaveCount(1)
+    await expect(page.locator('.map-node.sector-price')).toHaveAttribute('aria-label', 'View Every word has a price')
+    await page.getByLabel('Explore', { exact: true }).selectOption('guild')
     await page.getByLabel('Player profile', { exact: true }).click()
     await page.getByRole('button', { name: 'Skills & rewards' }).click()
     await expect(page.getByRole('heading', { name: 'Skills & rewards' })).toBeVisible()

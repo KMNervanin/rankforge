@@ -1,10 +1,12 @@
 import type { Mission } from './types.js'
 import { architectMissions, architectFollowUps } from './architect.js'
 import { httpTrialMission } from './http-trial.js'
+import { voiceFollowUps, voiceMissions } from './voice.js'
 
 export const chapters = [
   { id: 'outpost', number: 'I', title: 'The silent outpost', place: 'THE FLOATING OUTPOST', heading: 'A world worth restoring.', description: 'Every system you repair becomes a skill you carry.' },
   { id: 'guild', number: 'II', title: "The architect’s guild", place: 'THE ARCHITECT’S GUILD', heading: 'Think before you build.', description: 'Trace the promises, estimate the work, then test the boundary.' },
+  { id: 'voice', number: 'IX', title: 'The voice of the outpost', place: 'THE OPERATOR’S DESK', heading: 'Measure before you trust.', description: 'Every call has a price, a limit and a trace. The assistant earns its place one measurement at a time.' },
 ] as const
 
 export const missions: Mission[] = [
@@ -104,6 +106,7 @@ export const missions: Mission[] = [
   },
   ...architectMissions,
   httpTrialMission,
+  ...voiceMissions,
 ]
 
 export const futureChapters = [
@@ -120,6 +123,7 @@ export const futureChapters = [
 
 export const followUpQuestions: Record<string, string[]> = {
   ...architectFollowUps,
+  ...voiceFollowUps,
   'http-trial': ['Explain why a cursor that is not in the snapshot can still be valid.', 'Two clients request different pages. What should stay unchanged between their requests?'],
   signal: ['A new operator says a running process must be healthy. Explain why this is not enough and suggest a check.', 'Your colleague checked /health but forgot unknown routes. Ask a useful follow-up question and explain why it matters.', 'Tell the next shift what evidence they should collect before changing an HTTP handler.'],
   vault: ['Imagine a second application writes directly to the vault. Explain which rules still protect the data.', 'A colleague wants to duplicate the item name in every movement. Explain one consequence of that design.', 'Ask the operator to clarify whether a quantity of zero represents a real movement. Explain why you need to know.'],

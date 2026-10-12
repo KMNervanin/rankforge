@@ -1,6 +1,6 @@
 # Rankforge handoff — updated 2026-10-06
 
-Current session: [checkpoint and next work](SESSION-2026-10-06.md). The app now includes9core quests and1optional trial, top navigation/compact profile, skills/rewards and an interactive [design infographic](../public/progression.html). Use `/progression.html` on the running server. The broader86-mission catalog is a proposal, not a completed course.
+Current session: [checkpoint and next work](SESSION-2026-10-06.md). The app now includes 10 core quests (chapter I, three guild quests and the first chapter IX quest, a metered LLM client) and 1 optional trial, top navigation/compact profile, skills/rewards and an interactive [design infographic](../public/progression.html). Use `/progression.html` on the running server. The broader86-mission catalog is a proposal, not a completed course.
 
 Latest acceptance: build,152Node tests,9headless browser scenarios; Linuxarm64Node24/Python3.11 build+152tests. Current-result details and limits are in [ACCEPTANCE.md](ACCEPTANCE.md). Existing learner code/notes, completion and XP are retained; old checks remain historical until a current Verify.
 
@@ -47,7 +47,7 @@ Detailed distinctions and versions: [ACCEPTANCE.md](ACCEPTANCE.md). Decisions an
 - The implemented language modality is writing. Listening/speaking and voice integration need a separate iteration.
 - Owner proposal of 2026-10-07: three completion stars per mission (verify, debrief, hidden edge case); stars scale XP and skills grow from per-skill XP; design in [PROGRESSION-DESIGN.md](PROGRESSION-DESIGN.md), not implemented. Provider free-tier and billing research is in [PROVIDER-FREE-TIERS-2026-10-07.md](PROVIDER-FREE-TIERS-2026-10-07.md). Public evidence on per-user inference cost in comparable apps is in [PER-USER-LLM-COST-2026-10-08.md](PER-USER-LLM-COST-2026-10-08.md).
 - Three environments are required going forward: personal (owner's subscription or personal key), dev (commercial test contour) and prod; see the environments section of [PROVIDER-FREE-TIERS-2026-10-07.md](PROVIDER-FREE-TIERS-2026-10-07.md).
-- Chapter I, the first three guild quests and an optional HTTP trial are executable. Remaining catalog entries are in [CURRICULUM.md](CURRICULUM.md) and [COURSE-ROADMAP.md](COURSE-ROADMAP.md). Next design work is D04–D06; optional foundations and deeper branches remain planned. ML is not a core prerequisite.
+- Chapter I, the first three guild quests, the first AI engineering quest (G01, chapter IX in the game's chapter picker; it needs an OpenAI-compatible endpoint in the workspace's llm.json, Ollama by default) and an optional HTTP trial are executable. Remaining catalog entries are in [CURRICULUM.md](CURRICULUM.md) and [COURSE-ROADMAP.md](COURSE-ROADMAP.md). Next design work is D04–D06; optional foundations and deeper branches remain planned. ML is not a core prerequisite.
 - Game ranks and language thresholds are provisional learning mechanics, not professional or CEFR certification. “Unassisted” reflects recorded in-game assistance, not a proctored exam or knowledge of external help.
 - No lab/service process or newly tagged QA image is intentionally left running. Existing user projects, Docker contexts, VPN and work windows were preserved. Public image/build caches may remain in Docker's normal cache.
 

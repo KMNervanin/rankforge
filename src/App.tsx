@@ -16,7 +16,7 @@ export function App() {
   const [state, setState] = useState<Snapshot | null>(null)
   const [selected, setSelected] = useState('signal')
   const [overview, setOverview] = useState<'map' | 'cards'>(() => localStorage.getItem('rankforge.overview') === 'cards' ? 'cards' : 'map')
-  const [chapterId, setChapterId] = useState<'outpost' | 'guild'>('outpost')
+  const [chapterId, setChapterId] = useState<(typeof chapters)[number]['id']>('outpost')
   const [tab, setTab] = useState<Tab>(() => savedChat.current.open ? 'chat' : 'outpost')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')

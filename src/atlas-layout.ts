@@ -36,7 +36,7 @@ export function layoutAtlas(nodes: AtlasNode[], spine: string[]): Layout {
     if (!best) best = { ...pos.get(ROOT)!, id: ROOT }
     const roots = isRoot(id)
     const depth = best.depth + 1
-    const side = node.leaf ? (best.side || 1) : best.side || (roots ? (LEFT_ROOTS.has(id) ? -1 : 1) : (id[0] === 'M' || id[0] === 'G' ? 1 : -1))
+    const side = node.leaf ? (best.side || 1) : best.side || (roots ? (LEFT_ROOTS.has(id) ? -1 : 1) : (id[0] === 'M' ? 1 : -1))
     const dir = roots ? 1 : -1
     const placed: Position = {
       x: cx + side * (TRUNK / 2 + 70 + Math.min(depth, 2) * 215),
@@ -53,7 +53,7 @@ export function layoutAtlas(nodes: AtlasNode[], spine: string[]): Layout {
   nodes.filter((node) => !spineIndex.has(node.id)).sort((a, b) => pos.get(a.id)!.y - pos.get(b.id)!.y).forEach((node) => {
     const p = pos.get(node.id)!
     let guard = 0
-    while (settled.some((q) => Math.abs(q.x - p.x) < NODE_W + 12 && Math.abs(q.y - p.y) < NODE_H + 10) && guard++ < 40) p.y += (isRoot(node.id) ? 1 : -1) * (NODE_H + 12)
+    while (settled.some((q) => Math.abs(q.x - p.x) < NODE_W + 12 && Math.abs(q.y - p.y) < NODE_H + 10) && guard++ < 400) p.y += (isRoot(node.id) ? 1 : -1) * (NODE_H + 12)
     settled.push(p)
   })
   pos.delete(ROOT)

@@ -9,8 +9,9 @@ There are **132 missions**: **112 core**, **12 optional foundations**, **6 optio
 | Status at this planning baseline | IDs | Count | Meaning |
 | --- | --- | --- | --- |
 | Implemented catalog labs | I01–I06, D01–D03 | 9 | Original outpost plus `briefing`, `capacity`, `contract`; see the actual acceptance records, not a mastery claim |
+| First AI engineering lab, implemented 2026-10-12 | G01 | 1 | A metered LLM client: parameters sent equal parameters logged, usage and finish reason from the response, price table per model, byte-bound window guard, append-only journal; a recording adapter plus one reconciled live call to the learner's endpoint |
 | Next design block, unimplemented | D04–D06 | 3 | Service boundaries, an evidence-backed decision and a changed requirement; free architecture judgement stays formative |
-| Remaining proposal, unimplemented | F01–F12, B01–B08, T01–T04, S01–S06, O01–O08, L01–L08, A01–A08, W01–W10, G01–G46, M01–M06, C01–C04 | 120 | Proposed authoring units, not shipped labs |
+| Remaining proposal, unimplemented | F01–F12, B01–B08, T01–T04, S01–S06, O01–O08, L01–L08, A01–A08, W01–W10, G02–G46, M01–M06, C01–C04 | 119 | Proposed authoring units, not shipped labs |
 
 123 catalog missions still need implementation and validation. The separate optional `http-trial` implements HTTP transfer after Signal+Gateway and is not counted among the 132 catalog entries. It does not gate the main route. See [Acceptance](ACCEPTANCE.md), [guild evidence](ARCHITECT-ACCEPTANCE.md), [mission audit](MISSION-AUDIT-2026-10-06.md) and [reward/trial evidence](PROGRESSION-ACCEPTANCE.md) for observed results. Planning IDs do not rename runtime missions or reset progress.
 
@@ -226,7 +227,7 @@ This branch uses the same delivery history for a modest delay prediction experim
 
 Language goal: express uncertainty, compare against a baseline and explain limitations. Artifact reproducibility and correct metrics can pass; "the model is useful in production" remains a separate empirical claim. Training a model and consuming a pretrained one are different capabilities.
 
-## IX — The voice of the outpost (44 planned core, 2 optional)
+## IX — The voice of the outpost (1 implemented, 43 planned core, 2 optional)
 
 Applied AI engineering: building a product around a pretrained model, not training one. The outpost gains an operator assistant that triages free-text supply requests, answers from runbooks and incident reports with sources, queries stock and makes reservations only through the operator's own permissions. Each mission changes one behavior of that assistant or tests one claim about it. Practice is mostly measurement: read traces, build an evaluation set, change one thing, measure again.
 
@@ -442,4 +443,4 @@ The Council of Europe descriptor page returned HTTP 403 in this session; the acc
 
 Chapter IX (G01–G46) was checked separately on 2026-10-12 against the OpenAI, llama.cpp, vLLM and Ollama references, the Model Context Protocol specification (revision 2026-07-28), the OpenTelemetry GenAI semantic conventions (status Development), OWASP Top 10 for LLM Applications 2025, pgvector 0.8.7, SQLite FTS5 and PostgreSQL 18 text search, and the evaluation and agent methodology sources (Hamel Husain's evals guides, MT-Bench, Miller 2024, τ-bench, AgentDojo, CaMeL, Anthropic's agent and context-engineering notes). The per-claim verdicts, the applied wording changes and the list of claims still open before authoring are in [`ROADMAP-IX-SOURCES-2026-10-12.md`](ROADMAP-IX-SOURCES-2026-10-12.md); those reading snapshots are not dependency pins either.
 
-Remaining work includes77catalog labs, their resource profiles, diagnostic/skip routing, safe artifact continuity and richer architecture-review states. Beginner pacing, full-course effectiveness, tutor accuracy, English calibration and live ML utility have not been measured. The original roadmap was a documentation-only proposal; the later implemented slice has its own linked build/test/E2E evidence. There is no production deployment or live provider-quality claim.
+Remaining work includes 122 catalog labs, their resource profiles, diagnostic/skip routing, safe artifact continuity and richer architecture-review states. Beginner pacing, full-course effectiveness, tutor accuracy, English calibration and live ML utility have not been measured. The original roadmap was a documentation-only proposal; the later implemented slice has its own linked build/test/E2E evidence. There is no production deployment or live provider-quality claim.

@@ -185,7 +185,7 @@ export function Outpost({ missions, selected, onSelect, disabled }: { missions: 
   const layout = missions.length <= 3 ? guildPositions : wide ? widePositions : smallPositions
   return <div className={`outpost-map ${fallback ? 'fallback-map' : ''}`} aria-label="Interactive outpost map">
     <div ref={host} className="map-canvas" aria-hidden="true" />
-    <span className="map-coordinates">✦ {missions[0]?.chapter === 'guild' ? 'The Guild Quarter' : 'The Northern Reach'}</span>
+    <span className="map-coordinates">✦ {missions[0]?.chapter === 'guild' ? 'The Guild Quarter' : missions[0]?.chapter === 'voice' ? 'The Operator’s Desk' : 'The Northern Reach'}</span>
     <span className="map-scale">{missions.filter((item) => item.status === 'completed').length} of {missions.length} places brought to life</span>
     {missions.map((mission, index) => <button key={mission.id} className={`map-node sector-${mission.id} ${mission.status} ${selected === mission.id ? 'selected' : ''}`} style={{ left: `${layout[index]![0]! * 100}%`, top: `${layout[index]![1]! * 100}%` }} onClick={() => onSelect(mission.id)} disabled={disabled} aria-label={`View ${mission.title}`}>
       {fallback && <span className="fallback-building">{mission.icon}</span>}

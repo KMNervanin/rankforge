@@ -14,7 +14,7 @@ The browser is the game, VS Code is the workshop, and the terminal is a real too
 
 ## Development status
 
-Ten labs are executable: six outpost quests, three guild quests (requirements, capacity, consumer contracts) and one optional HTTP transfer trial. Four skill paths connect verified outcomes to one-time charge chips, profile frames and the bonus quest. Charge is banked for a future tutor harness; it is not spent or converted into tokens/questions here. The [86-mission course roadmap](docs/COURSE-ROADMAP.md) describes the wider proposed course, not 86 shipped labs. [Acceptance](docs/ACCEPTANCE.md) records real checks and their limits.
+Eleven labs are executable: six outpost quests, three guild quests (requirements, capacity, consumer contracts), the first AI engineering quest (a metered LLM client against any OpenAI-compatible endpoint, a local model by default) and one optional HTTP transfer trial. Four skill paths connect verified outcomes to one-time charge chips, profile frames and the bonus quest. Charge is banked for a future tutor harness; it is not spent or converted into tokens/questions here. The [86-mission course roadmap](docs/COURSE-ROADMAP.md) describes the wider proposed course, not 86 shipped labs. [Acceptance](docs/ACCEPTANCE.md) records real checks and their limits.
 
 An interactive [reward/progression design infographic](public/progression.html) explores 30 ideas in Russian for the owner. Open `/progression.html` on the running local service, or open the standalone file. The actual game remains in English.
 

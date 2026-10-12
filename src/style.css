@@ -44,6 +44,7 @@ small, .micro { font-size: 12px; line-height: 1.5; }
 .sector-capacity { --sector: #70e2b2; --sector-soft: #284d42; }
 .sector-contract { --sector: #c4a1ff; --sector-soft: #4c3868; }
 .sector-http-trial { --sector: #ffd99b; --sector-soft: #55412b; }
+.sector-price { --sector: #f2a0d4; --sector-soft: #5a3350; }
 
 .app-shell { min-height: 100vh; }
 .sidebar {

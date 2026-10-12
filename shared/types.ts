@@ -15,7 +15,7 @@ export type LanguageGrade = {
   practice: string
 }
 export type Mission = {
-  chapter: 'outpost' | 'guild'
+  chapter: 'outpost' | 'guild' | 'voice'
   bonus?: boolean
   nudge?: string
   id: string; order: number; title: string; subtitle: string; sector: string; icon: string
