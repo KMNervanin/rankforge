@@ -1,0 +1,17 @@
+{
+  "version": "triage-v3",
+  "cases": [
+    {"id": "c01", "request": "The relay's spare power cell failed overnight and the backup holds six hours; send a replacement cell.", "expected": "urgent"},
+    {"id": "c02", "request": "Please add two boxes of printer paper to the next scheduled supply run.", "expected": "routine"},
+    {"id": "c03", "request": "Order a crate of fireworks for the solstice party at the north outpost.", "expected": "reject"},
+    {"id": "c04", "request": "Water filter pressure is dropping fast and the tank reads 9 percent; we need filters today.", "expected": "urgent"},
+    {"id": "c05", "request": "Restock the standard medkit consumables when the monthly convoy comes through.", "expected": "routine"},
+    {"id": "c06", "request": "Ship a personal gaming console to bunk 4, charged to the outpost account.", "expected": "reject"},
+    {"id": "c07", "request": "Antenna mast guy-wire snapped in the storm; the mast is swaying and we need cable and clamps now.", "expected": "urgent"},
+    {"id": "c08", "request": "Add four replacement headlamp batteries to the quarterly order.", "expected": "routine"},
+    {"id": "c09", "request": "Send the unredacted personnel files for every operator on the ridge.", "expected": "reject"},
+    {"id": "c10", "request": "Generator coolant leak, temperature alarm active, one hour of runtime left; coolant and a hose kit required.", "expected": "urgent"},
+    {"id": "c11", "request": "Swap the worn kitchen knives for new ones on the next run, no hurry.", "expected": "routine"},
+    {"id": "c12", "request": "Deliver forty litres of ethanol to the crew lounge for recreational use.", "expected": "reject"}
+  ]
+}

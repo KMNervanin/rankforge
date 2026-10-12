@@ -1,0 +1,12 @@
+[
+  {"id": "rb-001", "text": "Runbook: restart the relay after a power dip and confirm the heartbeat within two minutes."},
+  {"id": "rb-002", "text": "Incident report: the water filter stock dropped below the reserve line during the storm week."},
+  {"id": "rb-003", "text": "Runbook: reserve supplies only with the operator's own permissions; never on behalf of another outpost."},
+  {"id": "rb-004", "text": "Incident report: fuses for relay four were ordered twice because two operators filed the same request."},
+  {"id": "rb-005", "text": "Runbook: a supply request names the item, the quantity, the unit and who asked for it."},
+  {"id": "rb-006", "text": "Incident report: the relay heartbeat stopped for eleven minutes after the generator switch."},
+  {"id": "rb-007", "text": "Runbook: incident reports are filed within a shift and cite the runbook that applied."},
+  {"id": "rb-008", "text": "Incident report: the morning shift found the archive index pointing at a deleted runbook."},
+  {"id": "rb-009", "text": "Runbook: filters are counted by the box, fuses by the piece, fuel by the litre."},
+  {"id": "rb-010", "text": "Runbook: restart the relay after a power dip and confirm the heartbeat within two minutes."}
+]

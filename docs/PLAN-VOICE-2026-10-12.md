@@ -15,11 +15,11 @@ Authoring runs in batches of five missions by parallel author agents following `
 | G09 | errorbars | Measuring the voice | planned |
 | G10 | judge | Measuring the voice | planned |
 | G11 | evalgate | Measuring the voice | planned |
-| G12 | frontier | Measuring the voice | planned |
-| G13 | ablation | Measuring the voice | planned |
-| G14 | embeddings | The archive | planned |
-| G15 | extraction | The archive | planned |
-| G16 | chunking | The archive | planned |
+| G12 | frontier | Measuring the voice | reviewed |
+| G13 | ablation | Measuring the voice | reviewed |
+| G14 | embeddings | The archive | reviewed |
+| G15 | extraction | The archive | reviewed |
+| G16 | chunking | The archive | reviewed |
 | G17 | lexical | The archive | planned |
 | G18 | fusion | The archive | planned |
 | G19 | annindex | The archive | planned |

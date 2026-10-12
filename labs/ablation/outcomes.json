@@ -1,0 +1,253 @@
+{
+  "note": "Scripted outcomes for demo.py: a test fixture, not a model. correct = (base or any active helper lists the case) and no active component breaks it.",
+  "case_tokens": {
+    "req-01": 415,
+    "req-02": 596,
+    "req-03": 693,
+    "req-04": 691,
+    "req-05": 356,
+    "req-06": 502,
+    "req-07": 848,
+    "req-08": 451,
+    "req-09": 557,
+    "req-10": 441,
+    "req-11": 642,
+    "req-12": 869,
+    "req-13": 616,
+    "req-14": 385,
+    "req-15": 737,
+    "req-16": 703,
+    "req-17": 347,
+    "req-18": 747,
+    "req-19": 357,
+    "req-20": 474,
+    "req-21": 458,
+    "req-22": 318,
+    "req-23": 373,
+    "req-24": 861,
+    "req-25": 341,
+    "req-26": 573,
+    "req-27": 623,
+    "req-28": 678,
+    "req-29": 835,
+    "req-30": 606,
+    "req-31": 472,
+    "req-32": 449,
+    "req-33": 420,
+    "req-34": 848,
+    "req-35": 543,
+    "req-36": 684,
+    "req-37": 468,
+    "req-38": 818,
+    "req-39": 646,
+    "req-40": 469
+  },
+  "case_latency_ms": {
+    "req-01": 1239,
+    "req-02": 583,
+    "req-03": 1728,
+    "req-04": 1633,
+    "req-05": 975,
+    "req-06": 685,
+    "req-07": 1532,
+    "req-08": 1767,
+    "req-09": 686,
+    "req-10": 516,
+    "req-11": 658,
+    "req-12": 1429,
+    "req-13": 1770,
+    "req-14": 1424,
+    "req-15": 1376,
+    "req-16": 907,
+    "req-17": 571,
+    "req-18": 618,
+    "req-19": 1229,
+    "req-20": 1262,
+    "req-21": 1224,
+    "req-22": 1203,
+    "req-23": 961,
+    "req-24": 456,
+    "req-25": 1774,
+    "req-26": 1409,
+    "req-27": 1086,
+    "req-28": 405,
+    "req-29": 842,
+    "req-30": 1596,
+    "req-31": 1543,
+    "req-32": 421,
+    "req-33": 657,
+    "req-34": 834,
+    "req-35": 809,
+    "req-36": 821,
+    "req-37": 1483,
+    "req-38": 1257,
+    "req-39": 925,
+    "req-40": 522
+  },
+  "component_tokens": {
+    "retrieval": 950,
+    "reranker": 240,
+    "few_shot": 680,
+    "query_rewrite": 90,
+    "authorization": 35,
+    "cost_router": -320
+  },
+  "component_latency_ms": {
+    "retrieval": 180,
+    "reranker": 310,
+    "few_shot": 60,
+    "query_rewrite": 420,
+    "authorization": 12,
+    "cost_router": -210
+  },
+  "models": {
+    "relay-small": {
+      "base_correct": [
+        "req-01",
+        "req-06",
+        "req-09",
+        "req-11",
+        "req-12",
+        "req-13",
+        "req-15",
+        "req-16",
+        "req-19",
+        "req-20",
+        "req-22",
+        "req-23",
+        "req-25",
+        "req-28",
+        "req-29",
+        "req-31",
+        "req-32",
+        "req-36",
+        "req-39",
+        "req-40"
+      ],
+      "helps": {
+        "retrieval": [
+          "req-02",
+          "req-03",
+          "req-08",
+          "req-14",
+          "req-17",
+          "req-18",
+          "req-27",
+          "req-30",
+          "req-33",
+          "req-34",
+          "req-37",
+          "req-38"
+        ],
+        "reranker": [
+          "req-04",
+          "req-05",
+          "req-07",
+          "req-24",
+          "req-35"
+        ],
+        "few_shot": [
+          "req-26"
+        ]
+      },
+      "hurts": {
+        "query_rewrite": [
+          "req-06",
+          "req-09",
+          "req-11",
+          "req-13",
+          "req-16",
+          "req-20",
+          "req-22",
+          "req-31",
+          "req-36"
+        ],
+        "authorization": [
+          "req-01",
+          "req-12",
+          "req-15",
+          "req-29",
+          "req-39",
+          "req-40"
+        ],
+        "cost_router": [
+          "req-19"
+        ]
+      }
+    },
+    "relay-large": {
+      "base_correct": [
+        "req-01",
+        "req-02",
+        "req-07",
+        "req-08",
+        "req-09",
+        "req-11",
+        "req-14",
+        "req-16",
+        "req-17",
+        "req-18",
+        "req-19",
+        "req-22",
+        "req-23",
+        "req-24",
+        "req-25",
+        "req-27",
+        "req-28",
+        "req-32",
+        "req-34",
+        "req-35",
+        "req-37",
+        "req-38"
+      ],
+      "helps": {
+        "retrieval": [
+          "req-03",
+          "req-04",
+          "req-05",
+          "req-06",
+          "req-10",
+          "req-15",
+          "req-20",
+          "req-26"
+        ],
+        "reranker": [
+          "req-21"
+        ],
+        "query_rewrite": [
+          "req-12",
+          "req-13",
+          "req-30",
+          "req-31",
+          "req-33",
+          "req-36",
+          "req-39",
+          "req-40"
+        ]
+      },
+      "hurts": {
+        "few_shot": [
+          "req-07",
+          "req-08",
+          "req-11",
+          "req-17",
+          "req-19",
+          "req-22",
+          "req-23",
+          "req-24"
+        ],
+        "authorization": [
+          "req-09",
+          "req-16",
+          "req-25",
+          "req-27",
+          "req-34",
+          "req-38"
+        ],
+        "cost_router": [
+          "req-14"
+        ]
+      }
+    }
+  }
+}

@@ -3,12 +3,24 @@ import http from 'node:http'
 // A test-only OpenAI-compatible endpoint for the Price mission's live check. Its model id says so; it is never a model.
 export type StubBody = { model?: string; messages?: { content?: string }[]; max_tokens?: number; response_format?: { type?: string } }
 // An added handler decides the answer text per request (the Record mission's live measurement); without one the stub answers 'OK' as before.
-export async function startLlmStub(options: { reply?: (body: StubBody) => { content: string; finish_reason?: string } } = {}): Promise<{ baseUrl: string; model: string; requests: unknown[]; close: () => Promise<void> }> {
+// An added handler serves POST /embeddings (the Embeddings mission's live measurement); without one the route stays a 404 as before.
+export type EmbeddingsBody = { model?: string; input?: string | string[] }
+export async function startLlmStub(options: { reply?: (body: StubBody) => { content: string; finish_reason?: string }; embeddings?: (text: string) => number[] } = {}): Promise<{ baseUrl: string; model: string; requests: unknown[]; close: () => Promise<void> }> {
   const requests: unknown[] = []
   const server = http.createServer((request, response) => {
     let raw = ''
     request.on('data', (chunk) => { raw += chunk })
     request.on('end', () => {
+      if (options.embeddings && request.method === 'POST' && request.url?.endsWith('/embeddings')) {
+        let body: EmbeddingsBody
+        try { body = JSON.parse(raw) } catch { response.writeHead(400, { 'content-type': 'application/json' }); response.end(JSON.stringify({ error: { message: 'invalid json' } })); return }
+        requests.push(body)
+        const inputs = (Array.isArray(body.input) ? body.input : [body.input ?? '']).map(String)
+        const prompt_tokens = inputs.reduce((sum, text) => sum + text.split(/\s+/).filter(Boolean).length, 0)
+        response.writeHead(200, { 'content-type': 'application/json' })
+        response.end(JSON.stringify({ object: 'list', data: inputs.map((text, index) => ({ object: 'embedding', index, embedding: options.embeddings!(text) })), model: body.model, usage: { prompt_tokens, total_tokens: prompt_tokens } }))
+        return
+      }
       if (request.method !== 'POST' || !request.url?.endsWith('/chat/completions')) { response.writeHead(404, { 'content-type': 'application/json' }); response.end(JSON.stringify({ error: { message: 'unknown route' } })); return }
       let body: StubBody
       try { body = JSON.parse(raw) } catch { response.writeHead(400, { 'content-type': 'application/json' }); response.end(JSON.stringify({ error: { message: 'invalid json' } })); return }

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>Incident INC-2208</title><style>p { margin: 0 }</style></head>
+<body>
+<h1>Incident INC-2208: relay brownout</h1>
+<p>Reported by the night shift of Outpost-K41 at 02:10.</p>
+<h2>Timeline</h2>
+<ol>
+  <li>Relay power dropped at 02:10.</li>
+  <li>Stock queries returned stale counts for 11 minutes.</li>
+  <li>The cache lease was shortened to 60 seconds.</li>
+</ol>
+<h2>Impact</h2>
+<h3>Reservations</h3>
+<p>Reservation <b>RES-20931</b> was confirmed against stale stock &amp;
+  rolled back by the quartermaster.</p>
+<table>
+  <thead><tr><th>Outpost</th><th>Stale reads</th><th>Rolled back</th></tr></thead>
+  <tbody>
+    <tr><td>Outpost-K41</td><td>37</td><td>2</td></tr>
+    <tr><td>Outpost-B12</td>
+        <td>5</td><td>0</td></tr>
+  </tbody>
+</table>
+<h2>Follow-up</h2>
+<ul><li>Add a cache age to the dashboard.</li></ul>
+</body>
+</html>

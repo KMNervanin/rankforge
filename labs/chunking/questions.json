@@ -1,0 +1,8 @@
+[
+  {"id": "q1", "type": "procedure", "text": "How long does the filter housing stay pressurised after the pump stops, and when may I open the clamp of the housing?", "expected": ["rb-coolant#s3", "rb-coolant#p2"]},
+  {"id": "q2", "type": "procedure", "text": "Which valve do I close first and what should the pressure gauge read?", "expected": ["rb-coolant#s1"]},
+  {"id": "q3", "type": "safety", "text": "Under which temperature must the loop be before draining the reservoir into the holding tank?", "expected": ["rb-coolant#s2"]},
+  {"id": "q4", "type": "safety", "text": "Why must the transmitter be off before climbing the mast with the safety line?", "expected": ["rb-antenna#s1"]},
+  {"id": "q5", "type": "procedure", "text": "How tight do the elevation bolts go with the torque wrench?", "expected": ["rb-antenna#s3", "rb-antenna#p2"]},
+  {"id": "q6", "type": "incident", "text": "What tripped the generator transfer switch during the outage?", "expected": ["ir-outage#p1", "ir-outage#p2"]}
+]

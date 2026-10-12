@@ -1,0 +1,23 @@
+[
+  {"id": "rb-coolant#h1", "doc_id": "rb-coolant", "kind": "heading", "text": "Coolant loop restart"},
+  {"id": "rb-coolant#p1", "doc_id": "rb-coolant", "kind": "paragraph", "text": "This runbook restarts the coolant loop of the relay after a planned stop. Every step is performed by the operator on shift."},
+  {"id": "rb-coolant#s1", "doc_id": "rb-coolant", "kind": "step", "text": "Step 1. Close the intake valve V-41 and confirm that the pressure gauge reads below 3 bar before continuing."},
+  {"id": "rb-coolant#s2", "doc_id": "rb-coolant", "kind": "step", "text": "Step 2. Drain the reservoir into the holding tank through drain line D-2 and watch the level indicator.", "warning": "Drain only when the loop temperature is under 40 degrees; hot coolant flashes to steam and scalds the operator."},
+  {"id": "rb-coolant#s3", "doc_id": "rb-coolant", "kind": "step", "text": "Step 3. Replace the particulate filter cartridge in housing F-7, then tighten the clamp by hand."},
+  {"id": "rb-coolant#p2", "doc_id": "rb-coolant", "kind": "paragraph", "text": "Warning: The housing stays pressurised for 90 seconds after the pump stops. Wait that long before opening the clamp of the filter housing."},
+  {"id": "rb-coolant#s4", "doc_id": "rb-coolant", "kind": "step", "text": "Step 4. Open the intake valve slowly and bleed air at the top vent until the coolant runs clear without bubbles."},
+  {"id": "rb-coolant#s5", "doc_id": "rb-coolant", "kind": "step", "text": "Step 5. Record the restart in the relay journal together with the final gauge reading and the cartridge serial."},
+  {"id": "rb-coolant#h2", "doc_id": "rb-coolant", "kind": "heading", "text": "Rollback"},
+  {"id": "rb-coolant#p3", "doc_id": "rb-coolant", "kind": "paragraph", "text": "If the loop does not reach working pressure within ten minutes, close the intake valve again and open an incident report."},
+  {"id": "rb-antenna#h1", "doc_id": "rb-antenna", "kind": "heading", "text": "Relay antenna alignment"},
+  {"id": "rb-antenna#p1", "doc_id": "rb-antenna", "kind": "paragraph", "text": "Align the north antenna of the relay mast after a storm or whenever the signal margin drops below the floor."},
+  {"id": "rb-antenna#s1", "doc_id": "rb-antenna", "kind": "step", "text": "Step 1. Lock the mast brake and attach the safety line to the harness anchor before climbing the ladder.", "warning": "Never climb the mast while the transmitter is powered; the radiated field burns skin within seconds."},
+  {"id": "rb-antenna#s2", "doc_id": "rb-antenna", "kind": "step", "text": "Step 2. Loosen the azimuth bolts a quarter turn and rotate the dish until the signal meter peaks.", "warning": "Keep one hand on the mast rail while the dish rotates."},
+  {"id": "rb-antenna#p3", "doc_id": "rb-antenna", "kind": "paragraph", "text": "Warning: A loose azimuth bolt lets the dish swing in the wind; check both bolts before leaving the platform."},
+  {"id": "rb-antenna#s3", "doc_id": "rb-antenna", "kind": "step", "text": "Step 3. Tighten the azimuth bolts and the elevation bolts with the torque wrench at the marked value."},
+  {"id": "rb-antenna#p2", "doc_id": "rb-antenna", "kind": "paragraph", "text": "Warning: An over-torqued elevation bolt cracks the bracket; stop at the first click of the wrench."},
+  {"id": "rb-antenna#s4", "doc_id": "rb-antenna", "kind": "step", "text": "Step 4. Release the mast brake, climb down and log the new signal margin in the relay journal."},
+  {"id": "ir-outage#h1", "doc_id": "ir-outage", "kind": "heading", "text": "Incident report: relay outage"},
+  {"id": "ir-outage#p1", "doc_id": "ir-outage", "kind": "paragraph", "text": "The relay lost uplink for forty minutes during the night shift. The generator transfer switch had tripped on a voltage dip."},
+  {"id": "ir-outage#p2", "doc_id": "ir-outage", "kind": "paragraph", "text": "Root cause: the transfer switch threshold was left at the factory default after the generator service. Action: set the threshold per the generator runbook."}
+]

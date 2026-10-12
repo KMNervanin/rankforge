@@ -53,3 +53,15 @@ Same procedure as batch 1: five author agents, five blind solvers, findings appl
 | G11 Evals as a gate | `evalgate` | 8 + 1 | no (injected runner and clock) | 18/18 | `cases_run` is a count; first-attempt pass decided outright; cap semantics for the interrupting case enforced both ways; starter fails for the stated reasons |
 
 Limits as in batch 1. G07's pass-versus-failure agreement is checked against the planted outcomes with a published tolerance; the grouping itself is debrief material, not a code verdict.
+
+## Batch 3 — G12–G16, end of "Measuring the voice" and start of "The archive", 2026-10-12 evening
+
+Same procedure. All five blind solutions passed on the first verifier run; every review returned "ship after fixes" and the fixes were applied and re-tested.
+
+| Mission | Runtime id | Checks (required + bonus) | Live part | Node tests | Review findings applied |
+| --- | --- | --- | --- | --- | --- |
+| G12 Choose a model with evidence | `frontier` | 8 + 1 | yes: three cases through the learner's runner on the configured model, Wilson/p95/cost reported (one run on gemma-3-4b: 2/3, p95 82 ms) | 18/18 | Pareto expectations were constant by candidate name (now randomized ids and two dominance designs); workspace litter removed; live Wilson computed by the verifier; wording of rules 2, 5, 7, 8 and the bonus |
+| G13 Take the scaffolding away | `ablation` | 7 + 1 | no (scripted runner with a planted truth) | 16/16 | reserved "kept for" label documented; Bonferroni bonus spec; reference tokens/latency and record n/z now checked; refusal list fully exercised |
+| G14 Meaning as numbers | `embeddings` | 7 + 1 (+ live) | only when `embedding_model` is set in llm.json (none installed locally: Environment blocked by design) | 18/18 | identity-before-dimension precedence; empty-store re_embed (the starter demo crashed on a fresh file); vector scan by decoding, not BLOB length; workspace cleanup; batches persisted after reopen |
+| G15 Documents are not plain text | `extraction` | 8 + 1 | no (layout JSON stands in for PDF parser output, stated in the manual) | 17/17 | indentation and whitespace rules; unknown layout block types ignored; unclosed-element lists aligned; reason matched with the path removed |
+| G16 Where to cut | `chunking` | 7 + 1 | no (injected embed function) | 15/15 | warning-field vs following-paragraph precedence stated and exercised; float metrics; decimal recall in the reason; semantic headings rule; `extraction` prerequisite added |

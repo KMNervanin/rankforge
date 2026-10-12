@@ -1,0 +1,192 @@
+{
+  "components": [
+    {
+      "name": "retrieval",
+      "kind": "quality"
+    },
+    {
+      "name": "reranker",
+      "kind": "quality"
+    },
+    {
+      "name": "few_shot",
+      "kind": "quality"
+    },
+    {
+      "name": "query_rewrite",
+      "kind": "quality"
+    },
+    {
+      "name": "authorization",
+      "kind": "guard",
+      "reason": "permission"
+    },
+    {
+      "name": "cost_router",
+      "kind": "guard",
+      "reason": "cost"
+    }
+  ],
+  "cases": [
+    {
+      "id": "req-01",
+      "request": "Reserve 41 filter cartridges for outpost delta"
+    },
+    {
+      "id": "req-02",
+      "request": "Who signed for 15 coolant for outpost ridge"
+    },
+    {
+      "id": "req-03",
+      "request": "Check 18 relay fuses for outpost ridge"
+    },
+    {
+      "id": "req-04",
+      "request": "How many 35 sealant for outpost ridge"
+    },
+    {
+      "id": "req-05",
+      "request": "Is there enough 23 ration packs for outpost east"
+    },
+    {
+      "id": "req-06",
+      "request": "Release 12 battery cells for outpost delta"
+    },
+    {
+      "id": "req-07",
+      "request": "Where are 14 antenna masts for outpost north"
+    },
+    {
+      "id": "req-08",
+      "request": "Order 45 gloves for outpost ridge"
+    },
+    {
+      "id": "req-09",
+      "request": "Reserve 18 filter cartridges for outpost ridge"
+    },
+    {
+      "id": "req-10",
+      "request": "Who signed for 26 coolant for outpost delta"
+    },
+    {
+      "id": "req-11",
+      "request": "Check 31 relay fuses for outpost ridge"
+    },
+    {
+      "id": "req-12",
+      "request": "How many 34 sealant for outpost east"
+    },
+    {
+      "id": "req-13",
+      "request": "Is there enough 34 ration packs for outpost north"
+    },
+    {
+      "id": "req-14",
+      "request": "Release 34 battery cells for outpost north"
+    },
+    {
+      "id": "req-15",
+      "request": "Where are 14 antenna masts for outpost ridge"
+    },
+    {
+      "id": "req-16",
+      "request": "Order 21 gloves for outpost delta"
+    },
+    {
+      "id": "req-17",
+      "request": "Reserve 18 filter cartridges for outpost north"
+    },
+    {
+      "id": "req-18",
+      "request": "Who signed for 5 coolant for outpost east"
+    },
+    {
+      "id": "req-19",
+      "request": "Check 24 relay fuses for outpost north"
+    },
+    {
+      "id": "req-20",
+      "request": "How many 32 sealant for outpost delta"
+    },
+    {
+      "id": "req-21",
+      "request": "Is there enough 31 ration packs for outpost east"
+    },
+    {
+      "id": "req-22",
+      "request": "Release 41 battery cells for outpost east"
+    },
+    {
+      "id": "req-23",
+      "request": "Where are 37 antenna masts for outpost north"
+    },
+    {
+      "id": "req-24",
+      "request": "Order 41 gloves for outpost delta"
+    },
+    {
+      "id": "req-25",
+      "request": "Reserve 23 filter cartridges for outpost ridge"
+    },
+    {
+      "id": "req-26",
+      "request": "Who signed for 6 coolant for outpost north"
+    },
+    {
+      "id": "req-27",
+      "request": "Check 30 relay fuses for outpost delta"
+    },
+    {
+      "id": "req-28",
+      "request": "How many 31 sealant for outpost delta"
+    },
+    {
+      "id": "req-29",
+      "request": "Is there enough 17 ration packs for outpost ridge"
+    },
+    {
+      "id": "req-30",
+      "request": "Release 3 battery cells for outpost ridge"
+    },
+    {
+      "id": "req-31",
+      "request": "Where are 26 antenna masts for outpost delta"
+    },
+    {
+      "id": "req-32",
+      "request": "Order 31 gloves for outpost north"
+    },
+    {
+      "id": "req-33",
+      "request": "Reserve 16 filter cartridges for outpost east"
+    },
+    {
+      "id": "req-34",
+      "request": "Who signed for 39 coolant for outpost ridge"
+    },
+    {
+      "id": "req-35",
+      "request": "Check 48 relay fuses for outpost delta"
+    },
+    {
+      "id": "req-36",
+      "request": "How many 21 sealant for outpost delta"
+    },
+    {
+      "id": "req-37",
+      "request": "Is there enough 40 ration packs for outpost east"
+    },
+    {
+      "id": "req-38",
+      "request": "Release 34 battery cells for outpost east"
+    },
+    {
+      "id": "req-39",
+      "request": "Where are 28 antenna masts for outpost north"
+    },
+    {
+      "id": "req-40",
+      "request": "Order 22 gloves for outpost ridge"
+    }
+  ]
+}

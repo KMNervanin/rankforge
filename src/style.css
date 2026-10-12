@@ -55,6 +55,11 @@ small, .micro { font-size: 12px; line-height: 1.5; }
 .sector-errorbars { --sector: #ffb3c7; --sector-soft: #5a3545; }
 .sector-judge { --sector: #ffb3c7; --sector-soft: #5a3545; }
 .sector-evalgate { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-frontier { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-ablation { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-embeddings { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-extraction { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-chunking { --sector: #c9b2ff; --sector-soft: #473a66; }
 .mission-block + .mission-block { margin-top: 28px; }
 .block-heading { margin: 0 0 10px; font-size: 13px; letter-spacing: .4px; text-transform: uppercase; opacity: .72; }
 

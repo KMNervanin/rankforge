@@ -1,0 +1,45 @@
+# Field manual — take the scaffolding away
+
+The operator assistant has grown a harness: retrieval, a reranker, few-shot examples, a query rewriter, an authorization check and a cost router, each added because it seemed like a good idea at the time. The starter removes them one at a time, but every removal runs a different random half of the cases, the comparison is two means with no interval, and anything whose absence raised accuracy is dropped, the authorization check included. That is the deliberate defect.
+
+## Workshop and entry point
+
+Python 3.10 or later, standard library only. Edit `ablation.py` and keep two names importable: the function `ablate` and the function `decide`. Verify imports your module, calls `ablate` with its own components, cases and a scripted runner, then calls `decide` on the table it got back. `harness.json` and `outcomes.json` are a sample harness and a scripted outcome fixture for your own terminal runs; Verify carries its own planted truth with fresh case ids, counts and costs, so never rely on a fixed id, a fixed number or the fixture's component effects.
+
+`python3 -B demo.py leave-one-out relay-small` runs the ablation on the fixture and prints the table and the decision record. Try `add-one-in`, then `relay-large`, and watch which components change sides. There is no live call in this mission: the runner is injected, and the only runners in this lab are scripted.
+
+## The problem
+
+Anthropic's guidance on agents is to find the simplest solution and add complexity only when it demonstrably improves outcomes. A harness is a list of components, and the only way to know what each one earns is to measure the system without it. Three things go wrong in practice: the removal runs on a different set than the baseline, so the delta mixes the component's effect with the set's; the delta is reported as a difference of two means with no idea of its uncertainty; and a component that exists for permission, safety or cost is judged by the same accuracy number as the rest and removed when the number rises.
+
+The fix is the paired comparison from the error-bars mission: the same cases run with and without the component, the difference is computed per case, and the mean difference gets a standard error from those per-case differences. A component that lives there for a non-quality reason is measured like every other one, so you know what it costs, but it is never dropped for that cost.
+
+## Complete public contract
+
+```python
+ablate(components, cases, run, *, strategy="leave-one-out", z=1.96) -> table
+decide(table, components) -> record
+```
+
+`components` is a list of dicts in the order the harness is assembled: each has a string `name` (distinct), a `kind` of `quality` or `guard`, and, for a guard, a `reason` of `permission`, `safety` or `cost`. `cases` is a list of dicts with a distinct string `id` and any other keys. `run(active, case)` is injected: `active` is a list of component names (pass it in `components` order), `case` is one of the case dicts verbatim, and it returns `{"correct": 0 or 1, "tokens": int, "latency_ms": int}`. The runner is deterministic for a given active set and case, so you may cache a result; you may never skip a case.
+
+1. **Validation first.** An unknown strategy, a repeated or missing name, a kind other than `quality` or `guard`, a guard without a reason from the list above, a repeated case id or fewer than two cases raise `ValueError` before any call to `run`.
+2. **Two arms per component, the whole set each.** For every component `c`, in input order, the table holds one row. Under `leave-one-out`, `without` is every component except `c` and `with` is every component. Under `add-one-in`, `without` is every guard except `c` and `with` is that set plus `c`: the base is the guards, the pieces that never leave the harness, and a guard's own row removes it from that base. Both lists keep `components` order. Both arms run on every case; the row's `cases` lists every case id in input order and `n` is their count. A row computed on a subset is rejected.
+3. **Paired delta with an interval.** Per case, `d = correct(with) − correct(without)`. `mean_delta` is the mean of `d`, `se` is the sample standard deviation of `d` (divisor `n − 1`) divided by `sqrt(n)`, `low = mean_delta − z·se`, `high = mean_delta + z·se`. When every `d` is equal the standard deviation is zero and the interval is a point. `tokens_delta` and `latency_delta_ms` are the mean per-case differences of `tokens` and `latency_ms`, `with` minus `without`. `accuracy_with` and `accuracy_without` are the mean `correct` of each arm. Tolerance on every number is 1e-9.
+4. **The table.** A dict with `strategy`, `z`, `cases` (every id in input order), `reference` (`active`: the base list, every component under leave-one-out and the guards under add-one-in; `n`; `accuracy`, `tokens`, `latency_ms`: that base's means) and `rows`: one dict per component with `component`, `kind`, `with`, `without`, `cases`, `n`, `accuracy_with`, `accuracy_without`, `mean_delta`, `se`, `low`, `high`, `tokens_delta`, `latency_delta_ms`. Extra keys are allowed.
+5. **The decision.** A quality component is kept when `low > 0`: having it helps, the interval lies entirely above zero, which is the same as saying its removal has an interval entirely below zero. It is dropped otherwise: when the interval includes zero it has not earned its place, when `high < 0` it hurts. A guard is **always** kept, whatever its numbers, and its reason text starts with `kept for permission`, `kept for safety` or `kept for cost`. Accuracy rising without an authorization check is the reason to look at the cases it refused, never a reason to remove it. A quality component's reason must not contain `kept for`; the label is reserved for guards.
+6. **The record.** A dict with `strategy`, `z`, `n`, `keep` and `drop` (lists of names that partition the components) and `decisions`: one dict per component in input order with `component`, `kind`, `decision` (`keep` or `drop`), `reason` and the row's `n`, `mean_delta`, `low`, `high`, `tokens_delta` and `latency_delta_ms` copied verbatim. Every `reason` cites the interval written as `[low, high]` with three decimals, for example `[0.246, 0.554]`. Extra keys are allowed; a record that also carries `comparisons` (the number of rows, guards included), `z_adjusted` (the Bonferroni z: the same two-sided alpha divided by comparisons, via NormalDist) and `keep_adjusted` (the keep list at that z, guards always included) is noticed.
+
+Worked example, five cases, a component that fixes two of them: `d = [1, 1, 0, 0, 0]`, `mean_delta = 0.4`, sample variance `(2·0.36 + 3·0.16) / 4 = 0.3`, `se = sqrt(0.3 / 5) = 0.2449`, interval `0.4 ± 1.96·0.2449 = [−0.080, 0.880]`: it includes zero, so five cases cannot say the component earns its place, and it is dropped. The same share on forty cases, sixteen fixed: `mean_delta = 0.4`, variance `(16·0.36 + 24·0.16) / 39 = 0.2462`, `se = 0.0785`, interval `[0.246, 0.554]`: kept. Nothing about the component changed; the set did.
+
+## What Verify runs
+
+Every check plants a truth with fresh case ids, a fresh set size between 36 and 48 and fresh token and latency costs: one quality component fixes about a third of the wrong cases, one fixes a handful, one fixes a single case, one breaks about a fifth of the right ones; the authorization guard refuses cases the base would have answered, so accuracy rises without it; the cost router breaks one case and saves tokens. A scripted runner answers from that truth and logs every call. The checks: every row ran both arms on the full set against the published reference; every delta, standard error, interval, token and latency delta matches the paired formula recomputed with exact fractions; the helpful components are kept and the inconclusive and harmful ones dropped with reasons that cite the interval; both guards are kept and labeled with their reason; `add-one-in` reaches the same keep list from the guards-only base; a second planted truth playing a stronger model, at `z = 2.326`, flips which components help and the decision follows the numbers; and invalid input is refused before any run. One hidden bonus check exists; it can only add to the result and never fails the run. No model is called and no model output is in any verdict.
+
+Two different implementations pass: plain dicts with `math` and a memo of runs, and dataclasses with the `statistics` module composing rows from a matrix of arms run once each. No structure of `ablation.py` is required beyond the two importable names.
+
+## Sources
+
+- Anthropic, "Building effective agents": find the simplest solution possible and add complexity only when it demonstrably improves outcomes.
+- Miller, "Adding Error Bars to Evals" (arXiv 2411.00640): paired per-case differences with a standard error for the delta between two runs on the same questions.
+- Python `statistics`: `fmean`, `stdev` and `NormalDist` for the interval and for a z corrected for several comparisons.

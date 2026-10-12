@@ -1,4 +1,9 @@
 import type { Mission } from './types.js'
+import { mission as chunking, followUps as chunkingFollowUps } from './voice/chunking.js'
+import { mission as extraction, followUps as extractionFollowUps } from './voice/extraction.js'
+import { mission as embeddings, followUps as embeddingsFollowUps } from './voice/embeddings.js'
+import { mission as ablation, followUps as ablationFollowUps } from './voice/ablation.js'
+import { mission as frontier, followUps as frontierFollowUps } from './voice/frontier.js'
 import { mission as evalgate, followUps as evalgateFollowUps } from './voice/evalgate.js'
 import { mission as judge, followUps as judgeFollowUps } from './voice/judge.js'
 import { mission as errorbars, followUps as errorbarsFollowUps } from './voice/errorbars.js'
@@ -13,6 +18,11 @@ import { mission as sampling, followUps as samplingFollowUps } from './voice/sam
 // Chapter IX of the roadmap: the operator assistant. Authored for the owner's personal route first; the
 // endpoint is whatever OpenAI-compatible server the learner configures in llm.json (a local model by default).
 const authored: Mission[] = [
+  chunking,
+  extraction,
+  embeddings,
+  ablation,
+  frontier,
   evalgate,
   judge,
   errorbars,
@@ -58,6 +68,11 @@ const authored: Mission[] = [
 export const voiceMissions: Mission[] = [...authored].sort((a, b) => a.order - b.order)
 
 export const voiceFollowUps: Record<string, string[]> = {
+  chunking: chunkingFollowUps,
+  extraction: extractionFollowUps,
+  embeddings: embeddingsFollowUps,
+  ablation: ablationFollowUps,
+  frontier: frontierFollowUps,
   evalgate: evalgateFollowUps,
   judge: judgeFollowUps,
   errorbars: errorbarsFollowUps,

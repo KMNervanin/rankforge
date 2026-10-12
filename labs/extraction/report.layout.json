@@ -1,0 +1,32 @@
+{
+ "format": "layout/1",
+ "source": "report.pdf",
+ "note": "What a layout parser (Docling, PyMuPDF find_tables, pdfplumber) emits for a two-page PDF; cells carry their own row and col and are not listed in reading order.",
+ "pages": [
+  {"number": 1, "blocks": [
+   {"type": "heading", "level": 1, "text": "Supply report Q3-2026", "bbox": [72.0, 60.0, 540.0, 92.0]},
+   {"type": "paragraph", "text": "Prepared for Outpost-K41 by the quartermaster.", "bbox": [72.0, 100.0, 540.0, 130.0]},
+   {"type": "heading", "level": 2, "text": "Consumption", "bbox": [72.0, 160.0, 540.0, 190.0]},
+   {"type": "table", "bbox": [72.0, 210.5, 540.0, 318.25], "cells": [
+    {"row": 1, "col": 2, "text": "310"},
+    {"row": 0, "col": 0, "text": "Item"},
+    {"row": 2, "col": 1, "text": "8"},
+    {"row": 0, "col": 2, "text": "Issued"},
+    {"row": 1, "col": 0, "text": "Filter cartridge"},
+    {"row": 2, "col": 3, "text": "12"},
+    {"row": 0, "col": 1, "text": "Week"},
+    {"row": 1, "col": 3, "text": "41"},
+    {"row": 2, "col": 0, "text": "Fuse F220"},
+    {"row": 0, "col": 3, "text": "Returned"},
+    {"row": 1, "col": 1, "text": "7"},
+    {"row": 2, "col": 2, "text": "96"}
+   ]}
+  ]},
+  {"number": 2, "blocks": [
+   {"type": "heading", "level": 3, "text": "Notes", "bbox": [72.0, 60.0, 540.0, 90.0]},
+   {"type": "list_item", "number": 1, "text": "Fuse F220 ran short in week 7.", "bbox": [90.0, 100.0, 540.0, 118.0]},
+   {"type": "list_item", "number": 2, "text": "bay-63 was closed for inspection.", "bbox": [90.0, 120.0, 540.0, 138.0]},
+   {"type": "paragraph", "text": "Counts come from the ledger as of 2026-09-30.", "bbox": [72.0, 150.0, 540.0, 180.0]}
+  ]}
+ ]
+}

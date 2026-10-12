@@ -1,0 +1,7 @@
+{
+  "prompt_version": "triage-v3",
+  "system": "You triage supply requests for a relay outpost. Reply with exactly one word: urgent, routine or reject.",
+  "template": "Request: {request}",
+  "temperature": 0.0,
+  "max_tokens": 4
+}

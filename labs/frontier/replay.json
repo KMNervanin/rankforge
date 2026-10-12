@@ -1,0 +1,384 @@
+{
+ "relay-xl-70b": {
+  "c01": {
+   "correct": 1,
+   "latency_ms": 1374,
+   "input_tokens": 56,
+   "output_tokens": 2,
+   "peak_memory_mb": 42231
+  },
+  "c02": {
+   "correct": 1,
+   "latency_ms": 1433,
+   "input_tokens": 52,
+   "output_tokens": 1,
+   "peak_memory_mb": 42411
+  },
+  "c03": {
+   "correct": 1,
+   "latency_ms": 1437,
+   "input_tokens": 52,
+   "output_tokens": 1,
+   "peak_memory_mb": 42228
+  },
+  "c04": {
+   "correct": 1,
+   "latency_ms": 1218,
+   "input_tokens": 49,
+   "output_tokens": 3,
+   "peak_memory_mb": 42414
+  },
+  "c05": {
+   "correct": 1,
+   "latency_ms": 1834,
+   "input_tokens": 49,
+   "output_tokens": 3,
+   "peak_memory_mb": 42202
+  },
+  "c06": {
+   "correct": 1,
+   "latency_ms": 1912,
+   "input_tokens": 52,
+   "output_tokens": 3,
+   "peak_memory_mb": 42007
+  },
+  "c07": {
+   "correct": 1,
+   "latency_ms": 1773,
+   "input_tokens": 49,
+   "output_tokens": 1,
+   "peak_memory_mb": 42018
+  },
+  "c08": {
+   "correct": 1,
+   "latency_ms": 1099,
+   "input_tokens": 52,
+   "output_tokens": 3,
+   "peak_memory_mb": 42015
+  },
+  "c09": {
+   "correct": 1,
+   "latency_ms": 1717,
+   "input_tokens": 55,
+   "output_tokens": 2,
+   "peak_memory_mb": 42302
+  },
+  "c10": {
+   "correct": 1,
+   "latency_ms": 1784,
+   "input_tokens": 56,
+   "output_tokens": 1,
+   "peak_memory_mb": 42327
+  },
+  "c11": {
+   "correct": 1,
+   "latency_ms": 1208,
+   "input_tokens": 49,
+   "output_tokens": 3,
+   "peak_memory_mb": 42043
+  },
+  "c12": {
+   "correct": 1,
+   "latency_ms": 1380,
+   "input_tokens": 54,
+   "output_tokens": 2,
+   "peak_memory_mb": 42282
+  }
+ },
+ "relay-large-32b": {
+  "c01": {
+   "correct": 1,
+   "latency_ms": 1426,
+   "input_tokens": 49,
+   "output_tokens": 3
+  },
+  "c02": {
+   "correct": 1,
+   "latency_ms": 855,
+   "input_tokens": 52,
+   "output_tokens": 3
+  },
+  "c03": {
+   "correct": 1,
+   "latency_ms": 882,
+   "input_tokens": 51,
+   "output_tokens": 3
+  },
+  "c04": {
+   "correct": 1,
+   "latency_ms": 1250,
+   "input_tokens": 54,
+   "output_tokens": 1
+  },
+  "c05": {
+   "correct": 1,
+   "latency_ms": 1311,
+   "input_tokens": 55,
+   "output_tokens": 1
+  },
+  "c06": {
+   "correct": 1,
+   "latency_ms": 1397,
+   "input_tokens": 50,
+   "output_tokens": 1
+  },
+  "c07": {
+   "correct": 1,
+   "latency_ms": 821,
+   "input_tokens": 48,
+   "output_tokens": 2
+  },
+  "c08": {
+   "correct": 1,
+   "latency_ms": 949,
+   "input_tokens": 55,
+   "output_tokens": 2
+  },
+  "c09": {
+   "correct": 1,
+   "latency_ms": 716,
+   "input_tokens": 53,
+   "output_tokens": 3
+  },
+  "c10": {
+   "correct": 1,
+   "latency_ms": 867,
+   "input_tokens": 49,
+   "output_tokens": 2
+  },
+  "c11": {
+   "correct": 0,
+   "latency_ms": 916,
+   "input_tokens": 55,
+   "output_tokens": 1
+  },
+  "c12": {
+   "correct": 1,
+   "latency_ms": 763,
+   "input_tokens": 51,
+   "output_tokens": 1
+  }
+ },
+ "relay-mid-12b": {
+  "c01": {
+   "correct": 1,
+   "latency_ms": 449,
+   "input_tokens": 55,
+   "output_tokens": 1
+  },
+  "c02": {
+   "correct": 1,
+   "latency_ms": 754,
+   "input_tokens": 52,
+   "output_tokens": 2
+  },
+  "c03": {
+   "correct": 1,
+   "latency_ms": 669,
+   "input_tokens": 52,
+   "output_tokens": 2
+  },
+  "c04": {
+   "correct": 1,
+   "latency_ms": 735,
+   "input_tokens": 49,
+   "output_tokens": 2
+  },
+  "c05": {
+   "correct": 1,
+   "latency_ms": 626,
+   "input_tokens": 52,
+   "output_tokens": 1
+  },
+  "c06": {
+   "correct": 1,
+   "latency_ms": 552,
+   "input_tokens": 54,
+   "output_tokens": 1
+  },
+  "c07": {
+   "correct": 1,
+   "latency_ms": 523,
+   "input_tokens": 54,
+   "output_tokens": 3
+  },
+  "c08": {
+   "correct": 1,
+   "latency_ms": 734,
+   "input_tokens": 50,
+   "output_tokens": 1
+  },
+  "c09": {
+   "correct": 1,
+   "latency_ms": 904,
+   "input_tokens": 53,
+   "output_tokens": 2
+  },
+  "c10": {
+   "correct": 1,
+   "latency_ms": 546,
+   "input_tokens": 53,
+   "output_tokens": 2
+  },
+  "c11": {
+   "correct": 0,
+   "latency_ms": 609,
+   "input_tokens": 50,
+   "output_tokens": 1
+  },
+  "c12": {
+   "correct": 1,
+   "latency_ms": 522,
+   "input_tokens": 53,
+   "output_tokens": 1
+  }
+ },
+ "relay-fast-8b": {
+  "c01": {
+   "correct": 1,
+   "latency_ms": 387,
+   "input_tokens": 53,
+   "output_tokens": 3
+  },
+  "c02": {
+   "correct": 1,
+   "latency_ms": 348,
+   "input_tokens": 56,
+   "output_tokens": 3
+  },
+  "c03": {
+   "correct": 1,
+   "latency_ms": 264,
+   "input_tokens": 56,
+   "output_tokens": 1
+  },
+  "c04": {
+   "correct": 1,
+   "latency_ms": 394,
+   "input_tokens": 52,
+   "output_tokens": 1
+  },
+  "c05": {
+   "correct": 0,
+   "latency_ms": 445,
+   "input_tokens": 52,
+   "output_tokens": 3
+  },
+  "c06": {
+   "correct": 1,
+   "latency_ms": 278,
+   "input_tokens": 58,
+   "output_tokens": 1
+  },
+  "c07": {
+   "correct": 1,
+   "latency_ms": 410,
+   "input_tokens": 54,
+   "output_tokens": 2
+  },
+  "c08": {
+   "correct": 1,
+   "latency_ms": 388,
+   "input_tokens": 55,
+   "output_tokens": 1
+  },
+  "c09": {
+   "correct": 1,
+   "latency_ms": 255,
+   "input_tokens": 50,
+   "output_tokens": 3
+  },
+  "c10": {
+   "correct": 1,
+   "latency_ms": 484,
+   "input_tokens": 51,
+   "output_tokens": 3
+  },
+  "c11": {
+   "correct": 1,
+   "latency_ms": 415,
+   "input_tokens": 53,
+   "output_tokens": 2
+  },
+  "c12": {
+   "correct": 1,
+   "latency_ms": 447,
+   "input_tokens": 57,
+   "output_tokens": 2
+  }
+ },
+ "relay-tiny-2b": {
+  "c01": {
+   "correct": 1,
+   "latency_ms": 289,
+   "input_tokens": 49,
+   "output_tokens": 1
+  },
+  "c02": {
+   "correct": 1,
+   "latency_ms": 227,
+   "input_tokens": 57,
+   "output_tokens": 3
+  },
+  "c03": {
+   "correct": 1,
+   "latency_ms": 359,
+   "input_tokens": 51,
+   "output_tokens": 2
+  },
+  "c04": {
+   "correct": 1,
+   "latency_ms": 224,
+   "input_tokens": 51,
+   "output_tokens": 3
+  },
+  "c05": {
+   "correct": 0,
+   "latency_ms": 183,
+   "input_tokens": 53,
+   "output_tokens": 2
+  },
+  "c06": {
+   "correct": 1,
+   "latency_ms": 273,
+   "input_tokens": 50,
+   "output_tokens": 1
+  },
+  "c07": {
+   "correct": 1,
+   "latency_ms": 217,
+   "input_tokens": 53,
+   "output_tokens": 3
+  },
+  "c08": {
+   "correct": 1,
+   "latency_ms": 300,
+   "input_tokens": 51,
+   "output_tokens": 1
+  },
+  "c09": {
+   "correct": 0,
+   "latency_ms": 256,
+   "input_tokens": 57,
+   "output_tokens": 2
+  },
+  "c10": {
+   "correct": 1,
+   "latency_ms": 317,
+   "input_tokens": 56,
+   "output_tokens": 3
+  },
+  "c11": {
+   "correct": 0,
+   "latency_ms": 378,
+   "input_tokens": 49,
+   "output_tokens": 1
+  },
+  "c12": {
+   "correct": 0,
+   "latency_ms": 279,
+   "input_tokens": 55,
+   "output_tokens": 3
+  }
+ }
+}
