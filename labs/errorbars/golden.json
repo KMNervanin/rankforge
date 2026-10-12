@@ -1,0 +1,197 @@
+{
+ "version": "golden-v3",
+ "cases": {
+  "g01": {
+   "item": "medkit",
+   "quantity": 40,
+   "unit": "piece",
+   "urgency": "normal"
+  },
+  "g02": {
+   "item": "fuel can",
+   "quantity": 12,
+   "unit": "litre",
+   "urgency": "high"
+  },
+  "g03": {
+   "item": "relay fuse",
+   "quantity": 33,
+   "unit": "box",
+   "urgency": "normal"
+  },
+  "g04": {
+   "item": "filter cartridge",
+   "quantity": 22,
+   "unit": "box",
+   "urgency": "high"
+  },
+  "g05": {
+   "item": "water filter",
+   "quantity": 25,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g06": {
+   "item": "medkit",
+   "quantity": 28,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g07": "abstain",
+  "g08": {
+   "item": "water filter",
+   "quantity": 8,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g09": {
+   "item": "antenna mast",
+   "quantity": 5,
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g10": {
+   "item": "filter cartridge",
+   "quantity": 19,
+   "unit": "box",
+   "urgency": "low"
+  },
+  "g11": {
+   "item": "signal flare",
+   "quantity": 27,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g12": {
+   "item": "signal flare",
+   "quantity": 26,
+   "unit": "piece",
+   "urgency": "normal"
+  },
+  "g13": {
+   "item": "water filter",
+   "quantity": 13,
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g14": {
+   "item": "rice",
+   "quantity": 4,
+   "unit": "kilogram",
+   "urgency": "normal"
+  },
+  "g15": "abstain",
+  "g16": {
+   "item": "water filter",
+   "quantity": 16,
+   "unit": "piece",
+   "urgency": "normal"
+  },
+  "g17": {
+   "item": "filter cartridge",
+   "quantity": 39,
+   "unit": "box",
+   "urgency": "low"
+  },
+  "g18": {
+   "item": "antenna mast",
+   "quantity": 13,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g19": {
+   "item": "water filter",
+   "quantity": 6,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g20": {
+   "item": "water filter",
+   "quantity": 33,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g21": {
+   "item": "medkit",
+   "quantity": 35,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g22": "abstain",
+  "g23": {
+   "item": "rice",
+   "quantity": 13,
+   "unit": "kilogram",
+   "urgency": "high"
+  },
+  "g24": {
+   "item": "antenna mast",
+   "quantity": 10,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g25": {
+   "item": "water filter",
+   "quantity": 4,
+   "unit": "piece",
+   "urgency": "normal"
+  },
+  "g26": {
+   "item": "antenna mast",
+   "quantity": 10,
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g27": {
+   "item": "antenna mast",
+   "quantity": 3,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g28": {
+   "item": "rice",
+   "quantity": 16,
+   "unit": "kilogram",
+   "urgency": "low"
+  },
+  "g29": "abstain",
+  "g30": {
+   "item": "relay fuse",
+   "quantity": 34,
+   "unit": "box",
+   "urgency": "high"
+  }
+ },
+ "texts": {
+  "g01": "we need 40 pieces of medkit. Idris",
+  "g02": "Urgent: we need 12 litres of fuel can. Mara",
+  "g03": "we need 33 boxs of relay fuse. Sol",
+  "g04": "Urgent: we need 22 boxs of filter cartridge. Sol",
+  "g05": "we need 25 pieces of water filter, no rush. Nkem",
+  "g06": "we need 28 pieces of medkit, no rush. Teo",
+  "g07": "Could someone remind me when the night shift starts?",
+  "g08": "we need 8 pieces of water filter, no rush. Sol",
+  "g09": "Urgent: we need 5 pieces of antenna mast. Lena",
+  "g10": "we need 19 boxs of filter cartridge, no rush. Nkem",
+  "g11": "we need 27 pieces of signal flare, no rush. Idris",
+  "g12": "we need 26 pieces of signal flare. Idris",
+  "g13": "Urgent: we need 13 pieces of water filter. Mara",
+  "g14": "we need 4 kilograms of rice. Lena",
+  "g15": "Could someone remind me when the night shift starts?",
+  "g16": "we need 16 pieces of water filter. Nkem",
+  "g17": "we need 39 boxs of filter cartridge, no rush. Mara",
+  "g18": "we need 13 pieces of antenna mast, no rush. Idris",
+  "g19": "we need 6 pieces of water filter, no rush. Sol",
+  "g20": "we need 33 pieces of water filter, no rush. Sol",
+  "g21": "we need 35 pieces of medkit, no rush. Lena",
+  "g22": "Thanks for the quick turnaround yesterday, no request today.",
+  "g23": "Urgent: we need 13 kilograms of rice. Mara",
+  "g24": "we need 10 pieces of antenna mast, no rush. Sol",
+  "g25": "we need 4 pieces of water filter. Sol",
+  "g26": "Urgent: we need 10 pieces of antenna mast. Idris",
+  "g27": "we need 3 pieces of antenna mast, no rush. Nkem",
+  "g28": "we need 16 kilograms of rice, no rush. Sol",
+  "g29": "Thanks for the quick turnaround yesterday, no request today.",
+  "g30": "Urgent: we need 34 boxs of relay fuse. Sol"
+ }
+}

@@ -1,0 +1,120 @@
+{"trace_id": "tr-0001", "open_note": "lookup failed with 'permission denied for requester', the answer states a number that came from nowhere", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0002", "open_note": "answer cites IR-120; the retrieved passages are IR-031 and RB-04 only", "first_failure": "invented source"}
+{"trace_id": "tr-0003", "open_note": "answer cites IR-099; the retrieved passages are RB-19 and IR-044 only", "first_failure": "invented source"}
+{"trace_id": "tr-0004", "open_note": "2 x 20 is 40, the reserve call books 38", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0005", "open_note": "answer restates RB-27 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0006", "open_note": "request asks for air filter, the reserve call and the answer name signal lamp", "first_failure": "wrong item"}
+{"trace_id": "tr-0007", "open_note": "2 x 5 is 10, the reserve call books 5", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0008", "open_note": "lookup result 49 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0009", "open_note": "asked about grease, the lookup and the answer are about signal lamp", "first_failure": "wrong item"}
+{"trace_id": "tr-0010", "open_note": "lookup result 64 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0011", "open_note": "lookup failed with 'reservation ledger locked', the answer states a number that came from nowhere", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0012", "open_note": "lookup result 42 kilogram matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0013", "open_note": "request asks for air filter, the reserve call and the answer name relay coil", "first_failure": "wrong item"}
+{"trace_id": "tr-0014", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0015", "open_note": "answer cites RB-77; the retrieved passages are IR-031 and RB-04 only", "first_failure": "invented source"}
+{"trace_id": "tr-0016", "open_note": "lookup result 35 kilogram matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0017", "open_note": "answer cites RB-77; the retrieved passages are RB-27 and IR-052 only", "first_failure": "invented source"}
+{"trace_id": "tr-0018", "open_note": "request, lookup, reserve and answer all say 3 litre of coolant; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0019", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0020", "open_note": "ordinary question request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0021", "open_note": "ordinary query request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0022", "open_note": "request, lookup, reserve and answer all say 3 piece of water filter; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0023", "open_note": "answer cites IR-120; the retrieved passages are RB-04 and IR-031 only", "first_failure": "invented source"}
+{"trace_id": "tr-0024", "open_note": "answer restates IR-031 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0025", "open_note": "ordinary reservation request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0026", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0027", "open_note": "answer restates RB-27 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0028", "open_note": "answer restates RB-27 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0029", "open_note": "lookup result 23 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0030", "open_note": "answer restates IR-031 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0031", "open_note": "stock.reserve returned error 'permission denied for requester', the answer reports a reservation with an id that no tool produced; the answer is also cut off, but the tool step failed first", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0032", "open_note": "lookup result 70 litre matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0033", "open_note": "answer cites IR-120; the retrieved passages are RB-12 and IR-044 only", "first_failure": "invented source"}
+{"trace_id": "tr-0034", "open_note": "ordinary question request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0035", "open_note": "request, lookup, reserve and answer all say 5 kilogram of grease; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0036", "open_note": "answer cites RB-31; the retrieved passages are RB-19 and IR-044 only", "first_failure": "invented source"}
+{"trace_id": "tr-0037", "open_note": "request says 4 boxs, the reserve call books 4 piece; the unit was dropped; the answer is also cut off, but the tool step failed first", "first_failure": "unit ignored"}
+{"trace_id": "tr-0038", "open_note": "answer restates IR-044 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0039", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped; the answer is also cut off, but the tool step failed first", "first_failure": "unit ignored"}
+{"trace_id": "tr-0040", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0041", "open_note": "answer restates RB-12 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0042", "open_note": "stock.reserve returned error 'stock service timeout', the answer reports a reservation with an id that no tool produced; the answer is also cut off, but the tool step failed first", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0043", "open_note": "lookup failed with 'permission denied for requester', the answer states a number that came from nowhere", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0044", "open_note": "answer restates IR-044 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0045", "open_note": "answer cites RB-77; the retrieved passages are RB-27 and IR-052 only", "first_failure": "invented source"}
+{"trace_id": "tr-0046", "open_note": "3 x 4 is 12, the reserve call books 17", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0047", "open_note": "answer restates IR-044 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0048", "open_note": "lookup result 89 litre matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0049", "open_note": "3 x 25 is 75, the reserve call books 73", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0050", "open_note": "answer restates RB-19 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0051", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0052", "open_note": "lookup result 71 kilogram matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0053", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0054", "open_note": "stock.reserve returned error 'stock service timeout', the answer reports a reservation with an id that no tool produced", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0055", "open_note": "lookup result 74 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0056", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0057", "open_note": "request, lookup, reserve and answer all say 7 piece of battery pack; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0058", "open_note": "request, lookup, reserve and answer all say 2 kilogram of grease; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0059", "open_note": "request asks for coolant, the reserve call and the answer name battery pack", "first_failure": "wrong item"}
+{"trace_id": "tr-0060", "open_note": "lookup result 25 litre matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0061", "open_note": "lookup result 63 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0062", "open_note": "asked about signal lamp, the lookup and the answer are about fuse", "first_failure": "wrong item"}
+{"trace_id": "tr-0063", "open_note": "request, lookup, reserve and answer all say 5 piece of air filter; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0064", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0065", "open_note": "request asks for signal lamp, the reserve call and the answer name coolant", "first_failure": "wrong item"}
+{"trace_id": "tr-0066", "open_note": "stock.reserve returned error 'reservation ledger locked', the answer reports a reservation with an id that no tool produced", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0067", "open_note": "request, lookup, reserve and answer all say 2 piece of fuse; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0068", "open_note": "answer restates RB-23 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0069", "open_note": "asked about fuse, the lookup and the answer are about signal lamp", "first_failure": "wrong item"}
+{"trace_id": "tr-0070", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0071", "open_note": "ordinary reservation request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0072", "open_note": "stock.reserve returned error 'permission denied for requester', the answer reports a reservation with an id that no tool produced", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0073", "open_note": "answer restates RB-23 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0074", "open_note": "ordinary reservation request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0075", "open_note": "2 x 6 is 12, the reserve call books 17", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0076", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0077", "open_note": "answer cites IR-120; the retrieved passages are RB-12 and IR-044 only", "first_failure": "invented source"}
+{"trace_id": "tr-0078", "open_note": "request asks for signal lamp, the reserve call and the answer name grease", "first_failure": "wrong item"}
+{"trace_id": "tr-0079", "open_note": "3 x 4 is 12, the reserve call books 10", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0080", "open_note": "request, lookup, reserve and answer all say 5 piece of relay coil; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0081", "open_note": "request, lookup, reserve and answer all say 7 piece of water filter; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0082", "open_note": "lookup result 28 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0083", "open_note": "lookup failed with 'permission denied for requester', the answer states a number that came from nowhere", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0084", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0085", "open_note": "asked about signal lamp, the lookup and the answer are about air filter", "first_failure": "wrong item"}
+{"trace_id": "tr-0086", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0087", "open_note": "request says 3 boxs, the reserve call books 3 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0088", "open_note": "request says 4 boxs, the reserve call books 4 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0089", "open_note": "answer restates RB-27 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0090", "open_note": "answer restates IR-031 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0091", "open_note": "request, lookup, reserve and answer all say 6 piece of signal lamp; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0092", "open_note": "lookup result 37 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0093", "open_note": "stock.reserve returned error 'permission denied for requester', the answer reports a reservation with an id that no tool produced", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0094", "open_note": "lookup result 49 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0095", "open_note": "request asks for air filter, the reserve call and the answer name grease", "first_failure": "wrong item"}
+{"trace_id": "tr-0096", "open_note": "request, lookup, reserve and answer all say 8 piece of battery pack; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0097", "open_note": "ordinary question request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0098", "open_note": "answer cites IR-120; the retrieved passages are IR-044 and RB-19 only", "first_failure": "invented source"}
+{"trace_id": "tr-0099", "open_note": "request says 4 boxs, the reserve call books 4 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0100", "open_note": "answer restates IR-031 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0101", "open_note": "3 x 20 is 60, the reserve call books 65", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0102", "open_note": "2 x 5 is 10, the reserve call books 15", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0103", "open_note": "stock.reserve returned error 'reservation ledger locked', the answer reports a reservation with an id that no tool produced", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0104", "open_note": "lookup result 50 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0105", "open_note": "answer restates RB-12 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0106", "open_note": "lookup failed with 'stock service timeout', the answer states a number that came from nowhere", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0107", "open_note": "asked about signal lamp, the lookup and the answer are about water filter", "first_failure": "wrong item"}
+{"trace_id": "tr-0108", "open_note": "answer restates IR-031 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0109", "open_note": "lookup result 23 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0110", "open_note": "ordinary reservation request, nothing sensitive, yet the answer declines and no tool was called", "first_failure": "refused a valid request"}
+{"trace_id": "tr-0111", "open_note": "answer cites IR-099; the retrieved passages are RB-23 and RB-04 only", "first_failure": "invented source"}
+{"trace_id": "tr-0112", "open_note": "answer stops mid-sentence, finish_reason is length; the passages were fine", "first_failure": "cut off"}
+{"trace_id": "tr-0113", "open_note": "3 x 25 is 75, the reserve call books 80", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0114", "open_note": "request says 4 boxs, the reserve call books 4 piece; the unit was dropped", "first_failure": "unit ignored"}
+{"trace_id": "tr-0115", "open_note": "lookup result 86 piece matches the answer", "first_failure": "pass"}
+{"trace_id": "tr-0116", "open_note": "answer restates RB-12 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0117", "open_note": "answer restates RB-23 and cites it; both passages are real", "first_failure": "pass"}
+{"trace_id": "tr-0118", "open_note": "3 x 4 is 12, the reserve call books 17", "first_failure": "quantity miscounted"}
+{"trace_id": "tr-0119", "open_note": "request, lookup, reserve and answer all say 6 piece of battery pack; reservation id present", "first_failure": "pass"}
+{"trace_id": "tr-0120", "open_note": "asked about relay coil, the lookup and the answer are about fuse", "first_failure": "wrong item"}

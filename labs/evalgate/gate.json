@@ -1,0 +1,7 @@
+{
+  "subset": ["sr-01", "sr-02", "sr-03", "sr-04", "sr-05", "sr-06", "sr-07", "sr-08", "sr-09", "sr-10", "sr-11", "sr-12"],
+  "thresholds": {"max_drop": 9, "floor": 70, "paired_z": 1.96},
+  "repeat": {"runs": 3, "pass_min": 2},
+  "cap": {"tokens": 6000, "seconds": 30},
+  "archive": "results"
+}

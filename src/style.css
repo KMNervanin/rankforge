@@ -50,6 +50,11 @@ small, .micro { font-size: 12px; line-height: 1.5; }
 .sector-backoff { --sector: #f2a0d4; --sector-soft: #5a3350; }
 .sector-prompts { --sector: #f2a0d4; --sector-soft: #5a3350; }
 .sector-window { --sector: #f2a0d4; --sector-soft: #5a3350; }
+.sector-traces { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-golden { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-errorbars { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-judge { --sector: #ffb3c7; --sector-soft: #5a3545; }
+.sector-evalgate { --sector: #ffb3c7; --sector-soft: #5a3545; }
 .mission-block + .mission-block { margin-top: 28px; }
 .block-heading { margin: 0 0 10px; font-size: 13px; letter-spacing: .4px; text-transform: uppercase; opacity: .72; }
 

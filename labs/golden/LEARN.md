@@ -1,0 +1,49 @@
+# Field manual — a golden set you can trust
+
+Reading the traces gave the outpost a taxonomy of what the assistant gets wrong: unknown items, wrong units, reservations over the limit, answers without a source. The next step is a set of cases that stays honest while the prompt keeps changing: every category represented, every case traceable to where it came from, and a held-out part that no prompt has ever seen. The starter builds a manifest that looks the part; its split follows the order of the list, nothing is hashed, the leakage check compares raw strings and adding one case rewrites the whole history. Those are the deliberate defects.
+
+## Workshop and entry point
+
+Python 3.10 or later, standard library only. Edit `goldenset.py` and keep four names importable: `build_manifest`, `check_leakage`, `add_case` and `verify_manifest`. `cases.json` holds thirty-one cases derived from `annotations.jsonl`, a copy of the kind of annotations the trace reading produces, plus synthetic cases written to fill thin categories. `fewshot.json` holds three examples an operator wants to paste into the prompt; one of them is a disguised copy of a held-out case. Verify never reads these files: it builds its own cases with fresh ids, texts, seed, ratios and minimum, so read every value from the arguments.
+
+`python3 -B demo.py` builds `goldenset.json`; `demo.py leak`, `demo.py add` and `demo.py verify` exercise the other three functions on that file.
+
+## Why three splits and a frozen one
+
+Hamel Husain's guide to building an LLM judge splits labeled cases three ways: **train** (10–20 %) is the only source of few-shot examples for a prompt; **dev** (40–45 %) is where you measure while iterating and never goes into a prompt; **test** (40–45 %) is frozen and read rarely, so the number it gives is one you have not tuned towards. Using dev results to change the prompt is how overfitting starts; using test results that way leaves you with no honest number at all. The guide also asks for 30–50 passing and 30–50 failing cases per split where possible, which this workspace's thirty-one cases do not reach: the demo shows the mechanics, your own set grows later.
+
+Two things make a split trustworthy. The assignment is a function of the case id and a seed, so the same id lands in the same split whatever the list order and however many cases are added later. And the held-out part carries a digest over its case hashes, so a quietly edited expectation changes a published number instead of disappearing.
+
+## Complete public contract
+
+A **case** is a dict with `id` (non-empty string, unique in the set), `input` (non-empty string: the request or question), `expected` (non-empty string: the outcome a correct assistant produces, in your own words), `category` (non-empty string: a taxonomy label such as `unknown_item` or `happy_path`) and `provenance`, a dict with `kind` equal to `real` or `synthetic` and a non-empty `source` note (a trace id, "written by the operator to fill wrong_unit"). A case without a valid `provenance` is refused everywhere: `build_manifest` and `add_case` raise `ValueError`, `verify_manifest` reports it. Other keys are ignored.
+
+```python
+build_manifest(cases, *, minimum_per_category, split_ratios, seed, version=1) -> dict
+check_leakage(manifest, few_shot_examples) -> list[str]
+add_case(manifest, case, *, note="") -> dict
+verify_manifest(manifest) -> list[str]
+```
+
+1. **Hash every case.** `hash` is the SHA-256 hex digest of the canonical JSON of the four fields `id`, `input`, `expected` and `category`: `json.dumps({...}, sort_keys=True, ensure_ascii=False, separators=(",", ":"))` encoded as UTF-8. Provenance is not part of the hash, so a redacted source note does not change a case's identity. Worked example: for `case-001` of `cases.json` the canonical text starts `{"category":"unknown_item","expected":"refuse: plasma coils…` and the hash is `b1478d07706032c7dbb3ce20951d47a0ebee5434e6188e2f153fc71482e6572f`.
+2. **Split by seeded hash, not by position.** `split_ratios` is `{"train": r1, "dev": r2, "test": r3}` with non-negative values summing to 1 (tolerance 1e-9; any other shape is a `ValueError`). For each case compute `u = int(sha256(f"{seed}:{id}").hexdigest()[:8], 16) / 2**32`; the case is `train` when `u < r1`, `dev` when `u < r1 + r2`, otherwise `test`. With seed `golden-v1`, `case-001` gives `u = 0.738…` (test at 0.2/0.4/0.4) and `case-004` gives `u = 0.158…` (train). Counts only approximate the ratios on a small set, and that is the price of stability: the demo's thirty-one cases land 6/12/13.
+3. **Enforce the minimum.** `minimum_per_category` is a positive integer. `build_manifest` raises `ValueError` naming any category with fewer cases; a category exactly at the minimum builds. `add_case` does not enforce it, because the first case of a new category is always below it; `verify_manifest` reports it instead, which is how a half-filled category shows up.
+4. **Freeze the held-out part.** `held_out_digest` is the SHA-256 hex digest of the `hash` values of every `test` case, sorted as strings and joined with `\n`, encoded as UTF-8. It covers the test split only: an edited train or dev case changes that case's hash, not the digest.
+5. **The manifest** is a dict with `version` (positive integer, as given), `seed` (stored as a string), `split_ratios`, `minimum_per_category`, `cases` (the input cases in order, each with `split` and `hash` added, other fields unchanged), `counts` (`{"train": n, "dev": n, "test": n}`), `categories` (category → count), `held_out_digest` and `history`, a list with one entry `{"version", "action": "build", "case_ids": [all ids], "held_out_digest", "note"}`.
+6. **Leakage is checked on normalized text.** `check_leakage` takes a list of few-shot examples, each a string or a dict with an `input` key, and returns one string per example that matches a `dev` or `test` case: the string contains the case id and its split name. Texts are compared after normalization: every character that is not a letter or digit (`str.isalnum`) becomes a space, whitespace runs collapse to one space, the ends are stripped and the result is casefolded. So `"  RESERVE 4 plasma coils for relay 2,   signed Mara ."` matches `case-001`. A train example never leaks; an unrelated example returns nothing.
+7. **Add without rewriting.** `add_case` validates the case like `build_manifest` (a duplicate id is a `ValueError`), returns a **new** manifest and leaves the one it was given untouched. Existing cases keep their split and hash; the new case gets its split by the same rule and its own hash; `version` increases by 1; `counts`, `categories` and `held_out_digest` are recomputed; `history` gains one entry `{"version", "action": "add_case", "case_ids": [new id], "held_out_digest": the new digest, "note"}` and every earlier entry stays unchanged. A case that lands in `test` changes the new version's digest; one that lands in `train` or `dev` leaves it as it was, and history still records the version.
+8. **Verify everything from the cases.** `verify_manifest` returns `[]` for a sound manifest, otherwise one string per finding, each starting with a prefix: `provenance:` (invalid provenance, names the id), `case:` (other malformed fields), `category:` (below the minimum, names the category), `hash:` (stored hash differs from the recomputed one, names the id), `split:` (stored split differs from the rule, names the id), `held_out:` (stored digest differs from the digest recomputed over the recomputed hashes of the current test cases; do not trust the stored `hash` fields), `counts:` (recorded counts differ from the cases or do not add up), `ratios:` and `history:` (last entry does not carry the manifest's version and digest). One more prefix is the hidden bonus: `duplicate:` (two cases whose `input` is equal after the leakage normalization; name both ids). `build_manifest` accepts such cases, `verify_manifest` reports them, and `cases.json` contains one such pair. Verify matches prefixes and names only; the rest of the wording is yours.
+
+Everything is pure computation: no network, no model, no file is written by the four functions.
+
+## What Verify runs
+
+Verify builds five categories of fresh cases (fresh ids, texts, provenance mix, seed, ratios, minimum and version per run) and checks, in code: every case hashed and a fresh manifest verifying clean; provenance refused when missing, of an unknown kind or without a note; a category below the minimum refused at build time and reported on a trimmed manifest; identical splits for two list orders, each equal to the published rule, counts adding up, and a different seed moving at least one case; the held-out digest recomputed, an edited test case reported with a `held_out:` finding while an edited train case is reported without one; a case-and-whitespace disguised copy of a test case and a verbatim dev case caught, a train example and an unrelated text allowed; `add_case` leaving the input untouched, keeping every earlier history entry and split, incrementing the version, covering a new test case in the new digest and leaving the digest unchanged for a new train case. The whole run takes well under a second.
+
+Two different implementations pass: plain dict functions with `str.isalnum` normalization, and a dataclass-backed `GoldenSet` object with regular expressions and `bisect`. No specific structure of `goldenset.py` is required beyond the four importable names.
+
+## Sources
+
+- Hamel Husain, "Creating a LLM-as-a-Judge that drives business results": train/dev/test proportions, what each split is for, 30–50 pass and fail per split, why tuning on dev overfits.
+- Hamel Husain and Shreya Shankar, AI Evals FAQ: reading traces first, the first-failure label and the taxonomy that the categories here come from.
+- Python `hashlib` and `json` (`sort_keys`, `separators`) for the canonical form and digests.

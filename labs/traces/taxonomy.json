@@ -1,0 +1,11 @@
+{
+  "total": 120,
+  "passes": 60,
+  "categories": [
+    {"name": "hallucination", "definition": "The assistant makes something up.", "trace_ids": [], "count": 20},
+    {"name": "formatting", "definition": "The answer is badly formatted.", "trace_ids": [], "count": 15},
+    {"name": "tone", "definition": "The answer sounds wrong for an operator.", "trace_ids": [], "count": 10},
+    {"name": "latency", "definition": "The answer took too long.", "trace_ids": [], "count": 10},
+    {"name": "other", "definition": "Anything else.", "trace_ids": [], "count": 5}
+  ]
+}

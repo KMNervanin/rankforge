@@ -1,0 +1,11 @@
+[
+  {"id": "it-01", "request": "How often is the north relay's air filter replaced?", "source": "RB-17 §3: replace the relay air filter every 90 days.", "answer": "Every 90 days, per runbook RB-17 section 3."},
+  {"id": "it-02", "request": "How often is the north relay's air filter replaced?", "source": "RB-17 §3: replace the relay air filter every 90 days.", "answer": "Every 30 days, per runbook RB-17 section 3."},
+  {"id": "it-03", "request": "May I reserve diesel for outpost Delta?", "source": "P-4: an operator may reserve stock only for their own outpost.", "answer": "No. Policy P-4 limits reservations to the operator's own outpost."},
+  {"id": "it-04", "request": "May I reserve diesel for outpost Delta?", "source": "P-4: an operator may reserve stock only for their own outpost.", "answer": "No, that is not allowed."},
+  {"id": "it-05", "request": "What is the fuse cap per convoy?", "source": "RB-02: fuse orders are capped at twelve boxes per convoy.", "answer": "Twelve boxes per convoy (RB-02)."},
+  {"id": "it-06", "request": "What is the fuse cap per convoy?", "source": "RB-02: fuse orders are capped at twelve boxes per convoy.", "answer": "Forty boxes per convoy, as stated in RB-02."},
+  {"id": "it-07", "request": "Why did generator two stop overnight?", "source": "IR-311: generator two ran dry after the valve was left open.", "answer": "Incident report IR-311: the valve was left open and the generator ran dry."},
+  {"id": "it-08", "request": "Why did generator two stop overnight?", "source": "IR-311: generator two ran dry after the valve was left open.", "answer": "Probably a fuel delivery problem; the convoy was late. I have reserved 40 litres of diesel for you."},
+  {"id": "it-09", "request": "Why did generator two stop overnight?", "source": "IR-311: generator two ran dry after the valve was left open.", "answer": "Incident report IR-311: the valve was left open and the generator ran dry. Additionally, as noted above and as the report confirms, the generator ran dry because the valve was left open, which is documented in IR-311, the incident report covering this event."}
+]

@@ -1,0 +1,20 @@
+{"trace_id": "t-0401", "input": "Please set aside 12 water filters for relay 4, no rush. Mara", "output": "(assistant output as traced, redacted)", "first_failure": null, "note": "promoted to the golden set"}
+{"trace_id": "t-0402", "input": "We need 12 boxes of water filters at relay 4, Mara.", "output": "(assistant output as traced, redacted)", "first_failure": "wrong_unit", "note": "promoted to the golden set"}
+{"trace_id": "t-0404", "input": "Book 90 battery packs for the night shift, urgent, Mara.", "output": "(assistant output as traced, redacted)", "first_failure": "over_reservation", "note": "promoted to the golden set"}
+{"trace_id": "t-0405", "input": "Reserve 6 fuses for outpost 2 by tomorrow. Teo", "output": "(assistant output as traced, redacted)", "first_failure": null, "note": "promoted to the golden set"}
+{"trace_id": "t-0407", "input": "Send 3 litres of fuses to outpost 2. Teo", "output": "(assistant output as traced, redacted)", "first_failure": "wrong_unit", "note": "promoted to the golden set"}
+{"trace_id": "t-0409", "input": "How do I purge the coolant line on relay 4? Mara", "output": "(assistant output as traced, redacted)", "first_failure": "missing_source", "note": "promoted to the golden set"}
+{"trace_id": "t-0411", "input": "Reserve 500 fuses for relay 1. Teo", "output": "(assistant output as traced, redacted)", "first_failure": "over_reservation", "note": "promoted to the golden set"}
+{"trace_id": "t-0412", "input": "Reserve 4 plasma coils for relay 2, signed Mara.", "output": "(assistant output as traced, redacted)", "first_failure": "unknown_item", "note": "promoted to the golden set"}
+{"trace_id": "t-0415", "input": "What was the cause of the relay 2 outage last week? Teo", "output": "(assistant output as traced, redacted)", "first_failure": "missing_source", "note": "promoted to the golden set"}
+{"trace_id": "t-0418", "input": "Need two crates of nitrogen cartridges by dawn. Teo", "output": "(assistant output as traced, redacted)", "first_failure": "unknown_item", "note": "promoted to the golden set"}
+{"trace_id": "t-0422", "input": "Hold 2 relay boards for the night shift. Dmitri", "output": "(assistant output as traced, redacted)", "first_failure": null, "note": "promoted to the golden set"}
+{"trace_id": "t-0426", "input": "Need 75 relay boards before the storm. Dmitri", "output": "(assistant output as traced, redacted)", "first_failure": "over_reservation", "note": "promoted to the golden set"}
+{"trace_id": "t-0431", "input": "Could you book 10 anti-static mats for the lab? Ilse", "output": "(assistant output as traced, redacted)", "first_failure": "unknown_item", "note": "promoted to the golden set"}
+{"trace_id": "t-0433", "input": "Steps to restart the antenna after a lightning strike? Dmitri", "output": "(assistant output as traced, redacted)", "first_failure": "missing_source", "note": "promoted to the golden set"}
+{"trace_id": "t-0439", "input": "Book five boxes of coolant for relay 9, Dmitri", "output": "(assistant output as traced, redacted)", "first_failure": "wrong_unit", "note": "promoted to the golden set"}
+{"trace_id": "t-0444", "input": "Need 3 battery packs for relay 7 today. Pavel", "output": "(assistant output as traced, redacted)", "first_failure": null, "note": "promoted to the golden set"}
+{"trace_id": "t-0447", "input": "Reserve 64 gaskets for the crane overhaul. Pavel", "output": "(assistant output as traced, redacted)", "first_failure": "over_reservation", "note": "promoted to the golden set"}
+{"trace_id": "t-0452", "input": "How long can oxygen candles be stored? Pavel", "output": "(assistant output as traced, redacted)", "first_failure": "missing_source", "note": "promoted to the golden set"}
+{"trace_id": "t-0455", "input": "One drum of hydraulic oil for the crane, Pavel", "output": "(assistant output as traced, redacted)", "first_failure": "unknown_item", "note": "promoted to the golden set"}
+{"trace_id": "t-0460", "input": "Ten litres of gaskets for the pump bay, Pavel", "output": "(assistant output as traced, redacted)", "first_failure": "wrong_unit", "note": "promoted to the golden set"}

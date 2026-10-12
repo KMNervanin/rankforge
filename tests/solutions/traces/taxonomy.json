@@ -1,0 +1,127 @@
+{
+  "total": 120,
+  "passes": 48,
+  "categories": [
+    {
+      "name": "tool error hidden",
+      "definition": "A tool result carries an error object, yet the answer reports a success that no tool produced (tr-0001: the lookup failed and the answer still states a number).",
+      "trace_ids": [
+        "tr-0001",
+        "tr-0011",
+        "tr-0031",
+        "tr-0042",
+        "tr-0043",
+        "tr-0054",
+        "tr-0066",
+        "tr-0072",
+        "tr-0083",
+        "tr-0093",
+        "tr-0103",
+        "tr-0106"
+      ],
+      "count": 12
+    },
+    {
+      "name": "wrong item",
+      "definition": "The tool arguments or the answer name a catalog item different from the one the operator asked for (tr-0006 asks for one item and reserves another).",
+      "trace_ids": [
+        "tr-0006",
+        "tr-0009",
+        "tr-0013",
+        "tr-0059",
+        "tr-0062",
+        "tr-0065",
+        "tr-0069",
+        "tr-0078",
+        "tr-0085",
+        "tr-0095",
+        "tr-0107",
+        "tr-0120"
+      ],
+      "count": 12
+    },
+    {
+      "name": "invented source",
+      "definition": "The answer cites a runbook or incident report id that is not among the retrieved passages (tr-0002 cites IR-120 while only IR-031 and RB-04 were retrieved).",
+      "trace_ids": [
+        "tr-0002",
+        "tr-0003",
+        "tr-0015",
+        "tr-0017",
+        "tr-0023",
+        "tr-0033",
+        "tr-0036",
+        "tr-0045",
+        "tr-0077",
+        "tr-0098",
+        "tr-0111"
+      ],
+      "count": 11
+    },
+    {
+      "name": "quantity miscounted",
+      "definition": "The request gives packs and a pack size and the reserved quantity is not their product (tr-0004).",
+      "trace_ids": [
+        "tr-0004",
+        "tr-0007",
+        "tr-0046",
+        "tr-0049",
+        "tr-0075",
+        "tr-0079",
+        "tr-0101",
+        "tr-0102",
+        "tr-0113",
+        "tr-0118"
+      ],
+      "count": 10
+    },
+    {
+      "name": "unit ignored",
+      "definition": "The request names a pack unit such as boxes and the reserve call books the same number in pieces (tr-0026).",
+      "trace_ids": [
+        "tr-0026",
+        "tr-0037",
+        "tr-0039",
+        "tr-0051",
+        "tr-0064",
+        "tr-0084",
+        "tr-0087",
+        "tr-0088",
+        "tr-0099",
+        "tr-0114"
+      ],
+      "count": 10
+    },
+    {
+      "name": "cut off",
+      "definition": "finish_reason is length and the answer stops mid-sentence although the passages were adequate (tr-0014).",
+      "trace_ids": [
+        "tr-0014",
+        "tr-0019",
+        "tr-0040",
+        "tr-0053",
+        "tr-0056",
+        "tr-0070",
+        "tr-0076",
+        "tr-0086",
+        "tr-0112"
+      ],
+      "count": 9
+    },
+    {
+      "name": "refused a valid request",
+      "definition": "An ordinary supply request receives a refusal and no tool is called (tr-0020).",
+      "trace_ids": [
+        "tr-0020",
+        "tr-0021",
+        "tr-0025",
+        "tr-0034",
+        "tr-0071",
+        "tr-0074",
+        "tr-0097",
+        "tr-0110"
+      ],
+      "count": 8
+    }
+  ]
+}

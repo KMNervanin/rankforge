@@ -1,0 +1,17 @@
+[
+  {
+    "id": "cites_source",
+    "name": "Answer cites a source that supports it",
+    "instruction": "The answer names the source it relies on, and that source actually supports the claim the answer makes."
+  },
+  {
+    "id": "within_request",
+    "name": "Answer stays within the operator's request",
+    "instruction": "The answer addresses only what the operator asked and does not add unrequested actions, reservations or advice."
+  },
+  {
+    "id": "neutral_tone",
+    "name": "Answer keeps a neutral tone",
+    "instruction": "The answer states facts without blame, speculation about intent or emotional language."
+  }
+]

@@ -1,0 +1,312 @@
+[
+  {
+    "id": "case-001",
+    "input": "Reserve 4 plasma coils for relay 2, signed Mara.",
+    "expected": "refuse: plasma coils are not in the catalog",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0412, redacted"
+    }
+  },
+  {
+    "id": "case-002",
+    "input": "Need two crates of nitrogen cartridges by dawn. Teo",
+    "expected": "refuse: nitrogen cartridges are not in the catalog",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0418, redacted"
+    }
+  },
+  {
+    "id": "case-003",
+    "input": "Could you book 10 anti-static mats for the lab? Ilse",
+    "expected": "refuse: anti-static mats are not in the catalog",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0431, redacted"
+    }
+  },
+  {
+    "id": "case-004",
+    "input": "Order 3 thermal blankets for outpost 7, urgent. Dmitri",
+    "expected": "refuse: thermal blankets are not in the catalog",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill unknown_item"
+    }
+  },
+  {
+    "id": "case-005",
+    "input": "Set aside six solar fuses for relay 5. Noor",
+    "expected": "refuse: solar fuses are not in the catalog (fuses are)",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill unknown_item"
+    }
+  },
+  {
+    "id": "case-006",
+    "input": "One drum of hydraulic oil for the crane, Pavel",
+    "expected": "refuse: hydraulic oil is not in the catalog",
+    "category": "unknown_item",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0455, redacted"
+    }
+  },
+  {
+    "id": "case-007",
+    "input": "We need 12 boxes of water filters at relay 4, Mara.",
+    "expected": "record 12 water filters in pieces, the catalog unit",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0402, redacted"
+    }
+  },
+  {
+    "id": "case-008",
+    "input": "Send 3 litres of fuses to outpost 2. Teo",
+    "expected": "record fuses in pieces; litres is not their unit",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0407, redacted"
+    }
+  },
+  {
+    "id": "case-009",
+    "input": "Reserve 2 kilograms of relay boards for the night shift. Ilse",
+    "expected": "record relay boards in pieces",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill wrong_unit"
+    }
+  },
+  {
+    "id": "case-010",
+    "input": "Book five boxes of coolant for relay 9, Dmitri",
+    "expected": "record coolant in litres, the catalog unit",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0439, redacted"
+    }
+  },
+  {
+    "id": "case-011",
+    "input": "Four pieces of coolant, no rush. Noor",
+    "expected": "record coolant in litres",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill wrong_unit"
+    }
+  },
+  {
+    "id": "case-012",
+    "input": "Ten litres of gaskets for the pump bay, Pavel",
+    "expected": "record gaskets in pieces",
+    "category": "wrong_unit",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0460, redacted"
+    }
+  },
+  {
+    "id": "case-013",
+    "input": "Book 90 battery packs for the night shift, urgent, Mara.",
+    "expected": "refuse: 90 exceeds the operator's limit of 50 battery packs",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0404, redacted"
+    }
+  },
+  {
+    "id": "case-014",
+    "input": "Reserve 500 fuses for relay 1. Teo",
+    "expected": "refuse: above the reservation limit",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0411, redacted"
+    }
+  },
+  {
+    "id": "case-015",
+    "input": "Hold every water filter in stock for outpost 3. Ilse",
+    "expected": "refuse: no quantity, and the whole stock exceeds the limit",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill over_reservation"
+    }
+  },
+  {
+    "id": "case-016",
+    "input": "Need 75 relay boards before the storm. Dmitri",
+    "expected": "refuse: 75 exceeds the limit of 20 relay boards",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0426, redacted"
+    }
+  },
+  {
+    "id": "case-017",
+    "input": "Set aside 200 litres of coolant, urgent. Noor",
+    "expected": "refuse: above the reservation limit",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill over_reservation"
+    }
+  },
+  {
+    "id": "case-018",
+    "input": "Reserve 64 gaskets for the crane overhaul. Pavel",
+    "expected": "refuse: 64 exceeds the limit of 40 gaskets",
+    "category": "over_reservation",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0447, redacted"
+    }
+  },
+  {
+    "id": "case-019",
+    "input": "How do I purge the coolant line on relay 4? Mara",
+    "expected": "answer cites runbook RB-12 section 3",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0409, redacted"
+    }
+  },
+  {
+    "id": "case-020",
+    "input": "What was the cause of the relay 2 outage last week? Teo",
+    "expected": "answer cites incident report IR-2026-031",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0415, redacted"
+    }
+  },
+  {
+    "id": "case-021",
+    "input": "Which breaker trips first when the pump bay floods? Ilse",
+    "expected": "answer cites runbook RB-07 section 1",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill missing_source"
+    }
+  },
+  {
+    "id": "case-022",
+    "input": "Steps to restart the antenna after a lightning strike? Dmitri",
+    "expected": "answer cites runbook RB-19",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0433, redacted"
+    }
+  },
+  {
+    "id": "case-023",
+    "input": "Why did outpost 5 lose power on the 3rd? Noor",
+    "expected": "answer cites incident report IR-2026-028",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill missing_source"
+    }
+  },
+  {
+    "id": "case-024",
+    "input": "How long can oxygen candles be stored? Pavel",
+    "expected": "answer cites runbook RB-02 section 4, or abstains",
+    "category": "missing_source",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0452, redacted"
+    }
+  },
+  {
+    "id": "case-025",
+    "input": "Please set aside 12 water filters for relay 4, no rush. Mara",
+    "expected": "record: 12 water filters, pieces, urgency low",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0401, redacted"
+    }
+  },
+  {
+    "id": "case-026",
+    "input": "Reserve 6 fuses for outpost 2 by tomorrow. Teo",
+    "expected": "record: 6 fuses, pieces, urgency normal",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0405, redacted"
+    }
+  },
+  {
+    "id": "case-027",
+    "input": "Book 20 litres of coolant for the crane, urgent. Ilse",
+    "expected": "record: 20 coolant, litres, urgency high",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill happy_path"
+    }
+  },
+  {
+    "id": "case-028",
+    "input": "Hold 2 relay boards for the night shift. Dmitri",
+    "expected": "record: 2 relay boards, pieces, urgency normal",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0422, redacted"
+    }
+  },
+  {
+    "id": "case-029",
+    "input": "Set aside 8 gaskets for the pump bay, whenever. Noor",
+    "expected": "record: 8 gaskets, pieces, urgency low",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "written by the operator to fill happy_path"
+    }
+  },
+  {
+    "id": "case-030",
+    "input": "Need 3 battery packs for relay 7 today. Pavel",
+    "expected": "record: 3 battery packs, pieces, urgency high",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "real",
+      "source": "trace t-0444, redacted"
+    }
+  },
+  {
+    "id": "case-031",
+    "input": "  PLEASE set aside 12 water filters for relay 4 , no rush. MARA",
+    "expected": "record: 12 water filters, pieces, urgency low",
+    "category": "happy_path",
+    "provenance": {
+      "kind": "synthetic",
+      "source": "pasted a second time while filling happy_path"
+    }
+  }
+]

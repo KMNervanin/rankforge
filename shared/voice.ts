@@ -1,4 +1,9 @@
 import type { Mission } from './types.js'
+import { mission as evalgate, followUps as evalgateFollowUps } from './voice/evalgate.js'
+import { mission as judge, followUps as judgeFollowUps } from './voice/judge.js'
+import { mission as errorbars, followUps as errorbarsFollowUps } from './voice/errorbars.js'
+import { mission as golden, followUps as goldenFollowUps } from './voice/golden.js'
+import { mission as traces, followUps as tracesFollowUps } from './voice/traces.js'
 import { mission as window, followUps as windowFollowUps } from './voice/window.js'
 import { mission as prompts, followUps as promptsFollowUps } from './voice/prompts.js'
 import { mission as backoff, followUps as backoffFollowUps } from './voice/backoff.js'
@@ -8,6 +13,11 @@ import { mission as sampling, followUps as samplingFollowUps } from './voice/sam
 // Chapter IX of the roadmap: the operator assistant. Authored for the owner's personal route first; the
 // endpoint is whatever OpenAI-compatible server the learner configures in llm.json (a local model by default).
 const authored: Mission[] = [
+  evalgate,
+  judge,
+  errorbars,
+  golden,
+  traces,
   window,
   prompts,
   backoff,
@@ -48,6 +58,11 @@ const authored: Mission[] = [
 export const voiceMissions: Mission[] = [...authored].sort((a, b) => a.order - b.order)
 
 export const voiceFollowUps: Record<string, string[]> = {
+  evalgate: evalgateFollowUps,
+  judge: judgeFollowUps,
+  errorbars: errorbarsFollowUps,
+  golden: goldenFollowUps,
+  traces: tracesFollowUps,
   window: windowFollowUps,
   prompts: promptsFollowUps,
   backoff: backoffFollowUps,

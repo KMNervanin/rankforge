@@ -1,0 +1,3 @@
+{"trace_id": "tr-0001", "open_note": "lookup result is an error object, answer states 74 pieces anyway", "first_failure": "tool error hidden"}
+{"trace_id": "tr-0002", "open_note": "answer cites IR-120; passages are IR-031 and RB-04", "first_failure": "invented source"}
+{"trace_id": "tr-0005", "open_note": "lookup, reserve and answer agree on 5 pieces of battery pack", "first_failure": "pass"}

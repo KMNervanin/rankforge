@@ -1,0 +1,9 @@
+{
+  "prompt_version": "v3",
+  "model": "relay-small",
+  "cases": {
+    "sr-01": true, "sr-02": true, "sr-03": true, "sr-04": true, "sr-05": true, "sr-06": true,
+    "sr-07": true, "sr-08": true, "sr-09": false, "sr-10": true, "sr-11": true, "sr-12": true,
+    "sr-13": true, "sr-14": true, "sr-15": false, "sr-16": true
+  }
+}

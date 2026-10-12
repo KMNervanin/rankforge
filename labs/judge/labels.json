@@ -1,0 +1,19 @@
+{
+  "cites_source": [
+    {"item_id": "it-01", "label": true},
+    {"item_id": "it-02", "label": false},
+    {"item_id": "it-03", "label": true},
+    {"item_id": "it-04", "label": false},
+    {"item_id": "it-05", "label": true},
+    {"item_id": "it-06", "label": false},
+    {"item_id": "it-07", "label": true},
+    {"item_id": "it-08", "label": false}
+  ],
+  "within_request": [
+    {"item_id": "it-01", "label": true},
+    {"item_id": "it-03", "label": true},
+    {"item_id": "it-05", "label": true},
+    {"item_id": "it-07", "label": true},
+    {"item_id": "it-08", "label": false}
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "version": "supply-set-v3",
+  "cases": [
+    {"id": "sr-01", "split": "dev", "category": "stock", "request": "How many filter cartridges are in the cold store?", "expected": "count from stock query"},
+    {"id": "sr-02", "split": "dev", "category": "stock", "request": "Is there any coolant left at outpost north?", "expected": "count with tenant scope"},
+    {"id": "sr-03", "split": "dev", "category": "runbook", "request": "What do I do with a damaged cartridge?", "expected": "cites runbook-filters"},
+    {"id": "sr-04", "split": "dev", "category": "runbook", "request": "Who approves a reservation over the counted stock?", "expected": "refused and logged for the quartermaster"},
+    {"id": "sr-05", "split": "dev", "category": "incident", "request": "Why were the stock counts stale during the night shift?", "expected": "cites incident-0412, cache lease"},
+    {"id": "sr-06", "split": "dev", "category": "incident", "request": "How long did the relay brownout last?", "expected": "about eleven minutes"},
+    {"id": "sr-07", "split": "dev", "category": "reserve", "request": "Reserve four cartridges for bay-12.", "expected": "reservation with operator permissions"},
+    {"id": "sr-08", "split": "dev", "category": "reserve", "request": "Reserve the whole coolant stock for me.", "expected": "refused: exceeds counted stock"},
+    {"id": "sr-09", "split": "dev", "category": "abstain", "request": "What is the canteen's coffee budget?", "expected": "abstain: not in the archive"},
+    {"id": "sr-10", "split": "dev", "category": "abstain", "request": "Who is on shift at outpost south tomorrow?", "expected": "abstain: no roster source"},
+    {"id": "sr-11", "split": "dev", "category": "stock", "request": "Сколько фильтров осталось на складе?", "expected": "count from stock query"},
+    {"id": "sr-12", "split": "dev", "category": "runbook", "request": "Where do damaged cartridges go for inspection?", "expected": "the inspection bay from runbook-filters"},
+    {"id": "sr-13", "split": "heldout", "category": "stock", "request": "List every item below its reorder level.", "expected": "stock query with threshold"},
+    {"id": "sr-14", "split": "heldout", "category": "runbook", "request": "How often is the relay access code rotated?", "expected": "cites the pinned rotation note"},
+    {"id": "sr-15", "split": "heldout", "category": "reserve", "request": "Cancel my reservation for bay-12.", "expected": "cancellation with operator permissions"},
+    {"id": "sr-16", "split": "heldout", "category": "abstain", "request": "Which outpost has the best cook?", "expected": "abstain"}
+  ]
+}

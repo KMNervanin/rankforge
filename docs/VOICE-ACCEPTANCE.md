@@ -39,3 +39,17 @@ Five labs authored in parallel by author agents following `VOICE-AUTHORING.md`, 
 | G06 Fit the window | `window` | 7 + 1 | no | 16/16 | a dropped document must not end the fill (new check + mutation); worked-example arithmetic; passage normalisation stated |
 
 Limits: the live measurements report numbers only; no learner has attempted these missions yet, so clarity rests on the blind-solver pass, not on a real learner. Chapter IX in the game shows these quests as cards grouped by sub-block; the Atlas links each to its roadmap node.
+
+## Batch 2 — G07–G11 "Measuring the voice", 2026-10-12 evening
+
+Same procedure as batch 1: five author agents, five blind solvers, findings applied before integration. All five blind solutions passed within two iterations.
+
+| Mission | Runtime id | Checks (required + bonus) | Live part | Node tests | Review findings applied |
+| --- | --- | --- | --- | --- | --- |
+| G07 Read the traces first | `traces` | 10 + 1 | no (the learner reads 120 shipped traces; the reviewer read all of them and judged the size realistic) | 16/16 | agreement tolerance 8 → 12 with the unit and relay rules stated; no foreign ids; bonus prefix documented; a rare empty-category flake removed |
+| G08 A golden set you can trust | `golden` | 7 + 1 | no | 14/14 | held-out digest wording contradiction; duplicate prefix documented and a real twin added to the fixture; objective 5 reworded; starter signature |
+| G09 Numbers with error bars | `errorbars` | 8 + 1 | no | 16/16 | clustered-SE formula confirmed by derivation and its degenerate cases stated; needed_n integral; unverifiable "969" claim dropped |
+| G10 A judge needs a judge | `judge` | 10 + 1 | yes: four labeled fixtures on the configured endpoint, agreement/TPR/TNR reported (one run on gemma-3-4b: 4/4) | 17/17 | criterion prompt must be its own message; Fraction rates accepted; pairwise pins; bonus signature; A/B/TIE parse-failure path exercised |
+| G11 Evals as a gate | `evalgate` | 8 + 1 | no (injected runner and clock) | 18/18 | `cases_run` is a count; first-attempt pass decided outright; cap semantics for the interrupting case enforced both ways; starter fails for the stated reasons |
+
+Limits as in batch 1. G07's pass-versus-failure agreement is checked against the planted outcomes with a published tolerance; the grouping itself is debrief material, not a code verdict.

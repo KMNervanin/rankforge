@@ -1,0 +1,31 @@
+{
+  "_note": "Recorded outcomes per model id, case id and attempt: a replay fixture for demo.py, never a model.",
+  "relay-small": {
+    "sr-01": {"attempts": [true], "tokens": 310, "seconds": 0.8},
+    "sr-02": {"attempts": [true], "tokens": 290, "seconds": 0.7},
+    "sr-03": {"attempts": [false, true, true], "tokens": 420, "seconds": 1.1},
+    "sr-04": {"attempts": [true], "tokens": 380, "seconds": 0.9},
+    "sr-05": {"attempts": [true], "tokens": 450, "seconds": 1.2},
+    "sr-06": {"attempts": [true], "tokens": 330, "seconds": 0.8},
+    "sr-07": {"attempts": [true], "tokens": 260, "seconds": 0.6},
+    "sr-08": {"attempts": [false, false], "tokens": 270, "seconds": 0.6},
+    "sr-09": {"attempts": [true], "tokens": 180, "seconds": 0.4},
+    "sr-10": {"attempts": [true], "tokens": 190, "seconds": 0.4},
+    "sr-11": {"attempts": [true], "tokens": 320, "seconds": 0.8},
+    "sr-12": {"attempts": [true], "tokens": 300, "seconds": 0.7}
+  },
+  "relay-large": {
+    "sr-01": {"attempts": [true], "tokens": 640, "seconds": 2.1},
+    "sr-02": {"attempts": [true], "tokens": 610, "seconds": 2.0},
+    "sr-03": {"attempts": [true], "tokens": 700, "seconds": 2.4},
+    "sr-04": {"attempts": [true], "tokens": 690, "seconds": 2.3},
+    "sr-05": {"attempts": [true], "tokens": 820, "seconds": 2.9},
+    "sr-06": {"attempts": [true], "tokens": 650, "seconds": 2.2},
+    "sr-07": {"attempts": [true], "tokens": 560, "seconds": 1.8},
+    "sr-08": {"attempts": [true], "tokens": 570, "seconds": 1.9},
+    "sr-09": {"attempts": [true], "tokens": 400, "seconds": 1.3},
+    "sr-10": {"attempts": [true], "tokens": 410, "seconds": 1.3},
+    "sr-11": {"attempts": [true], "tokens": 660, "seconds": 2.2},
+    "sr-12": {"attempts": [true], "tokens": 620, "seconds": 2.0}
+  }
+}

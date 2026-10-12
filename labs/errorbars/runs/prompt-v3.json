@@ -1,0 +1,157 @@
+{
+ "name": "prompt-v3",
+ "model": "relay-small",
+ "prompt": "prompt-v3",
+ "predictions": {
+  "g01": "abstain",
+  "g02": {
+   "item": "fuel can",
+   "quantity": 12,
+   "unit": "litre",
+   "urgency": "high"
+  },
+  "g03": {
+   "item": "relay fuse",
+   "quantity": 33,
+   "unit": "box",
+   "urgency": "normal"
+  },
+  "g04": {
+   "item": "Filter Cartridge ",
+   "quantity": 22,
+   "unit": "box",
+   "urgency": "high"
+  },
+  "g05": {
+   "item": "water filter",
+   "quantity": "25",
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g06": {
+   "item": "medkit",
+   "quantity": 28,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g07": "abstain",
+  "g08": {
+   "item": "Water Filter ",
+   "quantity": 8,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g09": {
+   "item": "antenna mast",
+   "quantity": "5",
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g10": {
+   "item": "filter cartridge",
+   "quantity": 19,
+   "unit": "box",
+   "urgency": "low"
+  },
+  "g11": {
+   "item": "signal flare",
+   "quantity": 28,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g12": {
+   "item": "signal flare",
+   "quantity": 26,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g13": {
+   "item": "water filter",
+   "quantity": "13",
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g14": {
+   "item": "rice",
+   "quantity": 4,
+   "unit": "kilogram",
+   "urgency": "normal"
+  },
+  "g15": "abstain",
+  "g16": {
+   "item": "water filter",
+   "quantity": 16,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g17": "abstain",
+  "g18": {
+   "item": "antenna mast",
+   "quantity": 13,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g19": {
+   "item": "water filter",
+   "quantity": 7,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g20": {
+   "item": "Water Filter ",
+   "quantity": 33,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g21": {
+   "item": "medkit",
+   "quantity": "35",
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g22": "abstain",
+  "g23": {
+   "item": "rice",
+   "quantity": 13,
+   "unit": "kilogram",
+   "urgency": "high"
+  },
+  "g24": {
+   "item": "Antenna Mast ",
+   "quantity": 10,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g25": "abstain",
+  "g26": {
+   "item": "antenna mast",
+   "quantity": 10,
+   "unit": "piece",
+   "urgency": "high"
+  },
+  "g27": {
+   "item": "antenna mast",
+   "quantity": 4,
+   "unit": "piece",
+   "urgency": "low"
+  },
+  "g28": {
+   "item": "Rice ",
+   "quantity": 16,
+   "unit": "kilogram",
+   "urgency": "low"
+  },
+  "g29": {
+   "item": "medkit",
+   "quantity": 1,
+   "unit": "piece",
+   "urgency": "normal"
+  },
+  "g30": {
+   "item": "relay fuse",
+   "quantity": 34,
+   "unit": "box",
+   "urgency": "high"
+  }
+ }
+}
