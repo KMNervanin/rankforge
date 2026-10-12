@@ -1,0 +1,6 @@
+[
+  {"id": "p1", "doc": "runbook-relay", "version": 3, "text": "Relay 4 restart procedure: switch the relay off, wait 90 seconds, then switch it on again. If the status lamp stays red after the second attempt, open an incident report."},
+  {"id": "p2", "doc": "runbook-stock", "version": 1, "text": "Spare fuses for the relays are kept in locker 7 of the north depot. The locker key is signed out from the operator on duty."},
+  {"id": "p3", "doc": "incident-2231", "version": 1, "text": "Incident 2231: generator two ran dry at 03:40 because the diesel reserve had not been refilled after the convoy. Refilling took forty minutes."},
+  {"id": "p4", "doc": "runbook-water", "version": 1, "text": "Water filters are replaced every ninety days or after a turbidity alarm, whichever comes first."}
+]

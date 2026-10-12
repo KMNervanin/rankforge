@@ -60,6 +60,11 @@ small, .micro { font-size: 12px; line-height: 1.5; }
 .sector-embeddings { --sector: #c9b2ff; --sector-soft: #473a66; }
 .sector-extraction { --sector: #c9b2ff; --sector-soft: #473a66; }
 .sector-chunking { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-lexical { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-fusion { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-annindex { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-citations { --sector: #c9b2ff; --sector-soft: #473a66; }
+.sector-reindex { --sector: #c9b2ff; --sector-soft: #473a66; }
 .mission-block + .mission-block { margin-top: 28px; }
 .block-heading { margin: 0 0 10px; font-size: 13px; letter-spacing: .4px; text-transform: uppercase; opacity: .72; }
 

@@ -1,0 +1,19 @@
+{
+  "dim": 32,
+  "k": 10,
+  "bound": 0.9,
+  "outposts": {"alpha": 1500, "beta": 1400, "gamma": 7},
+  "grid": [
+    {"lists": 32, "probes": 1},
+    {"lists": 32, "probes": 2},
+    {"lists": 32, "probes": 4},
+    {"lists": 32, "probes": 8},
+    {"lists": 32, "probes": 16}
+  ],
+  "transfer_grid": [
+    {"lists": 64, "probes": 4},
+    {"lists": 64, "probes": 16},
+    {"lists": 64, "probes": 32},
+    {"lists": 64, "probes": 48}
+  ]
+}

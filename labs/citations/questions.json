@@ -1,0 +1,5 @@
+[
+  {"id": "q1", "question": "How long should the operator wait after switching relay 4 off?", "answerable": true},
+  {"id": "q2", "question": "Where are the spare fuses kept and who holds the key?", "answerable": true},
+  {"id": "q3", "question": "What is the price of diesel at the south depot?", "answerable": false}
+]

@@ -1,0 +1,15 @@
+[
+  {"id": "p01", "text": "The relay brownout at 02:10 lasted eleven minutes; stock queries returned stale counts until the cache lease expired."},
+  {"id": "p02", "text": "Spare gaskets are kept in bay nine behind the clamps."},
+  {"id": "p03", "text": "Behind the clamps in bay nine are the spare gaskets kept."},
+  {"id": "p04", "text": "The FLT line of intake filters shares bay 14 with gasket kit 220A and the clamps."},
+  {"id": "p05", "text": "Fuse drawer: slow fuse, fast fuse and the fuse for the pump are counted weekly."},
+  {"id": "p06", "text": "Filter cartridge FLT-220A fits the cold store intake and must be counted before every reservation."},
+  {"id": "p07", "text": "A blown fuse on the intake pump is replaced from the drawer and logged in the incident report for the shift."},
+  {"id": "p08", "text": "Error E0417 means the relay rejected a reservation because the operator lacks the outpost permission."},
+  {"id": "p09", "text": "During the winter audit the quartermaster found one fuse missing from the drawer, two gaskets past their date, three runbooks with outdated contacts and a reservation ledger that nobody had signed for a month."},
+  {"id": "p10", "text": "Only the quartermaster may approve a reservation that exceeds the counted stock; the request is refused and logged."},
+  {"id": "p11", "text": "The relay runbook covers restarting the relay after a brownout: wait sixty seconds, then clear the cache."},
+  {"id": "p12", "text": "Relay board RB/7731-K replaces the burnt controller in the relay rack; order it through the depot."},
+  {"id": "p13", "text": "The RB depot shipment 7731 arrived with K-type clamps and a signed ledger."}
+]

@@ -1,0 +1,10 @@
+[
+  {"id": "q1", "category": "exact_code", "query": "FLT-220A", "expected": ["p06"]},
+  {"id": "q2", "category": "exact_code", "query": "e0417", "expected": ["p08"]},
+  {"id": "q3", "category": "exact_code", "query": "flt-220a", "expected": ["p06"]},
+  {"id": "q4", "category": "paraphrase", "query": "power dip made the inventory numbers out of date", "expected": ["p01"]},
+  {"id": "q5", "category": "paraphrase", "query": "how to bring the relay back after an outage", "expected": ["p11"]},
+  {"id": "q6", "category": "paraphrase", "query": "who can sign off on an order above the counted inventory", "expected": ["p10"]},
+  {"id": "q7", "category": "synonym", "query": "relay outage", "expected": ["p01", "p11"]},
+  {"id": "q8", "category": "synonym", "query": "cartridge count before booking", "expected": ["p06"]}
+]

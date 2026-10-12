@@ -1,4 +1,9 @@
 import type { Mission } from './types.js'
+import { mission as reindex, followUps as reindexFollowUps } from './voice/reindex.js'
+import { mission as citations, followUps as citationsFollowUps } from './voice/citations.js'
+import { mission as annindex, followUps as annindexFollowUps } from './voice/annindex.js'
+import { mission as fusion, followUps as fusionFollowUps } from './voice/fusion.js'
+import { mission as lexical, followUps as lexicalFollowUps } from './voice/lexical.js'
 import { mission as chunking, followUps as chunkingFollowUps } from './voice/chunking.js'
 import { mission as extraction, followUps as extractionFollowUps } from './voice/extraction.js'
 import { mission as embeddings, followUps as embeddingsFollowUps } from './voice/embeddings.js'
@@ -18,6 +23,11 @@ import { mission as sampling, followUps as samplingFollowUps } from './voice/sam
 // Chapter IX of the roadmap: the operator assistant. Authored for the owner's personal route first; the
 // endpoint is whatever OpenAI-compatible server the learner configures in llm.json (a local model by default).
 const authored: Mission[] = [
+  reindex,
+  citations,
+  annindex,
+  fusion,
+  lexical,
   chunking,
   extraction,
   embeddings,
@@ -68,6 +78,11 @@ const authored: Mission[] = [
 export const voiceMissions: Mission[] = [...authored].sort((a, b) => a.order - b.order)
 
 export const voiceFollowUps: Record<string, string[]> = {
+  reindex: reindexFollowUps,
+  citations: citationsFollowUps,
+  annindex: annindexFollowUps,
+  fusion: fusionFollowUps,
+  lexical: lexicalFollowUps,
   chunking: chunkingFollowUps,
   extraction: extractionFollowUps,
   embeddings: embeddingsFollowUps,

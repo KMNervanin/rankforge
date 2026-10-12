@@ -1,0 +1,48 @@
+{
+  "note": "Canned results for terminal runs: the lexical (BM25, higher is better) and dense (cosine) lists of the archive for six operator questions, the scripted reranker scores per (query, passage) and its declared cost per pair. Verify carries its own lists, scores and costs.",
+  "passages": {
+    "rb-filters-01": "Filter cartridges are counted in the cold store before every reservation.",
+    "rb-filters-02": "Damaged cartridges go to bay-17 for inspection and never back to the cold store.",
+    "rb-relay-01": "A relay brownout clears itself after the capacitor bank recharges; do not reset the relay by hand.",
+    "rb-relay-02": "Relay access codes rotate at the start of every shift.",
+    "ir-0412": "Night shift reported a relay brownout at 02:10; stock queries returned stale counts for eleven minutes.",
+    "ir-0388": "Fuse box F-12 tripped twice during the generator test; the second trip was logged as a reservation error.",
+    "rb-fuses-01": "Fuses are reserved by amperage and bay; an order for the same bay twice in one shift needs the quartermaster.",
+    "rb-reserve-01": "Only operators with the reservation permission may hold stock; a held item expires after six hours.",
+    "memo-coffee": "Coffee supplies are not reservable through the assistant; ask the catering desk.",
+    "rb-cold-01": "The cold store door alarm is silenced for ten minutes during counts."
+  },
+  "queries": [
+    {"id": "q1", "text": "relay brownout what to do", "expected": "rb-relay-01"},
+    {"id": "q2", "text": "fuses ordered twice for the same bay", "expected": "rb-fuses-01"},
+    {"id": "q3", "text": "who may reserve supplies", "expected": "rb-reserve-01"},
+    {"id": "q4", "text": "stale stock counts during the night", "expected": "ir-0412"},
+    {"id": "q5", "text": "where do broken filter cartridges go", "expected": "rb-filters-02"},
+    {"id": "q6", "text": "F-12 tripped", "expected": "ir-0388"}
+  ],
+  "lexical": {
+    "q1": [["ir-0412", 7.9], ["rb-relay-01", 7.1], ["rb-relay-02", 4.2], ["rb-fuses-01", 1.1]],
+    "q2": [["rb-fuses-01", 9.4], ["ir-0388", 3.3], ["rb-filters-02", 2.0]],
+    "q3": [["rb-reserve-01", 5.8], ["memo-coffee", 4.9], ["rb-filters-01", 2.2], ["rb-fuses-01", 1.7]],
+    "q4": [["rb-filters-01", 3.1], ["ir-0412", 2.9], ["rb-cold-01", 2.7], ["rb-reserve-01", 1.0]],
+    "q5": [["rb-filters-01", 6.2], ["rb-filters-02", 6.0], ["rb-cold-01", 1.4]],
+    "q6": [["ir-0388", 11.2]]
+  },
+  "dense": {
+    "q1": [["rb-relay-01", 0.83], ["ir-0412", 0.79], ["rb-relay-02", 0.61], ["rb-cold-01", 0.40], ["rb-fuses-01", 0.38]],
+    "q2": [["rb-fuses-01", 0.77], ["rb-reserve-01", 0.62], ["ir-0388", 0.58], ["memo-coffee", 0.30]],
+    "q3": [["memo-coffee", 0.71], ["rb-reserve-01", 0.70], ["rb-fuses-01", 0.55], ["rb-filters-01", 0.41]],
+    "q4": [["ir-0412", 0.88], ["rb-cold-01", 0.52], ["rb-relay-01", 0.47], ["rb-filters-01", 0.44]],
+    "q5": [["rb-filters-02", 0.81], ["rb-filters-01", 0.74], ["rb-cold-01", 0.46], ["memo-coffee", 0.21]],
+    "q6": [["rb-fuses-01", 0.66], ["ir-0388", 0.64], ["rb-relay-01", 0.33]]
+  },
+  "rerank_scores": {
+    "q1": {"rb-relay-01": 0.97, "ir-0412": 0.62, "rb-relay-02": 0.35},
+    "q2": {"rb-fuses-01": 0.95, "ir-0388": 0.40, "rb-reserve-01": 0.30},
+    "q3": {"rb-reserve-01": 0.93, "memo-coffee": 0.41, "rb-fuses-01": 0.22},
+    "q4": {"ir-0412": 0.90, "rb-cold-01": 0.44, "rb-filters-01": 0.21},
+    "q5": {"rb-filters-02": 0.96, "rb-filters-01": 0.58, "rb-cold-01": 0.12},
+    "q6": {"ir-0388": 0.88, "rb-fuses-01": 0.45}
+  },
+  "costs_ms": {"lexical": 2.0, "dense": 6.0, "per_pair": 9.0}
+}

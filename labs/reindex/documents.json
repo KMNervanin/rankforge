@@ -1,0 +1,29 @@
+{
+  "documents": [
+    {
+      "doc_id": "RB-power",
+      "content": "Runbook: power dip on the relay.\n\nStep 1. Confirm the dip on the panel and read fuse F41; the relay fuse rotates every 12 days.\n\nStep 2. Switch the relay to the reserve battery in bay 17 and log the access code K-2210 in the shift journal.\n\nWarning: never reset the relay while the reserve battery is still charging."
+    },
+    {
+      "doc_id": "RB-water",
+      "content": "Runbook: water purifier filters.\n\nReplace the purifier cartridge after 600 liters or when the turbidity lamp blinks amber.\n\nOrder replacement cartridges from the supplies desk two weeks before the expected change."
+    },
+    {
+      "doc_id": "RB-reserve",
+      "content": "Runbook: reserving supplies.\n\nOnly an operator with the reservation permission may hold stock; the assistant reserves under that operator's name.\n\nA reservation older than three shifts is released automatically by the ledger."
+    },
+    {
+      "doc_id": "IR-418",
+      "content": "Incident report 418: the relay dropped twice during the night shift.\n\nCause: a loose terminal on the reserve battery. Fixed by the morning crew; the terminal was replaced."
+    }
+  ],
+  "revisions": {
+    "RB-power": "Runbook: power dip on the relay, revised after incident 418.\n\nSwitch the relay to the reserve battery in bay 17, log the access code K-7731 in the shift journal and call the morning crew."
+  },
+  "withdrawn": ["RB-water"],
+  "queries": [
+    "log the access code K-2210 in the shift journal",
+    "access code K-7731 call the morning crew",
+    "replace the purifier cartridge turbidity lamp blinks amber"
+  ]
+}

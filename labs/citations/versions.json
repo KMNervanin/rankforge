@@ -1,0 +1,5 @@
+[
+  {"id": "p5", "doc": "runbook-relay", "version": 1, "text": "Relay 4 restart procedure: switch the relay off, wait 30 seconds, then switch it on again."},
+  {"id": "p6", "doc": "runbook-relay", "version": 2, "text": "Relay 4 restart procedure: switch the relay off, wait 90 seconds, then switch it on again. A shorter wait trips the breaker."},
+  {"id": "p7", "doc": "runbook-stock", "version": 1, "text": "Spare fuses for the relays are kept in locker 7 of the north depot."}
+]

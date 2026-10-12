@@ -20,14 +20,14 @@ Authoring runs in batches of five missions by parallel author agents following `
 | G14 | embeddings | The archive | reviewed |
 | G15 | extraction | The archive | reviewed |
 | G16 | chunking | The archive | reviewed |
-| G17 | lexical | The archive | authored, reviewed, not integrated (uncommitted) |
-| G18 | fusion | The archive | authored, reviewed, not integrated (uncommitted) |
-| G19 | annindex | The archive | partial files in tree (agent stopped 19:25), rework in main context |
-| G20 | citations | The archive | authored, review fixes interrupted (uncommitted) |
-| G21 | reindex | The archive | authored, review stopped, not integrated (uncommitted) |
-| G22 | rewrite | The archive | partial files in tree (agent stopped 19:25), rework in main context |
-| G23 | tools | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
-| G24 | textsql | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G17 | lexical | The archive | reviewed |
+| G18 | fusion | The archive | reviewed |
+| G19 | annindex | The archive | integrated, no blind review yet |
+| G20 | citations | The archive | integrated, review findings not yet applied (see acceptance) |
+| G21 | reindex | The archive | integrated, blind review interrupted |
+| G22 | rewrite | The archive | planned (partial files discarded) |
+| G23 | tools | Hands of the voice | planned (partial files discarded) |
+| G24 | textsql | Hands of the voice | planned (partial files discarded) |
 | G25 | consent | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
 | G26 | workflow | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
 | G27 | agentloop | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
