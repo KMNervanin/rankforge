@@ -1,0 +1,22 @@
+{
+  "templates": [
+    {
+      "name": "triage",
+      "version": "v1",
+      "file": "triage/v1.txt",
+      "sha256": "bbfeab74de511cb3f15273bfe68fae5f6d0bf3919f00bacb4ef416375daa2ff4"
+    },
+    {
+      "name": "triage",
+      "version": "v2",
+      "file": "triage/v2.txt",
+      "sha256": "82cab12936c49a553b78b6f308e4bbcc02a4f34efe39911ef96f18ce87f6597a"
+    },
+    {
+      "name": "answer",
+      "version": "v1",
+      "file": "answer/v1.txt",
+      "sha256": "16d9ce4705343f877133135ca9c97ea0289096d69d4e767934bc67cf43bed53d"
+    }
+  ]
+}

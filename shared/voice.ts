@@ -1,8 +1,18 @@
 import type { Mission } from './types.js'
+import { mission as window, followUps as windowFollowUps } from './voice/window.js'
+import { mission as prompts, followUps as promptsFollowUps } from './voice/prompts.js'
+import { mission as backoff, followUps as backoffFollowUps } from './voice/backoff.js'
+import { mission as record, followUps as recordFollowUps } from './voice/record.js'
+import { mission as sampling, followUps as samplingFollowUps } from './voice/sampling.js'
 
 // Chapter IX of the roadmap: the operator assistant. Authored for the owner's personal route first; the
 // endpoint is whatever OpenAI-compatible server the learner configures in llm.json (a local model by default).
-export const voiceMissions: Mission[] = [
+const authored: Mission[] = [
+  window,
+  prompts,
+  backoff,
+  record,
+  sampling,
   {
     id: 'price', chapter: 'voice', order: 1, title: 'Every word has a price', subtitle: 'Meter the assistant’s first call', sector: 'Operator’s desk', icon: '◎',
     block: 'Calling the model', files: ['client.py', 'llm.json'],
@@ -35,7 +45,13 @@ export const voiceMissions: Mission[] = [
     artifact: 'Metered client',
   },
 ]
+export const voiceMissions: Mission[] = [...authored].sort((a, b) => a.order - b.order)
 
 export const voiceFollowUps: Record<string, string[]> = {
+  window: windowFollowUps,
+  prompts: promptsFollowUps,
+  backoff: backoffFollowUps,
+  record: recordFollowUps,
+  sampling: samplingFollowUps,
   price: ['The operator asks why two identical questions cost a different amount. Explain what can differ between two calls with the same prompt.', 'A colleague wants to estimate cost from the number of characters to save a request. Explain what breaks and when the estimate is still useful.'],
 }

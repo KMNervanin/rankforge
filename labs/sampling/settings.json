@@ -1,0 +1,5 @@
+[
+  {"name": "greedy-seeded", "temperature": 0.0, "seed": 42},
+  {"name": "sampled-seeded", "temperature": 0.9, "top_p": 0.95, "seed": 42},
+  {"name": "sampled", "temperature": 1.0}
+]

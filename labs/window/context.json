@@ -1,0 +1,17 @@
+{
+  "sections": [
+    {"id": "ops", "kind": "instructions", "text": "You are the outpost operator assistant. Answer only from the sections below and name the runbook you used. If the sections do not answer the question, say so."},
+    {"id": "pin-code", "kind": "pinned", "text": "Relay access code is K-4821 until the next rotation."},
+    {"id": "pin-shift", "kind": "pinned", "text": "The day shift reserves stock; the night shift only counts it."},
+    {"id": "runbook-filters", "kind": "document", "priority": 1, "text": "Filter cartridges are stored in the cold store and must be counted before every reservation.\n\nA reservation that exceeds the counted stock is refused and logged for the quartermaster.\n\nDamaged cartridges go to bay-12 for inspection and never back to the cold store."},
+    {"id": "incident-0412", "kind": "document", "priority": 2, "text": "Night shift reported a relay brownout at 02:10 that lasted about eleven minutes in total.\n\nStock queries during the brownout returned stale counts because the cache never expired.\n\nThe cache lease now expires after sixty seconds instead of being renewed on every read.\n\nNobody noticed because the dashboard rendered cached values with a fresh green timestamp."},
+    {"id": "memo-coffee", "kind": "document", "priority": 3, "text": "The canteen reminds every outpost that coffee supplies are not reservable through the assistant and that requests for mugs, kettles or filters for the kitchen belong to the catering desk, which answers on its own channel during the day shift only."},
+    {"id": "turn-1", "kind": "history", "role": "user", "text": "Good morning, I am taking over the desk from the night shift today."},
+    {"id": "turn-2", "kind": "history", "role": "assistant", "text": "Noted, welcome to the day shift at the relay desk."},
+    {"id": "turn-3", "kind": "history", "role": "user", "text": "Please list every open reservation for the relay team and their pickup times."},
+    {"id": "turn-4", "kind": "history", "role": "assistant", "text": "There are two open reservations, both for filter cartridges, pickup at noon."},
+    {"id": "turn-5", "kind": "history", "role": "user", "text": "Cancel the second one and keep the first."},
+    {"id": "turn-6", "kind": "history", "role": "assistant", "text": "The second reservation is cancelled; the first stays open for noon."},
+    {"id": "turn-7", "kind": "history", "role": "user", "text": "Why did stock queries show stale counts during the brownout, and where do damaged cartridges go?"}
+  ]
+}

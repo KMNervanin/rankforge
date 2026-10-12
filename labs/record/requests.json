@@ -1,0 +1,7 @@
+[
+  {"text": "We need 12 water filters for the north relay by tomorrow, this is urgent. - Mara", "expected": {"item": "water filter", "quantity": 12}},
+  {"text": "Could you send 3 boxes of fuses with the next convoy? No rush. Teo", "expected": {"item": "fuse", "quantity": 3}},
+  {"text": "URGENT: diesel, 40 litres, generator two is dry. Ilse, relay 4", "expected": {"item": "diesel", "quantity": 40}},
+  {"text": "Kitchen asks for two sacks of rice, about 25 kg each, before the weekend. Nadia", "expected": {"item": "rice", "quantity": 50}},
+  {"text": "One plasma coil for the beacon, please, whenever. Oskar", "expected": {"item": null, "quantity": 1}}
+]

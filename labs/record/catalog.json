@@ -1,0 +1,8 @@
+[
+  {"item": "water filter", "unit": "piece", "max_quantity": 50},
+  {"item": "fuse", "unit": "box", "max_quantity": 20},
+  {"item": "diesel", "unit": "litre", "max_quantity": 200},
+  {"item": "rice", "unit": "kilogram", "max_quantity": 100},
+  {"item": "battery pack", "unit": "piece", "max_quantity": 30},
+  {"item": "antiseptic", "unit": "litre", "max_quantity": 10}
+]

@@ -1,0 +1,9 @@
+{
+  "max_attempts": 5,
+  "base_delay": 0.5,
+  "max_delay": 8.0,
+  "jitter": 0.25,
+  "total_budget": 30.0,
+  "request_timeout": 10.0,
+  "quota_pause": 600.0
+}

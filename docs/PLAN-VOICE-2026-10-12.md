@@ -5,11 +5,11 @@ Authoring runs in batches of five missions by parallel author agents following `
 | ID | Runtime id | Block | Status |
 | --- | --- | --- | --- |
 | G01 | price | Calling the model | integrated (554ba6c) |
-| G02 | sampling | Calling the model | planned |
-| G03 | record | Calling the model | planned |
-| G04 | backoff | Calling the model | planned |
-| G05 | prompts | Calling the model | planned |
-| G06 | window | Calling the model | planned |
+| G02 | sampling | Calling the model | reviewed |
+| G03 | record | Calling the model | reviewed |
+| G04 | backoff | Calling the model | reviewed |
+| G05 | prompts | Calling the model | reviewed |
+| G06 | window | Calling the model | reviewed |
 | G07 | traces | Measuring the voice | planned |
 | G08 | golden | Measuring the voice | planned |
 | G09 | errorbars | Measuring the voice | planned |

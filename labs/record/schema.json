@@ -1,0 +1,14 @@
+{
+  "title": "Supply request",
+  "type": "object",
+  "properties": {
+    "item": {"type": "string", "minLength": 1, "description": "The catalog name of the item"},
+    "quantity": {"type": "integer", "minimum": 1},
+    "unit": {"type": "string", "enum": ["piece", "box", "litre", "kilogram"]},
+    "urgency": {"type": "string", "enum": ["low", "normal", "high"]},
+    "requester": {"type": "string", "minLength": 1},
+    "notes": {"type": "string"}
+  },
+  "required": ["item", "quantity", "unit", "urgency", "requester"],
+  "additionalProperties": false
+}

@@ -44,9 +44,11 @@ test('guild quests and skill trial run real checks through the browser, preserve
     }
     await page.getByLabel('Explore', { exact: true }).selectOption('voice')
     await expect(page.getByRole('heading', { name: 'Measure before you trust.' })).toBeVisible()
-    await expect(page.locator('.map-node')).toHaveCount(1)
-    await expect(page.locator('.map-node.sector-price')).toHaveAttribute('aria-label', 'View Every word has a price')
+    await page.getByRole('button', { name: '▦ Cards', exact: true }).click()
+    await expect(page.locator('.block-heading').first()).toContainText('Calling the model')
+    await expect(page.locator('.mission-card.sector-price')).toContainText('Every word has a price')
     await page.getByLabel('Explore', { exact: true }).selectOption('guild')
+    await page.getByRole('button', { name: '◇ Map', exact: true }).click()
     await page.getByLabel('Player profile', { exact: true }).click()
     await page.getByRole('button', { name: 'Skills & rewards' }).click()
     await expect(page.getByRole('heading', { name: 'Skills & rewards' })).toBeVisible()

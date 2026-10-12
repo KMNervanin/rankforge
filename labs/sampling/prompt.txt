@@ -1,0 +1,3 @@
+Classify the supply request below as exactly one of: urgent, routine, reject. Reply with the single word.
+
+Request: the relay's spare power cell failed overnight, the backup holds for six hours, send a replacement cell.

@@ -1,0 +1,10 @@
+{
+  "model": "relay-small",
+  "messages": [
+    {"role": "system", "content": "You are the outpost operator assistant. Answer in one sentence."},
+    {"role": "user", "content": "Reserve two spare filters for the night shift and confirm the remaining stock."}
+  ],
+  "max_tokens": 48,
+  "temperature": 0.0,
+  "stream": false
+}
