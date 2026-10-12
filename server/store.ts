@@ -105,8 +105,8 @@ export class Store {
     const active = this.get('active')
     return missions.map((mission) => {
       const progress = this.progress(mission.id)
-      const unlocked = mission.prerequisites.every((id) => this.progress(id).completed !== null) && this.rewards.isUnlocked(mission.id)
-      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : !unlocked ? 'locked' : active === mission.id ? 'active' : 'available', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent, stars: this.stars(mission.id) }
+      // Every quest is open from the start: prerequisites are a recommended order, not a lock.
+      return { ...mission, prompt: this.question(mission.id), status: progress.completed ? 'completed' : active === mission.id ? 'active' : 'available', workspace: progress.workspace, hintsUsed: progress.hints, checks: progress.checks ? JSON.parse(progress.checks) : null, completedAt: progress.completed, independent: !!progress.independent, stars: this.stars(mission.id) }
     })
   }
   question(id: string) {
@@ -114,11 +114,7 @@ export class Store {
     const followUps = followUpQuestions[id] ?? []
     return count && followUps.length ? followUps[(count - 1) % followUps.length]! : missionById(id).prompt
   }
-  assertAvailable(id: string) {
-    const mission = missionById(id)
-    if (mission.prerequisites.some((key) => !this.progress(key).completed)) throw new DomainError('Complete the prerequisite missions first.', 409)
-    if (!this.rewards.isUnlocked(id)) throw new DomainError('Verify Signal and Gateway on the current contract to earn HTTP Applied and unlock this bonus quest.', 409)
-  }
+  assertAvailable(id: string) { missionById(id) }
   assertRunning() { if (this.get('pause')) throw new DomainError('The tutor is paused. Resume the saved evaluation first.', 409) }
   select(id: string, workspace: string) {
     this.assertAvailable(id)
@@ -144,7 +140,6 @@ export class Store {
     this.db.exec('BEGIN IMMEDIATE')
     try {
       const before = this.progress(id)
-      if (id === 'http-trial') this.assertAvailable(id)
       this.db.prepare('UPDATE progress SET checks=? WHERE id=?').run(JSON.stringify(result), id)
       if (result.passed && result.supported) {
         if (!before.completed) {

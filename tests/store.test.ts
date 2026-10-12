@@ -16,9 +16,10 @@ function setup(t: test.TestContext, now?: () => string) {
   return store
 }
 
-test('prerequisites, hint support and one-time rewards survive repeated checks', (t) => {
+test('every quest is selectable from the start; hint support and one-time rewards survive repeated checks', (t) => {
   const store = setup(t)
-  assert.throws(() => store.select('vault', '/tmp/vault'), /prerequisite/)
+  store.select('vault', '/tmp/vault')
+  assert.equal(store.views().find((item) => item.id === 'vault')!.status, 'active', 'No prerequisite lock')
   store.select('signal', '/tmp/signal')
   store.hint('signal')
   store.saveCheck('signal', passed)

@@ -17,8 +17,6 @@ test('registered guild and bonus labs execute through the API, preserve work, aw
   t.after(() => stub.close())
   const post = (url: string, payload: object = {}) => app.inject({ method: 'POST', url, headers: { 'x-rankforge-token': browserToken }, payload })
   assert.equal((await post('/api/profile/equip', { id: 'relay-frame' })).statusCode, 409)
-  assert.equal((await post('/api/missions/briefing/start', { openEditor: false })).statusCode, 409)
-  assert.equal((await post('/api/missions/http-trial/start', { openEditor: false })).statusCode, 409)
   // Prerequisites are controlled state fixtures; all four new lab effects below run real checkers.
   const prerequisite: CheckResult = { passed: true, supported: true, contractVersion: currentContractVersion, checkedAt: new Date().toISOString(), checks: [{ name: 'Controlled prerequisite fixture', passed: true, detail: 'Not a live lab run' }], output: '' }
   for (const id of ['signal', 'vault', 'gateway', 'echo', 'ledger', 'recovery']) store.saveCheck(id, prerequisite)

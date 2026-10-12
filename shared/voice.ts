@@ -5,6 +5,7 @@ import type { Mission } from './types.js'
 export const voiceMissions: Mission[] = [
   {
     id: 'price', chapter: 'voice', order: 1, title: 'Every word has a price', subtitle: 'Meter the assistant’s first call', sector: 'Operator’s desk', icon: '◎',
+    block: 'Calling the model', files: ['client.py', 'llm.json'],
     nudge: 'Rumour says the relay charges less for words it has already read once.',
     skills: ['LLM calls', 'Token accounting', 'Cost measurement'], prerequisites: ['signal'], xp: 220, duration: 'Self-paced', kind: 'build',
     briefs: {

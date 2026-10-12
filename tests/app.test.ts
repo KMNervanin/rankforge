@@ -30,7 +30,6 @@ async function fixture(t: test.TestContext) {
 
 test('real local cycle: prepare, fail, edit, pass, advance and preserve prior workspace', async (t) => {
   const { post, labs, store, launches } = await fixture(t)
-  assert.equal((await post('/api/missions/vault/start', { openEditor: false })).statusCode, 409)
   assert.equal((await post('/api/missions/signal/start', { openEditor: true })).statusCode, 200)
   assert.equal(launches.length, 1)
   let checked = await post('/api/missions/signal/check')

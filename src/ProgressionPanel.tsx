@@ -88,8 +88,8 @@ export function ProgressionPanel({ progression, skills, missions, busy, onEquip,
       <section className={`bonus-trial ${unlocked ? 'unlocked' : ''}`} aria-labelledby="trial-title">
         <span className="eyebrow">Optional outpost quest</span><h2 id="trial-title">Beyond the health check</h2>
         <p>Serve stable supply pages to different clients. Validate queries, handle continuation and preserve the snapshot.</p>
-        <p className="muted">{unlocked ? 'HTTP Applied earned this access. Hints are welcome; this quest does not gate the guild.' : 'Earn HTTP Applied with current Signal + Gateway checks to unlock this quest. Legacy completion stays yours.'}</p>
-        <button disabled={busy || !unlocked || !trial || !canOpen('http-trial')} onClick={() => onMission('http-trial')}>{trial?.completedAt ? 'Revisit HTTP field trial' : unlocked ? 'Enter HTTP field trial' : 'Unlock at HTTP Applied'}</button>
+        <p className="muted">{unlocked ? 'HTTP Applied recorded; the transfer evidence counts toward the HTTP path.' : 'Open to everyone. Verifying Signal and Gateway on the current contract records HTTP Applied alongside it.'}</p>
+        <button disabled={busy || !trial || !canOpen('http-trial')} onClick={() => onMission('http-trial')}>{trial?.completedAt ? 'Revisit HTTP field trial' : 'Enter HTTP field trial'}</button>
       </section>
       <section className="reward-inventory" aria-labelledby="inventory-title">
         <span className="eyebrow">Yours to keep</span><h2 id="inventory-title">Reward inventory</h2>

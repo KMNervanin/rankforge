@@ -90,24 +90,17 @@ test('old saves migrate idempotently without rewarding legacy checks or losing w
   } finally { store.close(); rmSync(home, { recursive: true, force: true }) }
 })
 
-test('HTTP bonus requires durable Applied evidence as well as legacy prerequisites', (t) => {
+test('HTTP bonus is open from the start; HTTP Applied still records the milestone and the unlock reward', (t) => {
   const store = setup(t)
-  assert.throws(() => store.assertAvailable('http-trial'), /prerequisite/)
-  for (const id of ['signal', 'gateway']) store.saveCheck(id, { ...verified, contractVersion: undefined })
-  store.set('active', 'http-trial')
-  assert.equal(store.views().find((item) => item.id === 'http-trial')!.status, 'locked')
-  assert.throws(() => store.assertAvailable('http-trial'), /HTTP Applied/)
-  assert.throws(() => store.saveCheck('http-trial', verified), /HTTP Applied/)
-  assert.equal(store.progress('http-trial').checks, null)
-  store.saveCheck('signal', verified)
-  assert.throws(() => store.assertAvailable('http-trial'), /HTTP Applied/)
-  store.saveCheck('gateway', verified)
+  store.assertAvailable('http-trial')
+  assert.equal(store.views().find((item) => item.id === 'http-trial')!.status, 'available')
+  assert.equal(snapshot(store).unlockedMissionIds.length, 0)
+  for (const id of ['signal', 'gateway']) store.saveCheck(id, verified)
   assert.equal(branch(store, 'http').level, 2)
   assert.deepEqual(snapshot(store).unlockedMissionIds, ['http-trial'])
-  store.assertAvailable('http-trial')
+  store.saveCheck('http-trial', verified)
+  assert.equal(branch(store, 'http').level, 3)
   assert.equal(store.progress('recovery').completed, null, 'Guild progress is not a bonus prerequisite')
-  store.db.prepare('UPDATE progress SET completed=NULL WHERE id=?').run('gateway')
-  assert.throws(() => store.assertAvailable('http-trial'), /prerequisite/, 'Durable unlock alone does not replace prerequisites')
 })
 
 test('guided practice earns identical rewards; transfer mode belongs to the trial evidence', (t) => {

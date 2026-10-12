@@ -45,6 +45,8 @@ small, .micro { font-size: 12px; line-height: 1.5; }
 .sector-contract { --sector: #c4a1ff; --sector-soft: #4c3868; }
 .sector-http-trial { --sector: #ffd99b; --sector-soft: #55412b; }
 .sector-price { --sector: #f2a0d4; --sector-soft: #5a3350; }
+.mission-block + .mission-block { margin-top: 28px; }
+.block-heading { margin: 0 0 10px; font-size: 13px; letter-spacing: .4px; text-transform: uppercase; opacity: .72; }
 
 .app-shell { min-height: 100vh; }
 .sidebar {

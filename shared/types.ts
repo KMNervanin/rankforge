@@ -18,6 +18,9 @@ export type Mission = {
   chapter: 'outpost' | 'guild' | 'voice'
   bonus?: boolean
   nudge?: string
+  // Sub-block heading for chapters too large for the map; files the coach reads first and the verifier guards.
+  block?: string
+  files?: string[]
   id: string; order: number; title: string; subtitle: string; sector: string; icon: string
   skills: string[]; prerequisites: string[]; xp: number; duration: string; kind: 'build' | 'repair' | 'assessment'
   briefs: Record<LanguageBand, string>

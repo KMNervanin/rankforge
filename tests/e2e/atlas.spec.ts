@@ -50,7 +50,7 @@ test('the Atlas tab draws the whole oak, mirrors the map statuses and opens a mi
   const card = page.getByRole('dialog', { name: 'Mission card' })
   await expect(card).toContainText('I02 · Give memory a structure')
   await expect(card).toContainText('Enforce relational inventory rules in SQLite')
-  await expect(card).toContainText('locked')
+  await expect(card).toContainText('playable now')
   await expect(card.locator('.atlas-pre button')).toHaveCount(2)
   await expect(page.locator('.atlas-dep')).toHaveCount(2)
   await expect(page.locator('.atlas-node[data-id="I01"]')).not.toHaveClass(/dim/)
