@@ -23,7 +23,7 @@ test('the Atlas tab draws the whole oak, mirrors the map statuses and opens a mi
 
   await page.getByRole('button', { name: 'Atlas', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'The campaign oak' })).toBeVisible()
-  await expect(page.locator('.atlas-node.catalog')).toHaveCount(92)
+  await expect(page.locator('.atlas-node.catalog')).toHaveCount(138)
   await expect(page.locator('.atlas-node.trial')).toHaveCount(1)
   await expect(page.locator('.atlas-node.leaf')).toHaveCount(snapshot.missions.filter((mission) => mission.nudge).length)
   await expect(page.locator('.atlas-node.proposal')).toHaveCount(6)

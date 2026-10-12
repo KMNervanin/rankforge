@@ -6,9 +6,9 @@ import { NODE_H, NODE_W, ancestors, layoutAtlas } from '../src/atlas-layout.js'
 
 const ids = new Set(roadmapEntries.map((entry) => entry.id))
 
-test('the roadmap catalog is consistent: 92 unique ids, every prerequisite and spine id exists', () => {
-  assert.equal(roadmapEntries.length, 92)
-  assert.equal(ids.size, 92, 'duplicate ids')
+test('the roadmap catalog is consistent: 138 unique ids, every prerequisite and spine id exists', () => {
+  assert.equal(roadmapEntries.length, 138)
+  assert.equal(ids.size, 138, 'duplicate ids')
   assert.equal(roadmapEntries.filter((entry) => isProposal(entry.id)).length, 6, 'X01–X03 and P01–P03 are the proposals')
   for (const entry of roadmapEntries) for (const pre of entry.pre) assert.ok(ids.has(pre), `${entry.id} requires unknown ${pre}`)
   for (const id of roadmapSpine) assert.ok(ids.has(id), `spine id ${id} is not in the catalog`)
@@ -61,5 +61,5 @@ test('the oak layout places every node, keeps the trunk centred and leaves limb 
     assert.ok(Math.abs(a.x - b.x) >= NODE_W + 12 || Math.abs(a.y - b.y) >= NODE_H + 10, `limb nodes overlap at ${a.x},${a.y}`)
   }
   assert.equal(layout.pos.get('HT')!.parent, 'I03', 'the HTTP trial hangs off Gateway, its deepest prerequisite')
-  assert.deepEqual(layout.segments.map((segment) => segment.block), ['I · The silent outpost', "II · The architect's guild", 'III · The service workshop', 'IV · Testing', 'IV · Security', 'V · Reliable operations', 'VI · Under pressure', 'VII · The event frontier', 'VIII · The data district', 'IX · The independent outpost'])
+  assert.deepEqual(layout.segments.map((segment) => segment.block), ['I · The silent outpost', "II · The architect's guild", 'III · The service workshop', 'IV · Testing', 'IV · Security', 'V · Reliable operations', 'VI · Under pressure', 'VII · The event frontier', 'VIII · The data district', 'IX · The voice of the outpost', 'X · The independent outpost'])
 })

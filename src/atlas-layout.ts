@@ -36,7 +36,7 @@ export function layoutAtlas(nodes: AtlasNode[], spine: string[]): Layout {
     if (!best) best = { ...pos.get(ROOT)!, id: ROOT }
     const roots = isRoot(id)
     const depth = best.depth + 1
-    const side = node.leaf ? (best.side || 1) : best.side || (roots ? (LEFT_ROOTS.has(id) ? -1 : 1) : (id[0] === 'M' ? 1 : -1))
+    const side = node.leaf ? (best.side || 1) : best.side || (roots ? (LEFT_ROOTS.has(id) ? -1 : 1) : (id[0] === 'M' || id[0] === 'G' ? 1 : -1))
     const dir = roots ? 1 : -1
     const placed: Position = {
       x: cx + side * (TRUNK / 2 + 70 + Math.min(depth, 2) * 215),
