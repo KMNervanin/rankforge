@@ -1,6 +1,6 @@
 # Plan: chapter IX labs G02–G46 (started 2026-10-12 18:25 MSK)
 
-Authoring runs in batches of five missions by parallel author agents following `VOICE-AUTHORING.md`; the integrator wires `shared/voice.ts`, `shared/roadmap.ts` (runtime id) and `src/style.css`, runs the full Node and Playwright suites and commits one green batch at a time. A second agent then attempts each mission blind from LEARN.md and the starter (gate 6); its findings are applied before the next batch. Status: `planned` → `authored` → `integrated` (committed) → `reviewed`.
+Authoring runs in batches of five missions by parallel author agents following `VOICE-AUTHORING.md`; the integrator wires `shared/voice.ts`, `shared/roadmap.ts` (runtime id) and `src/style.css`, runs the full Node and Playwright suites and commits one green batch at a time. A second agent then attempts each mission blind from LEARN.md and the starter (gate 6); its findings are applied before the next batch. Status: `planned` → `authored` → `integrated` (committed) → `reviewed`. From 19:25 on 2026-10-12 the pipeline runs in the main context, one mission at a time, no Fable subagents (owner's rule).
 
 | ID | Runtime id | Block | Status |
 | --- | --- | --- | --- |
@@ -20,20 +20,20 @@ Authoring runs in batches of five missions by parallel author agents following `
 | G14 | embeddings | The archive | reviewed |
 | G15 | extraction | The archive | reviewed |
 | G16 | chunking | The archive | reviewed |
-| G17 | lexical | The archive | planned |
-| G18 | fusion | The archive | planned |
-| G19 | annindex | The archive | planned |
-| G20 | citations | The archive | planned |
-| G21 | reindex | The archive | planned |
-| G22 | rewrite | The archive | planned |
-| G23 | tools | Hands of the voice | planned |
-| G24 | textsql | Hands of the voice | planned |
-| G25 | consent | Hands of the voice | planned |
-| G26 | workflow | Hands of the voice | planned |
-| G27 | agentloop | Hands of the voice | planned |
-| G28 | compaction | Hands of the voice | planned |
-| G29 | trajectory | Hands of the voice | planned |
-| G30 | mcpserver | Hands of the voice | planned |
+| G17 | lexical | The archive | authored, reviewed, not integrated (uncommitted) |
+| G18 | fusion | The archive | authored, reviewed, not integrated (uncommitted) |
+| G19 | annindex | The archive | partial files in tree (agent stopped 19:25), rework in main context |
+| G20 | citations | The archive | authored, review fixes interrupted (uncommitted) |
+| G21 | reindex | The archive | authored, review stopped, not integrated (uncommitted) |
+| G22 | rewrite | The archive | partial files in tree (agent stopped 19:25), rework in main context |
+| G23 | tools | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G24 | textsql | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G25 | consent | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G26 | workflow | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G27 | agentloop | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G28 | compaction | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G29 | trajectory | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
+| G30 | mcpserver | Hands of the voice | partial files in tree (agent stopped 19:25), rework in main context |
 | G31 | injection | Guarding the voice | planned |
 | G32 | outputs | Guarding the voice | planned |
 | G33 | leakage | Guarding the voice | planned |

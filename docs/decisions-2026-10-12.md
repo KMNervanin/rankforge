@@ -34,3 +34,9 @@
 **Reason:** The owner wants to study any block and any task in any order, without the previous one; the roadmap already calls its order "a convenient reading order, not a chain of unnecessary locks".
 **Reversal cost:** Restore the two removed conditions in `server/store.ts` and the `locked` branches in the tests (`tests/store.test.ts`, `tests/progression.test.ts`, `tests/app.test.ts`, `tests/campaign.test.ts`, `tests/e2e/game.spec.ts`, `tests/e2e/atlas.spec.ts`).
 **Location:** `server/store.ts`, `src/App.tsx`, `src/ProgressionPanel.tsx`, `shared/types.ts` (`block`, `files`), `server/labs.ts` (verifier by `server/verify_<id>.py`, coach files from `Mission.files`).
+
+## Session stopped at 19:25 by the owner: subagent spend
+**What happened:** Batches 1–3 (G02–G16) were authored by ~28 Fable author agents and ~15 blind-reviewer agents in parallel; the owner reported about half of the weekly plan limit consumed in two hours and stopped the run. All running agents were killed at 19:25.
+**Chosen:** Keep the committed work (`a2cdf09`, `9afb390`, `17b337d`); leave the uncommitted files in the tree untouched for the next session: `lexical` (G17), `fusion` (G18), `reindex` (G21) are complete and reviewed, `citations` (G20) was stopped mid-fix, `annindex` (G19), `rewrite`, `tools`, `textsql`, `consent`, `workflow`, `agentloop`, `compaction`, `trajectory`, `mcpserver` (G22–G30) are partial. Pipeline rule from now on: missions are authored in the main context, one at a time, no subagents on Fable; any subagent runs on Opus or cheaper with a lower effort, and a batch's cost is named before it starts.
+**Reversal cost:** None for the rule; partial lab directories can be deleted or finished.
+**Location:** `~/.claude/CLAUDE.md` (rule), this file, `docs/PLAN-VOICE-2026-10-12.md` (statuses).
